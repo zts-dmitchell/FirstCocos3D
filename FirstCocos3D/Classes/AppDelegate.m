@@ -43,8 +43,11 @@
 	// addBackdrop invocation in the initializeScene method of CC3DemoMashUpScene.
 //	CC3DeviceCameraOverlayUIViewController* viewController = [[CC3DeviceCameraOverlayUIViewController alloc] init];
 //	viewController.isOverlayingDeviceCamera = YES;
+    
+    // Prevent the screen from diming.
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
+    return YES;
 	
-	return YES;
 }
 
 /** Returns the initial 2D CCScene. Our 2D scene contains a CC3Layer holding a 3D CC3Scene. */
@@ -213,10 +216,12 @@
 
 -(void) applicationDidEnterBackground: (UIApplication*) application {
 	[_viewController stopAnimation];
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
 }
 
 -(void) applicationWillEnterForeground: (UIApplication*) application {
 	[_viewController startAnimation];
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
 }
 
 -(void)applicationWillTerminate: (UIApplication*) application {

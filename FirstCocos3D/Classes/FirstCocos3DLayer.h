@@ -9,9 +9,10 @@
 
 #import "CC3Layer.h"
 
-
 /** A sample application-specific CC3Layer subclass. */
 @interface FirstCocos3DLayer : CC3Layer {
+    
+    
 }
 
 @end

@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		57628F7719C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */; };
+		57AB956519BD7C8A00E8F107 /* Exportable Body - Ford Highboy - 01.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57AB956419BD7C8A00E8F107 /* Exportable Body - Ford Highboy - 01.pod */; };
+		57B2345719D63EB600B492AC /* Exportable Body - Chevrolet HHR - 00.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57B2345619D63EB600B492AC /* Exportable Body - Chevrolet HHR - 00.pod */; };
+		57B2346C19D92B9400B492AC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 57B2346719D92B9400B492AC /* AppDelegate.m */; };
+		57B2347919DA3A0400B492AC /* RunningAverage.m in Sources */ = {isa = PBXBuildFile; fileRef = 57B2347819DA3A0400B492AC /* RunningAverage.m */; };
 		57CAE57819BC18D400665B4C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57CAE57719BC18D400665B4C /* AudioToolbox.framework */; };
 		57CAE57A19BC18D400665B4C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57CAE57919BC18D400665B4C /* AVFoundation.framework */; };
 		57CAE57C19BC18D400665B4C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57CAE57B19BC18D400665B4C /* CoreGraphics.framework */; };
@@ -20,7 +25,6 @@
 		57CAE58F19BC18D400665B4C /* FirstCocos3DLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 57CAE58E19BC18D400665B4C /* FirstCocos3DLayer.m */; };
 		57CAE59219BC18D400665B4C /* FirstCocos3DScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 57CAE59119BC18D400665B4C /* FirstCocos3DScene.m */; };
 		57CAE59519BC18D400665B4C /* hello-world.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57CAE59419BC18D400665B4C /* hello-world.pod */; };
-		57CAE59919BC18D400665B4C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 57CAE59819BC18D400665B4C /* AppDelegate.m */; };
 		57CAE59C19BC18D400665B4C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 57CAE59B19BC18D400665B4C /* main.m */; };
 		57CAE5A019BC18D400665B4C /* Icon-29.png in Resources */ = {isa = PBXBuildFile; fileRef = 57CAE59F19BC18D400665B4C /* Icon-29.png */; };
 		57CAE5A219BC18D400665B4C /* Icon-29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 57CAE5A119BC18D400665B4C /* Icon-29@2x.png */; };
@@ -376,7 +380,38 @@
 		57CAEA0D19BC18D800665B4C /* LICENSE_cocos3d.txt in Resources */ = {isa = PBXBuildFile; fileRef = 57CAEA0C19BC18D800665B4C /* LICENSE_cocos3d.txt */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		57AB8E6719BC1CE900E8F107 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 57CAE56C19BC18D400665B4C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 57CAE63119BC18D400665B4C;
+			remoteInfo = cocos2d;
+		};
+		57AB8E6919BC1CE900E8F107 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 57CAE56C19BC18D400665B4C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 57CAE63419BC18D400665B4C;
+			remoteInfo = "cocos2d-chipmunk";
+		};
+		57AB8E6B19BC1CE900E8F107 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 57CAE56C19BC18D400665B4C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 57CAE86C19BC18D600665B4C;
+			remoteInfo = cocos3d;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Body - Holden Efijy - 01.pod"; path = "Resources/Exportable Body - Holden Efijy - 01.pod"; sourceTree = "<group>"; };
+		57AB956419BD7C8A00E8F107 /* Exportable Body - Ford Highboy - 01.pod */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Exportable Body - Ford Highboy - 01.pod"; sourceTree = "<group>"; };
+		57B2345619D63EB600B492AC /* Exportable Body - Chevrolet HHR - 00.pod */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Exportable Body - Chevrolet HHR - 00.pod"; sourceTree = "<group>"; };
+		57B2346619D92B9400B492AC /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
+		57B2346719D92B9400B492AC /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; };
+		57B2347719DA39ED00B492AC /* RunningAverage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RunningAverage.h; sourceTree = "<group>"; };
+		57B2347819DA3A0400B492AC /* RunningAverage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RunningAverage.m; sourceTree = "<group>"; };
 		57CAE57419BC18D400665B4C /* FirstCocos3D.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirstCocos3D.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		57CAE57719BC18D400665B4C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		57CAE57919BC18D400665B4C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -394,8 +429,6 @@
 		57CAE59119BC18D400665B4C /* FirstCocos3DScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = FirstCocos3DScene.m; path = Classes/FirstCocos3DScene.m; sourceTree = "<group>"; };
 		57CAE59419BC18D400665B4C /* hello-world.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "hello-world.pod"; path = "Resources/hello-world.pod"; sourceTree = "<group>"; };
 		57CAE59619BC18D400665B4C /* README!.md */ = {isa = PBXFileReference; lastKnownFileType = text; name = "README!.md"; path = "../README!.md"; sourceTree = "<group>"; };
-		57CAE59719BC18D400665B4C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
-		57CAE59819BC18D400665B4C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; };
 		57CAE59B19BC18D400665B4C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		57CAE59D19BC18D400665B4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Resources/Info.plist; sourceTree = "<group>"; };
 		57CAE59F19BC18D400665B4C /* Icon-29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-29.png"; path = "Resources/Icons/Icon-29.png"; sourceTree = "<group>"; };
@@ -1118,6 +1151,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		57B2347219D92E5700B492AC /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				57B2347719DA39ED00B492AC /* RunningAverage.h */,
+				57B2347819DA3A0400B492AC /* RunningAverage.m */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
 		57CAE56B19BC18D400665B4C = {
 			isa = PBXGroup;
 			children = (
@@ -1172,12 +1214,13 @@
 		57CAE58C19BC18D400665B4C /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				57B2347219D92E5700B492AC /* Utils */,
+				57B2346619D92B9400B492AC /* AppDelegate.h */,
+				57B2346719D92B9400B492AC /* AppDelegate.m */,
 				57CAE58D19BC18D400665B4C /* FirstCocos3DLayer.h */,
 				57CAE58E19BC18D400665B4C /* FirstCocos3DLayer.m */,
 				57CAE59019BC18D400665B4C /* FirstCocos3DScene.h */,
 				57CAE59119BC18D400665B4C /* FirstCocos3DScene.m */,
-				57CAE59719BC18D400665B4C /* AppDelegate.h */,
-				57CAE59819BC18D400665B4C /* AppDelegate.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1185,6 +1228,9 @@
 		57CAE59319BC18D400665B4C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				57B2345619D63EB600B492AC /* Exportable Body - Chevrolet HHR - 00.pod */,
+				57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */,
+				57AB956419BD7C8A00E8F107 /* Exportable Body - Ford Highboy - 01.pod */,
 				57CAE59419BC18D400665B4C /* hello-world.pod */,
 				57CAE59D19BC18D400665B4C /* Info.plist */,
 				57CAE5C419BC18D400665B4C /* fps_images.png */,
@@ -2536,6 +2582,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				57AB8E6819BC1CE900E8F107 /* PBXTargetDependency */,
+				57AB8E6A19BC1CE900E8F107 /* PBXTargetDependency */,
+				57AB8E6C19BC1CE900E8F107 /* PBXTargetDependency */,
 			);
 			name = FirstCocos3D;
 			productName = FirstCocos3D;
@@ -2595,7 +2644,7 @@
 		57CAE56C19BC18D400665B4C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "David Mitchell";
 			};
 			buildConfigurationList = 57CAE56F19BC18D400665B4C /* Build configuration list for PBXProject "FirstCocos3D" */;
@@ -2663,6 +2712,7 @@
 				57CAE61D19BC18D400665B4C /* CC3LibVertexPositionBones.vsh in Resources */,
 				57CAE5A219BC18D400665B4C /* Icon-29@2x.png in Resources */,
 				57CAE5FE19BC18D400665B4C /* CC3PointSpritesAlphaTest.fsh in Resources */,
+				57B2345719D63EB600B492AC /* Exportable Body - Chevrolet HHR - 00.pod in Resources */,
 				57CAE5EA19BC18D400665B4C /* CC3BumpMapTangentSpace.fsh in Resources */,
 				57CAE5A019BC18D400665B4C /* Icon-29.png in Resources */,
 				57CAE5A619BC18D400665B4C /* Icon-40@2x.png in Resources */,
@@ -2679,6 +2729,7 @@
 				57CAE5AA19BC18D400665B4C /* Icon-50@2x.png in Resources */,
 				57CAE5F419BC18D400665B4C /* CC3NoTexture.fsh in Resources */,
 				57CAE61519BC18D400665B4C /* CC3LibEnvironmentReflection.vsh in Resources */,
+				57628F7719C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod in Resources */,
 				57CAE60219BC18D400665B4C /* CC3SingleTexture.fsh in Resources */,
 				57CAE5BA19BC18D400665B4C /* Icon-76@2x.png in Resources */,
 				57CAE5F219BC18D400665B4C /* CC3Fog.fsh in Resources */,
@@ -2688,6 +2739,7 @@
 				57CAE5E319BC18D400665B4C /* CC3LibTexturedPointSprite.fsh in Resources */,
 				57CAE60D19BC18D400665B4C /* CC3LibCameraPosition.vsh in Resources */,
 				57CAE5EC19BC18D400665B4C /* CC3BumpMapTangentSpaceAlphaTest.fsh in Resources */,
+				57AB956519BD7C8A00E8F107 /* Exportable Body - Ford Highboy - 01.pod in Resources */,
 				57CAE5F619BC18D400665B4C /* CC3NoTextureAlphaTest.fsh in Resources */,
 				57CAE5DB19BC18D400665B4C /* CC3LibSingleSidedFragmentColor.fsh in Resources */,
 				57CAE5B619BC18D400665B4C /* Icon-72@2x.png in Resources */,
@@ -2723,8 +2775,9 @@
 			files = (
 				57CAE59219BC18D400665B4C /* FirstCocos3DScene.m in Sources */,
 				57CAE58F19BC18D400665B4C /* FirstCocos3DLayer.m in Sources */,
+				57B2347919DA3A0400B492AC /* RunningAverage.m in Sources */,
 				57CAE59C19BC18D400665B4C /* main.m in Sources */,
-				57CAE59919BC18D400665B4C /* AppDelegate.m in Sources */,
+				57B2346C19D92B9400B492AC /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3030,6 +3083,24 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		57AB8E6819BC1CE900E8F107 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 57CAE63119BC18D400665B4C /* cocos2d */;
+			targetProxy = 57AB8E6719BC1CE900E8F107 /* PBXContainerItemProxy */;
+		};
+		57AB8E6A19BC1CE900E8F107 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 57CAE63419BC18D400665B4C /* cocos2d-chipmunk */;
+			targetProxy = 57AB8E6919BC1CE900E8F107 /* PBXContainerItemProxy */;
+		};
+		57AB8E6C19BC1CE900E8F107 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 57CAE86C19BC18D600665B4C /* cocos3d */;
+			targetProxy = 57AB8E6B19BC1CE900E8F107 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		57CAEA0E19BC18D800665B4C /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -3045,7 +3116,8 @@
 					"GL_ERROR_TRACING_ENABLED=0",
 					"GL_ERROR_ASSERTION_ENABLED=0",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = GL_ERROR_TRACING_ENABLED;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3058,7 +3130,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_NS_ASSERTIONS = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -3092,6 +3164,7 @@
 					"cocos2d/**",
 				);
 				INFOPLIST_FILE = FirstCocos3D/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				OTHER_CFLAGS = "-U__STRICT_ANSI__";
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3131,6 +3204,7 @@
 					"cocos2d/**",
 				);
 				INFOPLIST_FILE = FirstCocos3D/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				OTHER_CFLAGS = "-U__STRICT_ANSI__";
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3148,7 +3222,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -3171,7 +3244,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -3191,7 +3263,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -3210,7 +3281,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -3313,6 +3383,7 @@
 				57CAEA1219BC18D800665B4C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		57CAEA1319BC18D800665B4C /* Build configuration list for PBXNativeTarget "cocos2d" */ = {
 			isa = XCConfigurationList;
@@ -3321,6 +3392,7 @@
 				57CAEA1519BC18D800665B4C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		57CAEA1619BC18D800665B4C /* Build configuration list for PBXNativeTarget "cocos2d-chipmunk" */ = {
 			isa = XCConfigurationList;
@@ -3329,6 +3401,7 @@
 				57CAEA1819BC18D800665B4C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		57CAEA1919BC18D800665B4C /* Build configuration list for PBXNativeTarget "cocos3d" */ = {
 			isa = XCConfigurationList;
@@ -3337,6 +3410,7 @@
 				57CAEA1B19BC18D800665B4C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

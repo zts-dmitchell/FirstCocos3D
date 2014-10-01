@@ -14,7 +14,6 @@
 #import "CC3Light.h"
 #import "CC3UtilityMeshNodes.h"
 
-
 @implementation FirstCocos3DScene
 
 /**
@@ -62,7 +61,17 @@
 	// nodes in the resource, remove unwanted nodes from the resource (eg- extra cameras),
 	// or extract only specific nodes from the resource to add them directly to the scene,
 	// instead of adding the entire contents.
-	CC3ResourceNode* rezNode = [CC3PODResourceNode nodeFromFile: @"hello-world.pod"];
+	//CC3ResourceNode* rezNode = [CC3PODResourceNode nodeFromFile: @"hello-world.pod"];
+    //CC3ResourceNode* rezNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Ford Highboy - 01.pod"];
+    //CC3ResourceNode* rezNode =
+     //[CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
+    
+    //CC3Matrix* transform = [rezNode globalTransformMatrix];
+    //CC3Vector rot = cc3v(0, 500,0);
+    //[transform rotateBy:rot];
+    
+	CC3ResourceNode* rezNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Chevrolet HHR - 00.pod"];
+    
 	[self addChild: rezNode];
 	
 	// Or, if you don't need to modify the resource node at all before adding its content,
@@ -153,18 +162,114 @@
 	// using a couple of actions...
 	
 	// Fetch the 'hello, world' object that was loaded from the POD file and start it rotating
-	CC3MeshNode* helloTxt = (CC3MeshNode*)[self getNodeNamed: @"Hello"];
-	[helloTxt runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 30, 0)]];
+	//CC3MeshNode* helloTxt = (CC3MeshNode*)[self getNodeNamed: @"Hello"];
+	///CC3MeshNode* helloTxt = (CC3MeshNode*)[self getNodeNamed: @"Main Body"];
+	//CC3MeshNode* rearAxle = (CC3MeshNode*)[self getNodeNamed: @"Front Hood"];
+	//[helloTxt runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 30, 0)]];
+	//[rearAxle runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 30, 0)]];
+    
+    NSArray* children = rezNode.children;
+    
+    for(int i=0; i<children.count; ++i) {
+        
+        id node = children[i];
+        CC3MeshNode* n = node;
+        
+        NSLog(@"The structure of this scene is: %@", [n name]);
+        
+        [n runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 15, 0)]];
+    }
 	
 	// To make things a bit more appealing, set up a repeating up/down cycle to
 	// change the color of the text from the original red to blue, and back again.
+    /*
 	GLfloat tintTime = 8.0f;
 	CCColorRef startColor = helloTxt.color;
 	CCColorRef endColor = CCColorRefFromCCC4F(ccc4f(0.2, 0.0, 0.8, 1.0));
 	CCActionInterval* tintDown = [CCActionTintTo actionWithDuration: tintTime color: endColor];
 	CCActionInterval* tintUp   = [CCActionTintTo actionWithDuration: tintTime color: startColor];
 	[helloTxt runAction: [[CCActionSequence actionOne: tintDown two: tintUp] repeatForever]];
+     */
+	//[rearAxle runAction: [[CCActionSequence actionOne: tintDown two: tintUp] repeatForever]];
+    
+//    // new shit
+//    self.locationManager = [[CLLocationManager alloc] init];
+//    self.locationManager.delegate = self;
+//    
+//    // This location manager will be used to collect RSSI samples from the targeted beacon.
+//    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+//    self.locationManager.distanceFilter = kCLDistanceFilterNone;
+//    //[self.locationManager requestAlwaysAuthorization];
+//
+////    int score = 7770;
+////    scorelabel = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"score: %d",score] fontName:@"Verdana-Bold" fontSize:18.0f];
+////    scorelabel.positionType = CCPositionTypeNormalized;
+////    scorelabel.position = ccp(0.0f, 0.96f);
+////    [self addChild:scorelabel];
+////
+////    CC3Node *parent = [self parent];
+////    [parent addChild:scorelabel];
+//    
+//    [self.locationManager startUpdatingLocation];
+//    
 }
+
+
+//#pragma mark - My Shit
+//
+//-(void)locationManager:(CLLocationManager *)manager
+//   didUpdateToLocation:(CLLocation *)newLocation
+//          fromLocation:(CLLocation *)oldLocation
+//{
+//    [self locationManager:manager didUpdateToLocation:newLocation fromLocation:oldLocation];
+//    
+//    // Uncomment this line to draw the bounding box of the scene.
+//    self.shouldDrawWireframeBox = YES;
+//    // Displays bounding boxes around those nodes with local content (eg- meshes).
+//    self.shouldDrawAllLocalContentWireframeBoxes = YES;
+//    
+//    // Displays bounding boxes around all nodes. The bounding box for each node
+//    // will encompass its child nodes.
+//    self.shouldDrawAllWireframeBoxes = YES;
+//}
+//
+//-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+//    
+//    CLLocation *newLocation = [locations lastObject];
+//    CLLocation *oldLocation;
+//    if (locations.count > 1) {
+//        oldLocation = [locations objectAtIndex:locations.count-2];
+//    } else {
+//        oldLocation = nil;
+//    }
+//    CLLocationSpeed speed = [newLocation speed];
+//    
+//    CLLocationDistance distanceChange = [newLocation distanceFromLocation:oldLocation];
+//    NSTimeInterval sinceLastUpdate = [newLocation.timestamp timeIntervalSinceDate:oldLocation.timestamp];
+//    double calculatedSpeed = distanceChange / sinceLastUpdate;
+//
+//    NSLog(@"didUpdateToLocation %@ from %@. MPH %f. MPH %f",
+//          newLocation, oldLocation, speed*2.23694, calculatedSpeed*2.23694);
+//
+//    CC3MeshNode* node = [self getMeshNodeNamed:@"score"];
+//    
+//    
+//  //  MKCoordinateRegion userLocation = MKCoordinateRegionMakeWithDistance(newLocation.coordinate, 1500.0, 1500.0);
+// //   [regionsMapView setRegion:userLocation animated:YES];
+//}
+//
+//-(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+//
+//{
+//    // Uncomment this line to draw the bounding box of the scene.
+//    self.shouldDrawWireframeBox = YES;
+//    // Displays bounding boxes around those nodes with local content (eg- meshes).
+//    self.shouldDrawAllLocalContentWireframeBoxes = YES;
+//    
+//    // Displays bounding boxes around all nodes. The bounding box for each node
+//    // will encompass its child nodes.
+//    self.shouldDrawAllWireframeBoxes = YES;
+//}
 
 /**
  * By populating this method, you can add add additional scene content dynamically and
@@ -198,7 +303,10 @@
  *
  * For more info, read the notes of this method on CC3Node.
  */
--(void) updateBeforeTransform: (CC3NodeUpdatingVisitor*) visitor {}
+-(void) updateBeforeTransform: (CC3NodeUpdatingVisitor*) visitor {
+//    NSLog(@"updateBeforeTransform Was here!!!");
+}
+
 
 /**
  * This template method is invoked periodically whenever the 3D nodes are to be updated.
@@ -208,7 +316,9 @@
  *
  * For more info, read the notes of this method on CC3Node.
  */
--(void) updateAfterTransform: (CC3NodeUpdatingVisitor*) visitor {}
+-(void) updateAfterTransform: (CC3NodeUpdatingVisitor*) visitor {
+//    NSLog(@"updateAfterTransform Was here!!!");
+}
 
 
 #pragma mark Scene opening and closing
@@ -247,7 +357,10 @@
  *
  * For more info, read the notes of this method on CC3Scene.
  */
--(void) onClose {}
+-(void) onClose {
+
+//    [self.locationManager stopUpdatingLocation];
+}
 
 
 #pragma mark Drawing
@@ -315,7 +428,17 @@
  *
  * For more info, read the notes of this method on CC3Scene.
  */
--(void) touchEvent: (uint) touchType at: (CGPoint) touchPoint {}
+-(void) touchEvent: (uint) touchType at: (CGPoint) touchPoint {
+
+    // Uncomment this line to draw the bounding box of the scene.
+    	self.shouldDrawWireframeBox = NO;
+    // Displays bounding boxes around those nodes with local content (eg- meshes).
+    	self.shouldDrawAllLocalContentWireframeBoxes = NO;
+    
+    // Displays bounding boxes around all nodes. The bounding box for each node
+    // will encompass its child nodes.
+    	self.shouldDrawAllWireframeBoxes = NO;
+}
 
 /**
  * This callback template method is invoked automatically when a node has been picked
