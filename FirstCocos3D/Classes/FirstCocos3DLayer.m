@@ -16,6 +16,7 @@
 
 @property (strong, nonatomic) CCLabelTTF *mphLabel;
 @property (strong, nonatomic) CCLabelTTF *altitudeLabel;
+@property (strong, nonatomic) CCLabelTTF *courseLabel;
 @property (strong, nonatomic) CCLabelTTF *headingLabel;
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) RunningAverage *runningAvg;
@@ -36,7 +37,7 @@
     self.userInteractionEnabled = YES;
     [self setTouchEnabled:YES];
     
-    self.mphLabel = [CCLabelTTF labelWithString:@"Speed: " fontName:@"Verdana-Bold" fontSize:18.0f];
+    self.mphLabel = [CCLabelTTF labelWithString:@"Speed:" fontName:@"Verdana-Bold" fontSize:18.0f];
     self.mphLabel.positionType = CCPositionTypeNormalized;
     self.mphLabel.position = ccp(0.15f, 0.96f);
     [self addChild:self.mphLabel];
@@ -46,9 +47,14 @@
     self.altitudeLabel.position = ccp(0.15f, 0.9f);
     [self addChild:self.altitudeLabel];
     
+    self.courseLabel = [CCLabelTTF labelWithString:@"Course: " fontName:@"Verdana-Bold" fontSize:18.0f];
+    self.courseLabel.positionType = CCPositionTypeNormalized;
+    self.courseLabel.position = ccp(0.15f, 0.84f);
+    [self addChild:self.courseLabel];
+    
     self.headingLabel = [CCLabelTTF labelWithString:@"Heading: " fontName:@"Verdana-Bold" fontSize:18.0f];
     self.headingLabel.positionType = CCPositionTypeNormalized;
-    self.headingLabel.position = ccp(0.15f, 0.84f);
+    self.headingLabel.position = ccp(0.15f, 0.78f);
     [self addChild:self.headingLabel];
     
     // new shit
@@ -64,7 +70,7 @@
     
     // Start heading updates.
     if ([CLLocationManager headingAvailable]) {
-        self.locationManager.headingFilter = 5;
+        self.locationManager.headingFilter = 1;
         [self.locationManager startUpdatingHeading];
     }
     
@@ -93,6 +99,7 @@
     
     CLLocationSpeed speed = [newLocation speed];
     CLLocationDistance altitude = [newLocation altitude] * 3.2808399; // Convert meters to feet
+    CLLocationDirection course = [newLocation course];
     
     //CLLocationDistance distanceChange = [newLocation distanceFromLocation:oldLocation];
     //NSTimeInterval sinceLastUpdate = [newLocation.timestamp timeIntervalSinceDate:oldLocation.timestamp];
@@ -101,18 +108,20 @@
     if( speed < 0.0 )
         speed = 0.0;
     else
-        speed *=2.23694; // Convert KPH to MPH
+        speed *= 2.23694; // Convert KPH to MPH
 
-    double avg = [self.runningAvg get:speed];
+    double average = [self.runningAvg get:speed];
     
     NSLog(@"didUpdateToLocation %@ from %@. MPH %f. Avg %f. Altitude: %.2f\"",
-          newLocation, oldLocation, speed, avg, altitude);
+          newLocation, oldLocation, speed, average, altitude);
     
-    [self.mphLabel setString:[NSString stringWithFormat:@"Speed: %3.0f MPH, Avg: %3.0f MPH", speed, avg]];
-    [self.altitudeLabel setString:[NSString stringWithFormat: @"Alt: %3.0f\"", altitude]];
-
-    //  MKCoordinateRegion userLocation = MKCoordinateRegionMakeWithDistance(newLocation.coordinate, 1500.0, 1500.0);
-    //   [regionsMapView setRegion:userLocation animated:YES];
+    [self.mphLabel setString:[NSString stringWithFormat:@"Speed: %3.0f MPH, Avg: %3.0f MPH", speed, average]];
+    
+    if( course == -1 )
+        [self.courseLabel setString:@"Course: N/A"];
+    else
+        [self.courseLabel setString:[NSString stringWithFormat: @"Course: %3.0f°", course]];
+    [self.altitudeLabel setString:[NSString stringWithFormat: @"Alt: %3.0f'", altitude]];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
@@ -125,14 +134,15 @@
     
     UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
     
-    if (deviceOrientation == UIDeviceOrientationLandscapeLeft){
+    // Adjust the heading based on the orientation of the phone.  It can be off by -90, 90, or 180 degrees.
+    if (deviceOrientation == UIDeviceOrientationLandscapeLeft) {
         
         if( theHeading < 270.0 )
             theHeading += 90;
         else
             theHeading -= 270.0;
     }
-    else if (deviceOrientation == UIDeviceOrientationLandscapeRight){
+    else if (deviceOrientation == UIDeviceOrientationLandscapeRight) {
 
         if( theHeading < 90.0 ) {
             theHeading += 270.0;
@@ -140,7 +150,7 @@
             theHeading -= 90.0;
         }
     }
-    else if (deviceOrientation == UIDeviceOrientationPortraitUpsideDown){
+    else if (deviceOrientation == UIDeviceOrientationPortraitUpsideDown) {
         
         if( theHeading < 180.0 ) {
             theHeading += 180.0;
@@ -149,7 +159,7 @@
         }
     }
 
-    [self.headingLabel setString:[NSString stringWithFormat: @"Heading: %.3f", theHeading]];
+    [self.headingLabel setString:[NSString stringWithFormat: @"Heading: %.0f°", theHeading]];
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
