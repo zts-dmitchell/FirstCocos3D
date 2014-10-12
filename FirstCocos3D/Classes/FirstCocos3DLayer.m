@@ -9,6 +9,7 @@
 #import "FirstCocos3DLayer.h"
 #import "FirstCocos3DScene.h"
 #import "RunningAverage.h"
+#import "KalmanFilter.h"
 
 @import CoreLocation;
 
@@ -18,8 +19,11 @@
 @property (strong, nonatomic) CCLabelTTF *altitudeLabel;
 @property (strong, nonatomic) CCLabelTTF *courseLabel;
 @property (strong, nonatomic) CCLabelTTF *headingLabel;
+@property (strong, nonatomic) CCLabelTTF *headingTypeLabel;
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) RunningAverage *runningAvg;
+@property (strong, nonatomic) RunningAverage *headingRunningAvg;
+@property (strong, nonatomic) KalmanFilter *kalmanHeading;
 
 @end
 
@@ -32,7 +36,7 @@
  */
 -(void) initializeControls {
     
-	[self scheduleUpdate];
+	//[self scheduleUpdate];
     
     self.userInteractionEnabled = YES;
     [self setTouchEnabled:YES];
@@ -57,8 +61,16 @@
     self.headingLabel.position = ccp(0.15f, 0.78f);
     [self addChild:self.headingLabel];
     
+    self.headingTypeLabel = [CCLabelTTF labelWithString:@"Type: " fontName:@"Verdana-Bold" fontSize:18.0f];
+    self.headingTypeLabel.positionType = CCPositionTypeNormalized;
+    self.headingTypeLabel.position = ccp(0.8f, 0.025f);
+    [self addChild:self.headingTypeLabel];
+    
+    
     // new shit
     self.runningAvg = [[RunningAverage alloc] initWithAvgLength:2];
+    self.headingRunningAvg = [[RunningAverage alloc] initWithAvgLength:2];
+    self.kalmanHeading = [[KalmanFilter alloc] init];
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
@@ -105,15 +117,18 @@
     //NSTimeInterval sinceLastUpdate = [newLocation.timestamp timeIntervalSinceDate:oldLocation.timestamp];
     //double calculatedSpeed = distanceChange / sinceLastUpdate;
     
-    if( speed < 0.0 )
+    if( speed <= 0.0 ) {
         speed = 0.0;
-    else
+    }
+    else {
         speed *= 2.23694; // Convert KPH to MPH
-
-    double average = [self.runningAvg get:speed];
+    }
     
-    NSLog(@"didUpdateToLocation %@ from %@. MPH %f. Avg %f. Altitude: %.2f\"",
-          newLocation, oldLocation, speed, average, altitude);
+    double average = [self.runningAvg get:speed];
+    //double kspeed = [self.kalmanSpeed get:speed];
+    
+    //NSLog(@"didUpdateToLocation %@ from %@. MPH %f. Avg %f. Altitude: %.2f\"",
+    //      newLocation, oldLocation, speed, average, altitude);
     
     [self.mphLabel setString:[NSString stringWithFormat:@"Speed: %3.0f MPH, Avg: %3.0f MPH", speed, average]];
     
@@ -122,9 +137,19 @@
     else
         [self.courseLabel setString:[NSString stringWithFormat: @"Course: %3.0f°", course]];
     [self.altitudeLabel setString:[NSString stringWithFormat: @"Alt: %3.0f'", altitude]];
+    
+//    FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
+//    
+//    if( course >= 0.0 )
+//        [scene setCourseHeading: course];
+    //[self.headingTypeLabel setString:@"Type: "];
+    
+//    double kheading = [self.kalmanHeading get:course];
+//    [self.headingTypeLabel setString:[NSString stringWithFormat:@"kheading: %.f°", kheading]];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
+    
     if (newHeading.headingAccuracy < 0)
         return;
     
@@ -160,6 +185,20 @@
     }
 
     [self.headingLabel setString:[NSString stringWithFormat: @"Heading: %.0f°", theHeading]];
+    
+    FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
+    
+    double avgHeading = [self.headingRunningAvg get:theHeading];
+    [self.headingTypeLabel setString:[NSString stringWithFormat:@"AvgHdng: %.f°", avgHeading]];
+    
+    if( avgHeading >= 0.0 )
+        [scene setCourseHeading:avgHeading];
+    
+//    double kheading = [self.kalmanHeading get:theHeading];
+//    [self.headingTypeLabel setString:[NSString stringWithFormat:@"kheading: %.f°", kheading]];
+//    if( kheading >= 0.0 )
+//        [scene setCourseHeading:kheading];
+    
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
@@ -187,6 +226,7 @@
 
     NSLog(@"Going away ...");
     [_locationManager stopUpdatingLocation];
+    [_locationManager stopUpdatingHeading];
 }
 
 /**

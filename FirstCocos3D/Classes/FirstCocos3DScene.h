@@ -8,9 +8,17 @@
 
 
 #import "CC3Scene.h"
+#import "CC3ResourceNode.h"
 
 /** A sample application-specific CC3Scene subclass.*/
 @interface FirstCocos3DScene : CC3Scene {
-}
+    
+    CGPoint touchDownPoint;
+    double prevCourse;
+
+};
+
+@property (strong, nonatomic) CC3ResourceNode* rezNode;
+-(void) setCourseHeading:(double)course;
 
 @end

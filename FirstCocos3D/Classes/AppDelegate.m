@@ -10,7 +10,7 @@
 #import "FirstCocos3DLayer.h"
 #import "CC3CC2Extensions.h"
 
-#define kAnimationFrameRate		60		// Animation frame rate
+#define kAnimationFrameRate		30		// Animation frame rate
 
 
 #if CC3_CC2_RENDER_QUEUE	//================================================================

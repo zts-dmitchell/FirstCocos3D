@@ -36,7 +36,7 @@
     
     if(self.values.count < self.size) {
         
-        NSLog(@"Not ready yet.  Size is %d", self.values.count);
+        NSLog(@"Not ready yet.  Size is %lu", (unsigned long)self.values.count);
         return 0.0;
     }
     

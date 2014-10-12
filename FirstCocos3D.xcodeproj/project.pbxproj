@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5717AF2219DDD31100A29D6B /* KalmanFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5717AF2119DDD31100A29D6B /* KalmanFilter.m */; };
 		57628F7719C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */; };
-		57AB956519BD7C8A00E8F107 /* Exportable Body - Ford Highboy - 01.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57AB956419BD7C8A00E8F107 /* Exportable Body - Ford Highboy - 01.pod */; };
-		57B2345719D63EB600B492AC /* Exportable Body - Chevrolet HHR - 00.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57B2345619D63EB600B492AC /* Exportable Body - Chevrolet HHR - 00.pod */; };
+		57AD218219DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57AD218019DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod */; };
+		57AD218319DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57AD218119DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod */; };
 		57B2346C19D92B9400B492AC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 57B2346719D92B9400B492AC /* AppDelegate.m */; };
 		57B2347919DA3A0400B492AC /* RunningAverage.m in Sources */ = {isa = PBXBuildFile; fileRef = 57B2347819DA3A0400B492AC /* RunningAverage.m */; };
 		57CAE57819BC18D400665B4C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57CAE57719BC18D400665B4C /* AudioToolbox.framework */; };
@@ -405,9 +406,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5717AF2019DDD2F600A29D6B /* KalmanFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KalmanFilter.h; path = Utils/KalmanFilter.h; sourceTree = "<group>"; };
+		5717AF2119DDD31100A29D6B /* KalmanFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KalmanFilter.m; path = Utils/KalmanFilter.m; sourceTree = "<group>"; };
 		57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Body - Holden Efijy - 01.pod"; path = "Resources/Exportable Body - Holden Efijy - 01.pod"; sourceTree = "<group>"; };
-		57AB956419BD7C8A00E8F107 /* Exportable Body - Ford Highboy - 01.pod */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Exportable Body - Ford Highboy - 01.pod"; sourceTree = "<group>"; };
-		57B2345619D63EB600B492AC /* Exportable Body - Chevrolet HHR - 00.pod */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Exportable Body - Chevrolet HHR - 00.pod"; sourceTree = "<group>"; };
+		57AD218019DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Body - Ford Highboy - 01.pod"; path = "Resources/Exportable Body - Ford Highboy - 01.pod"; sourceTree = "<group>"; };
+		57AD218119DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Body - Chevrolet HHR - 00.pod"; path = "Resources/Exportable Body - Chevrolet HHR - 00.pod"; sourceTree = "<group>"; };
 		57B2346619D92B9400B492AC /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
 		57B2346719D92B9400B492AC /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; };
 		57B2347719DA39ED00B492AC /* RunningAverage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RunningAverage.h; sourceTree = "<group>"; };
@@ -1156,6 +1159,8 @@
 			children = (
 				57B2347719DA39ED00B492AC /* RunningAverage.h */,
 				57B2347819DA3A0400B492AC /* RunningAverage.m */,
+				5717AF2019DDD2F600A29D6B /* KalmanFilter.h */,
+				5717AF2119DDD31100A29D6B /* KalmanFilter.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -1228,9 +1233,9 @@
 		57CAE59319BC18D400665B4C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				57B2345619D63EB600B492AC /* Exportable Body - Chevrolet HHR - 00.pod */,
+				57AD218019DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod */,
+				57AD218119DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod */,
 				57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */,
-				57AB956419BD7C8A00E8F107 /* Exportable Body - Ford Highboy - 01.pod */,
 				57CAE59419BC18D400665B4C /* hello-world.pod */,
 				57CAE59D19BC18D400665B4C /* Info.plist */,
 				57CAE5C419BC18D400665B4C /* fps_images.png */,
@@ -2646,6 +2651,11 @@
 			attributes = {
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "David Mitchell";
+				TargetAttributes = {
+					57CAE57319BC18D400665B4C = {
+						DevelopmentTeam = 4862G6A66A;
+					};
+				};
 			};
 			buildConfigurationList = 57CAE56F19BC18D400665B4C /* Build configuration list for PBXProject "FirstCocos3D" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2708,11 +2718,12 @@
 				57CAE59519BC18D400665B4C /* hello-world.pod in Resources */,
 				57CAE5D119BC18D400665B4C /* CC3LibDualSidedFragmentColor.fsh in Resources */,
 				57CAE62319BC18D400665B4C /* CC3LibVertexPositionRigidBones.vsh in Resources */,
+				57AD218219DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod in Resources */,
 				57CAE60B19BC18D400665B4C /* CC3LibBumpMapTangentSpaceLighting.vsh in Resources */,
 				57CAE61D19BC18D400665B4C /* CC3LibVertexPositionBones.vsh in Resources */,
 				57CAE5A219BC18D400665B4C /* Icon-29@2x.png in Resources */,
+				57AD218319DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod in Resources */,
 				57CAE5FE19BC18D400665B4C /* CC3PointSpritesAlphaTest.fsh in Resources */,
-				57B2345719D63EB600B492AC /* Exportable Body - Chevrolet HHR - 00.pod in Resources */,
 				57CAE5EA19BC18D400665B4C /* CC3BumpMapTangentSpace.fsh in Resources */,
 				57CAE5A019BC18D400665B4C /* Icon-29.png in Resources */,
 				57CAE5A619BC18D400665B4C /* Icon-40@2x.png in Resources */,
@@ -2739,7 +2750,6 @@
 				57CAE5E319BC18D400665B4C /* CC3LibTexturedPointSprite.fsh in Resources */,
 				57CAE60D19BC18D400665B4C /* CC3LibCameraPosition.vsh in Resources */,
 				57CAE5EC19BC18D400665B4C /* CC3BumpMapTangentSpaceAlphaTest.fsh in Resources */,
-				57AB956519BD7C8A00E8F107 /* Exportable Body - Ford Highboy - 01.pod in Resources */,
 				57CAE5F619BC18D400665B4C /* CC3NoTextureAlphaTest.fsh in Resources */,
 				57CAE5DB19BC18D400665B4C /* CC3LibSingleSidedFragmentColor.fsh in Resources */,
 				57CAE5B619BC18D400665B4C /* Icon-72@2x.png in Resources */,
@@ -2776,6 +2786,7 @@
 				57CAE59219BC18D400665B4C /* FirstCocos3DScene.m in Sources */,
 				57CAE58F19BC18D400665B4C /* FirstCocos3DLayer.m in Sources */,
 				57B2347919DA3A0400B492AC /* RunningAverage.m in Sources */,
+				5717AF2219DDD31100A29D6B /* KalmanFilter.m in Sources */,
 				57CAE59C19BC18D400665B4C /* main.m in Sources */,
 				57B2346C19D92B9400B492AC /* AppDelegate.m in Sources */,
 			);

@@ -40,6 +40,8 @@
  */
 -(void) initializeScene {
 
+    self->prevCourse = 0.0;
+    
 	// Optionally add a static solid-color, or textured, backdrop, by uncommenting one of these lines.
 //	self.backdrop = [CC3Backdrop nodeWithColor: ccc4f(0.4, 0.5, 0.9, 1.0)];
 //	self.backdrop = [CC3Backdrop nodeWithTexture: [CC3Texture textureFromFile: @"Default.png"]];
@@ -62,7 +64,7 @@
 	// or extract only specific nodes from the resource to add them directly to the scene,
 	// instead of adding the entire contents.
 	//CC3ResourceNode* rezNode = [CC3PODResourceNode nodeFromFile: @"hello-world.pod"];
-    //CC3ResourceNode* rezNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Ford Highboy - 01.pod"];
+    //self.rezNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Ford Highboy - 01.pod"];
     //CC3ResourceNode* rezNode =
      //[CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
     
@@ -70,9 +72,9 @@
     //CC3Vector rot = cc3v(0, 500,0);
     //[transform rotateBy:rot];
     
-	CC3ResourceNode* rezNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Chevrolet HHR - 00.pod"];
+	self.rezNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Chevrolet HHR - 00.pod"];
     
-	[self addChild: rezNode];
+	[self addChild: self.rezNode];
 	
 	// Or, if you don't need to modify the resource node at all before adding its content,
 	// you can simply use the following as a shortcut, instead of the previous lines.
@@ -168,7 +170,7 @@
 	//[helloTxt runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 30, 0)]];
 	//[rearAxle runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 30, 0)]];
     
-    NSArray* children = rezNode.children;
+    NSArray* children = self.rezNode.children;
     
     for(int i=0; i<children.count; ++i) {
         
@@ -177,7 +179,8 @@
         
         NSLog(@"The structure of this scene is: %@", [n name]);
         
-        [n runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 15, 0)]];
+        //[n runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 15, 0)]];
+        //[n runAction: [CC3ActionRotateBy actionWithDuration:5.0 rotateBy:cc3v(0, 180+18, 0)]  ];
     }
 	
 	// To make things a bit more appealing, set up a repeating up/down cycle to
@@ -345,7 +348,7 @@
 
 	// Move the camera to frame the scene. The resulting configuration of the camera is output as
 	// an [info] log message, so you know where the camera needs to be in order to view your scene.
-	[self.activeCamera moveWithDuration: 3.0 toShowAllOf: self withPadding: 0.5f];
+	[self.activeCamera moveWithDuration: 1.0 toShowAllOf: self withPadding: 0.1f];
 
 	// Uncomment this line to draw the bounding box of the scene.
 //	self.shouldDrawWireframeBox = YES;
@@ -430,14 +433,75 @@
  */
 -(void) touchEvent: (uint) touchType at: (CGPoint) touchPoint {
 
-    // Uncomment this line to draw the bounding box of the scene.
-    	self.shouldDrawWireframeBox = NO;
-    // Displays bounding boxes around those nodes with local content (eg- meshes).
-    	self.shouldDrawAllLocalContentWireframeBoxes = NO;
+    if( touchType == 0 ) {
+        touchDownPoint = touchPoint;
+        return;
+    }
     
-    // Displays bounding boxes around all nodes. The bounding box for each node
-    // will encompass its child nodes.
-    	self.shouldDrawAllWireframeBoxes = NO;
+    int direction = touchDownPoint.x > touchPoint.x ? -1 : 1;
+    CGFloat distance = abs(touchDownPoint.x - touchPoint.x) * direction;
+    
+    NSLog(@"x1 = %f, x2 = %f, d = %f", touchDownPoint.x, touchPoint.x, distance);
+    
+    NSArray* children = self.rezNode.children;
+    
+    //[self setCourseHeading:distance];
+    
+    for(int i=0; i<children.count; ++i) {
+        
+        id node = children[i];
+        CC3MeshNode* n = node;
+        
+        //NSLog(@"The structure of this scene is: %@", [n name]);
+        
+        
+        //[n runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 15, 0)]];
+        [n runAction: [CC3ActionRotateBy actionWithDuration:0.25 rotateBy:cc3v(0, distance, 0)]  ];
+        
+    }
+}
+
+-(void) setCourseHeading:(double)course {
+
+    NSArray* children = self.rezNode.children;
+    
+    [self doDraw:children withCourse:course];
+}
+
+-(void) doDraw:(NSArray*)children withCourse:(double)course {
+    
+    if(course == 0.0 || course == prevCourse)
+        return;
+
+    double dir = course > prevCourse ? -1 : 1;
+    
+    // c == 359
+    // pc == 1
+    // r = c - pc
+    double rotation = abs(course - prevCourse) * dir;
+    NSLog(@"Rotated %.0f°", rotation);
+    
+    dir = rotation;
+    
+    for(int i=0; i<children.count; ++i) {
+        
+        id node = children[i];
+        CC3MeshNode* n = node;
+        
+//        if( n.children.count > 0 )
+//            [self doDraw:n.children withCourse:course];
+//        else
+//            [n runAction: [CC3ActionRotateTo actionWithDuration:5.0 rotateTo:cc3v(course, course, course)]  ];
+        //NSLog(@"The structure of this scene is: %@", [n name]);
+        
+        
+        [n rotateByAngle:dir aroundAxis:cc3v(0, 1, 0)];
+        //[n runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 15, 0)]];
+        //[n runAction: [CC3ActionRotateBy actionWithDuration:0.25 rotateBy:cc3v(0, dir, 0)]  ];
+        //[n runAction: [CC3ActionRotateTo actionWithDuration:0.0 rotateTo:cc3v(0, course, 0)]  ];
+    }
+    
+    self->prevCourse = course;
 }
 
 /**
