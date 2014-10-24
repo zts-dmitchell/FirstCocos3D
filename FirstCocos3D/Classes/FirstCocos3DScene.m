@@ -71,20 +71,19 @@
     //CC3ResourceNode* rezNode =
      //[CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
     
-    //CC3Matrix* transform = [rezNode globalTransformMatrix];
-    //CC3Vector rot = cc3v(0, 500,0);
-    //[transform rotateBy:rot];
-    
 	self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Chevrolet HHR - 00.pod"];
 	[self addChild: self.bodyNode];
     
-//    self.rearWheelsNode = [CC3PODResourceNode nodeFromFile:@"Exportable Rear Wheels - Chevrolet HHR - 00.pod"];
-//    self.rearWheelsNode.name = @"RearWheels";
-//    [self.rearWheelsNode translateBy:cc3v(0.0, -1.0, 0.0)];
-//    [self.rearWheelsNode translateBy:cc3v(0.0, 0.0, 10.0)];
-//    
-//
-//    [self.bodyNode addChild: self.rearWheelsNode];
+    self.rearWheelsNode = [CC3PODResourceNode nodeFromFile:@"Exportable Rear Wheels - Chevrolet HHR - 00.pod"];
+    self.rearWheelsNode.name = @"RearWheels";
+    [self.rearWheelsNode translateBy:cc3v(0.0, -0.8, -3.9)];
+    [self.bodyNode addChild: self.rearWheelsNode];
+    
+    self.frontWheelsNode = [CC3PODResourceNode nodeFromFile:@"Exportable Front Wheels - Chevrolet HHR - 00.pod"];
+    self.frontWheelsNode.name = @"FrontWheels";
+    [self.frontWheelsNode translateBy:cc3v(0.0, -0.8, 4.1)];
+    [self.bodyNode addChild: self.frontWheelsNode];
+    
 	
 	// Or, if you don't need to modify the resource node at all before adding its content,
 	// you can simply use the following as a shortcut, instead of the previous lines.
@@ -179,21 +178,7 @@
 	//CC3MeshNode* rearAxle = (CC3MeshNode*)[self getNodeNamed: @"Front Hood"];
 	//[helloTxt runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 30, 0)]];
 	//[rearAxle runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 30, 0)]];
-    
-    NSArray* children = self.rearWheelsNode.children;
-    
-    for(int i=0; i<children.count; ++i) {
-        
-        id node = children[i];
-        CC3MeshNode* n = node;
-        
-        NSLog(@"The structure of this scene is: %@", [n name]);
-        
-        //[n runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(15, 0, 0)]];
-        //[n runAction: [CC3ActionRotateBy actionWithDuration:5.0 rotateBy:cc3v(0, 180+18, 0)]  ];
-    }
 	
-
 	// To make things a bit more appealing, set up a repeating up/down cycle to
 	// change the color of the text from the original red to blue, and back again.
     /*
@@ -452,103 +437,24 @@
     }
 
     self.layer->bIsCourse = !self.layer->bIsCourse;
-    
-    NSLog(@"Is now by course? %d", self.layer->bIsCourse == TRUE);
-    
-//    int direction = touchDownPoint.x > touchPoint.x ? -1 : 1;
-//    CGFloat distance = abs(touchDownPoint.x - touchPoint.x) * direction;
-//    
-//    NSLog(@"x1 = %f, x2 = %f, d = %f", touchDownPoint.x, touchPoint.x, distance);
-//    
-//    [self setCourseHeading:distance withSpeed:50.0];
 }
 
 -(void) setCourseHeading:(double)course withSpeed:(double)speed {
 
     [self doDraw:self.bodyNode.children withCourse:course withSpeed:speed];
-    //[self doDraw:self.rearWheelsNode.children withCourse:course withSpeed:speed];
 }
 
 -(void) doDraw:(NSArray*)children withCourse:(double)course withSpeed:(double) speed {
     
     if(course == 0.0 || course == prevCourse)
         return;
+    
+    [self.bodyNode runAction: [CC3ActionRotateTo actionWithDuration:0.5 rotateTo:cc3v(0, course, 0)]];
 
-    double dir = course > prevCourse ? -1 : 1;
-    double rotation = abs(course - prevCourse) * dir;
-    NSLog(@"Rotated %.0f°", rotation);
-    
-    dir = rotation;
-
-    GLfloat angle = self.bodyNode.rotationAngle;
-    
-    dir = angle - course;
-    
-    if( abs(dir) > 180 ) {
-        dir -= 360 - abs(dir);
-        NSLog(@"Corrected: %f", dir);
-    }
-    
-    [self.bodyNode runAction: [CC3ActionRotateTo actionWithDuration:0.5 rotateTo:cc3v(0, course, 0)]  ];
-
-    //[self.bodyNode rotateByAngle:dir aroundAxis:cc3v(0, 1, 0)];
-
-    NSLog(@"RA: %f, Course: %f, Correct by: %f", angle, course, dir);
-    
-    //CCNode* n2 = self.bodyNode;
-    //[n2 setAnchorPoint(cc3(1.0,10.0))];
-    
     self->prevCourse = course;
     
-    return ;
-    
-    for(int i=0; i<children.count; ++i) {
-        
-        id node = children[i];
-        CC3MeshNode* n = node;
-        
-        
-//        if( n.children.count > 0 )
-//            [self doDraw:n.children withCourse:course];
-//        else
-//            [n runAction: [CC3ActionRotateTo actionWithDuration:5.0 rotateTo:cc3v(course, course, course)]  ];
-//        NSLog(@"The structure of this scene is: %@", [n name]);
-        
-        [n rotateByAngle:dir aroundAxis:cc3v(0, 1, 0)];
-        
-        //if( speed != -1.0 )
-        //    [n runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(speed * 10.0, 0, 0)]];
-        //[n runAction: [CC3ActionRotateBy actionWithDuration:0.25 rotateBy:cc3v(0, dir, 0)]  ];
-        //[n runAction: [CC3ActionRotateTo actionWithDuration:0.0 rotateTo:cc3v(0, course, 0)]  ];
-        
-//        if( [[n name] caseInsensitiveCompare:@"Muffler"] == NSOrderedSame ) {
-//            NSLog(@"They're equal");
-//            
-//            //[n rotateByAngle:dir aroundAxis:cc3v(speed * 100, 0, 0)];
-//            CC3Vector location = [n location];
-//            
-//            n.location = cc3v(0, 5.0, 0);
-//            [n runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(speed * 100.0, 0, 0)]];
-//            //[n rotateBy:cc3v(speed * 100.0, 0, 0)];
-//            n.location = location;
-//            
-//        }
-    }
-    
-//    if(speed != -1.0) {
-//        CC3MeshNode* node = self.rearWheelsNode.children[0];
-//        
-//        //[node translateBy:cc3v(0.0, -1.0, -16.0)];
-//        //[self.rearWheelsNode translateBy:cc3v(0.0, 0.0, -16.0)];
-//
-//        //[self.rearWheelsNode rotateByAngle:dir aroundAxis:cc3v(speed * 100, 0, 0)];
-//        //[node runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(speed * 100.0, 0, 0)]];
-//        [self.rearWheelsNode runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(speed * 100.0, 0, 0)]];
-//        
-//        //[self.rearWheelsNode translateBy:cc3v(0.0, 0.0, 16.0)];
-//    }
-    
-    self->prevCourse = course;
+    [self.frontWheelsNode runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(-30.0 * speed, 0.0, 0.0)]];
+    [self.rearWheelsNode runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(-30.0 * speed, 0.0, 0.0)]];
 }
 
 /**

@@ -21,6 +21,7 @@
 @property (strong, nonatomic) CCLabelTTF *headingLabel;
 @property (strong, nonatomic) CCLabelTTF *headingTypeLabel;
 @property (strong, nonatomic) CLLocationManager *locationManager;
+@property (nonatomic) CLLocationSpeed speed;
 @property (strong, nonatomic) RunningAverage *runningAvg;
 @property (strong, nonatomic) RunningAverage *headingRunningAvg;
 @property (strong, nonatomic) KalmanFilter *kalmanHeading;
@@ -113,7 +114,7 @@
         oldLocation = nil;
     }
     
-    CLLocationSpeed speed = [newLocation speed];
+    self.speed = [newLocation speed];
     CLLocationDistance altitude = [newLocation altitude] * 3.2808399; // Convert meters to feet
     CLLocationDirection course = [newLocation course];
     
@@ -121,20 +122,20 @@
     //NSTimeInterval sinceLastUpdate = [newLocation.timestamp timeIntervalSinceDate:oldLocation.timestamp];
     //double calculatedSpeed = distanceChange / sinceLastUpdate;
     
-    if( speed <= 0.0 ) {
-        speed = 0.0;
+    if( self.speed <= 0.0 ) {
+        self.speed = 0.0;
     }
     else {
-        speed *= 2.23694; // Convert KPH to MPH
+        self.speed *= 2.23694; // Convert KPH to MPH
     }
     
-    double average = [self.runningAvg get:speed];
+    double average = [self.runningAvg get:self.speed];
     //double kspeed = [self.kalmanSpeed get:speed];
     
     //NSLog(@"didUpdateToLocation %@ from %@. MPH %f. Avg %f. Altitude: %.2f\"",
     //      newLocation, oldLocation, speed, average, altitude);
     
-    [self.mphLabel setString:[NSString stringWithFormat:@"Speed: %3.0f MPH, Avg: %3.0f MPH", speed, average]];
+    [self.mphLabel setString:[NSString stringWithFormat:@"Speed: %3.0f MPH, Avg: %3.0f MPH", self.speed, average]];
     
     if( course == -1 )
         [self.courseLabel setString:@"Course: N/A"];
@@ -146,7 +147,7 @@
         FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
     
         if( course >= 0.0 )
-            [scene setCourseHeading: course withSpeed:speed];
+            [scene setCourseHeading: course withSpeed:self.speed];
     //[self.headingTypeLabel setString:@"Type: "];
     
         [self.headingTypeLabel setString:[NSString stringWithFormat:@"Course: %.f°", course]];
@@ -204,7 +205,7 @@
 //        [scene setCourseHeading:avgHeading];
     
         if( theHeading >= 0.0 ) {
-            [scene setCourseHeading:theHeading withSpeed:100.0];
+            [scene setCourseHeading:theHeading withSpeed:self.speed];
             [self.headingTypeLabel setString:[NSString stringWithFormat:@"Heading: %.f°", theHeading]];
         }
     }

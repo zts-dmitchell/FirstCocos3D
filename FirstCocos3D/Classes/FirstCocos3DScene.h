@@ -21,6 +21,7 @@
 };
 
 @property (strong, nonatomic) CC3ResourceNode* bodyNode;
+@property (strong, nonatomic) CC3ResourceNode* frontWheelsNode;
 @property (strong, nonatomic) CC3ResourceNode* rearWheelsNode;
 @property (strong, nonatomic) FirstCocos3DLayer* layer;
 -(void) setCourseHeading:(double)course withSpeed:(double) speed;
