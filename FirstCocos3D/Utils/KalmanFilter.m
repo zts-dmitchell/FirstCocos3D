@@ -14,9 +14,14 @@
 
 -(id) init {
     
-    // Starting values
-    [self reset];
+    self = [super init];
     
+    if(self) {
+        
+    
+        // Starting values
+        [self reset];
+    }
     return self;
 }
 

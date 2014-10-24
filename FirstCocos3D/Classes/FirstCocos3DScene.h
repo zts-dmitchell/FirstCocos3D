@@ -9,16 +9,20 @@
 
 #import "CC3Scene.h"
 #import "CC3ResourceNode.h"
+#import "FirstCocos3DLayer.h"
 
 /** A sample application-specific CC3Scene subclass.*/
 @interface FirstCocos3DScene : CC3Scene {
     
     CGPoint touchDownPoint;
     double prevCourse;
+    
 
 };
 
-@property (strong, nonatomic) CC3ResourceNode* rezNode;
--(void) setCourseHeading:(double)course;
+@property (strong, nonatomic) CC3ResourceNode* bodyNode;
+@property (strong, nonatomic) CC3ResourceNode* rearWheelsNode;
+@property (strong, nonatomic) FirstCocos3DLayer* layer;
+-(void) setCourseHeading:(double)course withSpeed:(double) speed;
 
 @end

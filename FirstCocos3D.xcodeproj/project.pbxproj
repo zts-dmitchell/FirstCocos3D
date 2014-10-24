@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5717AF2219DDD31100A29D6B /* KalmanFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5717AF2119DDD31100A29D6B /* KalmanFilter.m */; };
+		572373B319EA38DC00C3CA17 /* Exportable Rear Wheels - Chevrolet HHR - 00.pod in Resources */ = {isa = PBXBuildFile; fileRef = 572373B219EA38DC00C3CA17 /* Exportable Rear Wheels - Chevrolet HHR - 00.pod */; };
 		57628F7719C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */; };
 		57AD218219DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57AD218019DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod */; };
 		57AD218319DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57AD218119DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod */; };
@@ -408,6 +409,7 @@
 /* Begin PBXFileReference section */
 		5717AF2019DDD2F600A29D6B /* KalmanFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KalmanFilter.h; path = Utils/KalmanFilter.h; sourceTree = "<group>"; };
 		5717AF2119DDD31100A29D6B /* KalmanFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KalmanFilter.m; path = Utils/KalmanFilter.m; sourceTree = "<group>"; };
+		572373B219EA38DC00C3CA17 /* Exportable Rear Wheels - Chevrolet HHR - 00.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Rear Wheels - Chevrolet HHR - 00.pod"; path = "Resources/Exportable Rear Wheels - Chevrolet HHR - 00.pod"; sourceTree = "<group>"; };
 		57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Body - Holden Efijy - 01.pod"; path = "Resources/Exportable Body - Holden Efijy - 01.pod"; sourceTree = "<group>"; };
 		57AD218019DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Body - Ford Highboy - 01.pod"; path = "Resources/Exportable Body - Ford Highboy - 01.pod"; sourceTree = "<group>"; };
 		57AD218119DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Body - Chevrolet HHR - 00.pod"; path = "Resources/Exportable Body - Chevrolet HHR - 00.pod"; sourceTree = "<group>"; };
@@ -1233,6 +1235,7 @@
 		57CAE59319BC18D400665B4C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				572373B219EA38DC00C3CA17 /* Exportable Rear Wheels - Chevrolet HHR - 00.pod */,
 				57AD218019DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod */,
 				57AD218119DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod */,
 				57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */,
@@ -2720,6 +2723,7 @@
 				57CAE62319BC18D400665B4C /* CC3LibVertexPositionRigidBones.vsh in Resources */,
 				57AD218219DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod in Resources */,
 				57CAE60B19BC18D400665B4C /* CC3LibBumpMapTangentSpaceLighting.vsh in Resources */,
+				572373B319EA38DC00C3CA17 /* Exportable Rear Wheels - Chevrolet HHR - 00.pod in Resources */,
 				57CAE61D19BC18D400665B4C /* CC3LibVertexPositionBones.vsh in Resources */,
 				57CAE5A219BC18D400665B4C /* Icon-29@2x.png in Resources */,
 				57AD218319DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod in Resources */,

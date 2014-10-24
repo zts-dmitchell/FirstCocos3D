@@ -66,8 +66,12 @@
     self.headingTypeLabel.position = ccp(0.8f, 0.025f);
     [self addChild:self.headingTypeLabel];
     
-    
+
     // new shit
+    bIsCourse = TRUE;
+    FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
+    scene.layer = self;
+    
     self.runningAvg = [[RunningAverage alloc] initWithAvgLength:2];
     self.headingRunningAvg = [[RunningAverage alloc] initWithAvgLength:2];
     self.kalmanHeading = [[KalmanFilter alloc] init];
@@ -138,14 +142,18 @@
         [self.courseLabel setString:[NSString stringWithFormat: @"Course: %3.0f°", course]];
     [self.altitudeLabel setString:[NSString stringWithFormat: @"Alt: %3.0f'", altitude]];
     
-//    FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
-//    
-//    if( course >= 0.0 )
-//        [scene setCourseHeading: course];
+    if( bIsCourse ) {
+        FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
+    
+        if( course >= 0.0 )
+            [scene setCourseHeading: course withSpeed:speed];
     //[self.headingTypeLabel setString:@"Type: "];
     
-//    double kheading = [self.kalmanHeading get:course];
-//    [self.headingTypeLabel setString:[NSString stringWithFormat:@"kheading: %.f°", kheading]];
+        [self.headingTypeLabel setString:[NSString stringWithFormat:@"Course: %.f°", course]];
+    }
+    
+    //double kheading = [self.kalmanHeading get:course];
+    //[self.headingTypeLabel setString:[NSString stringWithFormat:@"kheading: %.f°", kheading]];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
@@ -186,14 +194,20 @@
 
     [self.headingLabel setString:[NSString stringWithFormat: @"Heading: %.0f°", theHeading]];
     
-    FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
+    if( ! bIsCourse ) {
+        FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
+//    
+//    double avgHeading = [self.headingRunningAvg get:theHeading];
+//    [self.headingTypeLabel setString:[NSString stringWithFormat:@"AvgHdng: %.f°", avgHeading]];
     
-    double avgHeading = [self.headingRunningAvg get:theHeading];
-    [self.headingTypeLabel setString:[NSString stringWithFormat:@"AvgHdng: %.f°", avgHeading]];
+//    if( avgHeading >= 0.0 )
+//        [scene setCourseHeading:avgHeading];
     
-    if( avgHeading >= 0.0 )
-        [scene setCourseHeading:avgHeading];
-    
+        if( theHeading >= 0.0 ) {
+            [scene setCourseHeading:theHeading withSpeed:100.0];
+            [self.headingTypeLabel setString:[NSString stringWithFormat:@"Heading: %.f°", theHeading]];
+        }
+    }
 //    double kheading = [self.kalmanHeading get:theHeading];
 //    [self.headingTypeLabel setString:[NSString stringWithFormat:@"kheading: %.f°", kheading]];
 //    if( kheading >= 0.0 )
@@ -205,6 +219,7 @@
 {
     NSLog(@"Failed with: %@", error.localizedDescription);
 }
+
 
 #pragma mark End of my shit
 #pragma mark Updating layer
@@ -242,5 +257,6 @@
 	[self handleTouch: touch ofType: kCCTouchMoved];
 }
  */
+
 
 @end

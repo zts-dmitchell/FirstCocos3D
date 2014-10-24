@@ -13,17 +13,21 @@
 
 -(id) initWithAvgLength:(int) size {
  
-    if( self.values != nil ) {
-        NSLog(@"Already initialized!!");
-        return self;
+    self = [super init];
+    
+    if(self) {
+        
+        if( self.values != nil ) {
+            NSLog(@"Already initialized!!");
+            return self;
+        }
+    
+        self.size = size;
+    
+        NSLog(@"Initializing with %d", size);
+    
+        self.values = [[NSMutableArray alloc] initWithCapacity:size];
     }
-    
-    self.size = size;
-    
-    NSLog(@"Initializing with %d", size);
-    
-    self.values = [[NSMutableArray alloc] initWithCapacity:size];
-    
     return self;
 }
 
