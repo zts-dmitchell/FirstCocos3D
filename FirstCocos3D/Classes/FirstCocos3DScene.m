@@ -19,15 +19,16 @@
 @implementation FirstCocos3DScene
 
 #pragma mark Global Variables
-CGFloat gMaxPitchDegrees = 1.6;
+const CGFloat gMaxPitchDegrees = 1.6;
+const CGFloat gPitchIncrentBy = 1.0;
 CGFloat gCurrentPitch = 0.0;
-CGFloat gPitchIncrentBy = 1.0;
+CGFloat gPitchOffset = 0.0;
 
-CGFloat gMaxRollDegrees = 20.0;
+const CGFloat gMaxRollDegrees = 20.0;
+const CGFloat gRollIncrementBy = 1.0;
 CGFloat gCurrentRoll = 0.0;
-CGFloat gRollIncrementBy = 1.0;
 
-CGFloat gMaxWheelTurn = 30.0;
+const CGFloat gMaxWheelTurn = 30.0;
 CGFloat gCurrentTurn = 0.0;
 
 #pragma mark End Global Variables
@@ -207,61 +208,20 @@ CGFloat gCurrentTurn = 0.0;
 	
 	// If you encounter issues creating and adding nodes, or loading models from
 	// files, the following line is used to log the full structure of the scene.
-	LogInfo(@"The structure of this scene is: %@", [self structureDescription]);
+	//LogInfo(@"The structure of this scene is: %@", [self structureDescription]);
 	
 	// ------------------------------------------
-
 	// And to add some dynamism, we'll animate the 'hello, world' message
 	// using a couple of actions...
-	
-	// Fetch the 'hello, world' object that was loaded from the POD file and start it rotating
-	//CC3MeshNode* helloTxt = (CC3MeshNode*)[self getNodeNamed: @"Hello"];
-	///CC3MeshNode* helloTxt = (CC3MeshNode*)[self getNodeNamed: @"Main Body"];
-	//CC3MeshNode* rearAxle = (CC3MeshNode*)[self getNodeNamed: @"Front Hood"];
-	//[helloTxt runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 30, 0)]];
-	//[rearAxle runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(0, 30, 0)]];
-	
-	// To make things a bit more appealing, set up a repeating up/down cycle to
-	// change the color of the text from the original red to blue, and back again.
-    /*
-	GLfloat tintTime = 8.0f;
-	CCColorRef startColor = helloTxt.color;
-	CCColorRef endColor = CCColorRefFromCCC4F(ccc4f(0.2, 0.0, 0.8, 1.0));
-	CCActionInterval* tintDown = [CCActionTintTo actionWithDuration: tintTime color: endColor];
-	CCActionInterval* tintUp   = [CCActionTintTo actionWithDuration: tintTime color: startColor];
-	[helloTxt runAction: [[CCActionSequence actionOne: tintDown two: tintUp] repeatForever]];
-     */
-	//[rearAxle runAction: [[CCActionSequence actionOne: tintDown two: tintUp] repeatForever]];
     
-//    // new shit
-//    self.locationManager = [[CLLocationManager alloc] init];
-//    self.locationManager.delegate = self;
-//    
-//    // This location manager will be used to collect RSSI samples from the targeted beacon.
-//    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-//    self.locationManager.distanceFilter = kCLDistanceFilterNone;
-//    //[self.locationManager requestAlwaysAuthorization];
-//
-////    int score = 7770;
-////    scorelabel = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"score: %d",score] fontName:@"Verdana-Bold" fontSize:18.0f];
-////    scorelabel.positionType = CCPositionTypeNormalized;
-////    scorelabel.position = ccp(0.0f, 0.96f);
-////    [self addChild:scorelabel];
-////
-////    CC3Node *parent = [self parent];
-////    [parent addChild:scorelabel];
-//    
-//    [self.locationManager startUpdatingLocation];
-//
+    [self adjustPitch:false];
+	
 }
 
 -(CC3Node*) wheelFromNode:(NSString*) nodeName {
     
     CC3Node* node = [self.wheelEmpty getNodeNamed:nodeName];
     [node addAxesDirectionMarkers];
-    
-    //[self.bodyNode removeChild:node];
-    //[self addChild:node];
     
     //node.shouldDrawDescriptor = YES;
     [self printLocation:node.location withName: node.name];
@@ -272,66 +232,6 @@ CGFloat gCurrentTurn = 0.0;
     
     NSLog(@"%@: x: %f, y: %f, z: %f", info, position.x, position.y, position.z);
 }
-
-//-(void) storeLayer:(FirstCocos3DLayer*) layer {
-//    self.layer = layer;
-//}
-
-//#pragma mark - My Shit
-//
-//-(void)locationManager:(CLLocationManager *)manager
-//   didUpdateToLocation:(CLLocation *)newLocation
-//          fromLocation:(CLLocation *)oldLocation
-//{
-//    [self locationManager:manager didUpdateToLocation:newLocation fromLocation:oldLocation];
-//    
-//    // Uncomment this line to draw the bounding box of the scene.
-//    self.shouldDrawWireframeBox = YES;
-//    // Displays bounding boxes around those nodes with local content (eg- meshes).
-//    self.shouldDrawAllLocalContentWireframeBoxes = YES;
-//    
-//    // Displays bounding boxes around all nodes. The bounding box for each node
-//    // will encompass its child nodes.
-//    self.shouldDrawAllWireframeBoxes = YES;
-//}
-//
-//-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
-//    
-//    CLLocation *newLocation = [locations lastObject];
-//    CLLocation *oldLocation;
-//    if (locations.count > 1) {
-//        oldLocation = [locations objectAtIndex:locations.count-2];
-//    } else {
-//        oldLocation = nil;
-//    }
-//    CLLocationSpeed speed = [newLocation speed];
-//    
-//    CLLocationDistance distanceChange = [newLocation distanceFromLocation:oldLocation];
-//    NSTimeInterval sinceLastUpdate = [newLocation.timestamp timeIntervalSinceDate:oldLocation.timestamp];
-//    double calculatedSpeed = distanceChange / sinceLastUpdate;
-//
-//    NSLog(@"didUpdateToLocation %@ from %@. MPH %f. MPH %f",
-//          newLocation, oldLocation, speed*2.23694, calculatedSpeed*2.23694);
-//
-//    CC3MeshNode* node = [self getMeshNodeNamed:@"score"];
-//    
-//    
-//  //  MKCoordinateRegion userLocation = MKCoordinateRegionMakeWithDistance(newLocation.coordinate, 1500.0, 1500.0);
-// //   [regionsMapView setRegion:userLocation animated:YES];
-//}
-//
-//-(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
-//
-//{
-//    // Uncomment this line to draw the bounding box of the scene.
-//    self.shouldDrawWireframeBox = YES;
-//    // Displays bounding boxes around those nodes with local content (eg- meshes).
-//    self.shouldDrawAllLocalContentWireframeBoxes = YES;
-//    
-//    // Displays bounding boxes around all nodes. The bounding box for each node
-//    // will encompass its child nodes.
-//    self.shouldDrawAllWireframeBoxes = YES;
-//}
 
 /**
  * By populating this method, you can add add additional scene content dynamically and
@@ -558,25 +458,44 @@ CGFloat gCurrentTurn = 0.0;
             
         } else {
     
-            self.layer->bIsCourse = !self.layer->bIsCourse;
-
             if(widthSection == -1) {
-
+                
+                self.layer->bIsCourse = !self.layer->bIsCourse;
+                NSLog(@"bIsCourse: %d", self.layer->bIsCourse);
             }
             else if(widthSection == 0) {
 
+                [self adjustPitch:true];
+                //gPitchOffset = 0.0;
+                //NSLog(@"Resetting gPitchOffset to 0");
             }
             else {
                 
+                [self adjustPitch:false];
+                //const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
+                //gPitchOffset = acceleration.z * 10;
+                //NSLog(@"Setting gPitchOffset to %f", gPitchOffset);
             }
 
         }
 
     }
-//    if( touchType == 0 ) {
-//        self.layer->bIsCourse = !self.layer->bIsCourse;
-//        touchDownPoint = touchPoint;
-//    }
+}
+
+-(void) adjustPitch:(BOOL) reset {
+    
+    if(reset) {
+        
+        gPitchOffset = 0.0;
+        NSLog(@"Resetting gPitchOffset to 0");
+    } else {
+        
+        const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
+        
+        gPitchOffset = acceleration.z * 10;
+        
+        NSLog(@"Setting gPitchOffset to %f", gPitchOffset);
+    }
 }
 
 /**
@@ -645,7 +564,8 @@ CGFloat gCurrentTurn = 0.0;
     
     [self.bodyNode runAction: [CCActionSequence actionOne: actionUp two: actionDown]];
     
-    gCurrentPitch = MIN(acceleration.z * -10, gMaxPitchDegrees);
+    // gPitchOffset adjusts the pitch, which kind of corrects the original model.
+    gCurrentPitch = MIN((acceleration.z * -10) + gPitchOffset, gMaxPitchDegrees);
     gCurrentRoll  = acceleration.y * 10;
     
     gCurrentTurn = MAX(MIN(gCurrentRoll * 20, gMaxWheelTurn), -gMaxWheelTurn);
@@ -664,8 +584,7 @@ CGFloat gCurrentTurn = 0.0;
 
 -(double) convertCourseToSimple:(double) course {
     
-    return 315;
-    
+    return 270;
     course = 360.0 - course;
     
     const double extra = 0.0;
