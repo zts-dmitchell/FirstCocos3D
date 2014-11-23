@@ -87,24 +87,39 @@ CGFloat gRollIncrementBy = 1.0;
     //CC3ResourceNode* rezNode =
      //[CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
     
-	self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Chevrolet HHR - 00.pod"];
+    //self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Chevrolet HHR - 00.pod"];
+    self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
 	[self addChild: self.bodyNode];
     
     // Display the back sides because it looks strange, otherwise.
     self.bodyNode.shouldCullBackFaces = NO;
     
-    self.rearWheelsNode = [CC3PODResourceNode nodeFromFile:@"Exportable Rear Wheels - Chevrolet HHR - 00.pod"];
-    self.rearWheelsNode.name = @"RearWheels";
-    [self.rearWheelsNode translateBy:cc3v(0.0, -0.7, -3.9)];
-    [self.bodyNode addChild: self.rearWheelsNode];
+//    self.rearWheelsNode = [CC3PODResourceNode nodeFromFile:@"Exportable Rear Wheels - Chevrolet HHR - 00.pod"];
+//    self.rearWheelsNode.name = @"RearWheels";
+//    [self.rearWheelsNode translateBy:cc3v(0.0, -0.7, -3.9)];
+//    //[self.bodyNode addChild: self.rearWheelsNode];
+//    [self addChild: self.rearWheelsNode];
+//    
+//    self.frontWheelsNode = [CC3PODResourceNode nodeFromFile:@"Exportable Front Wheels - Chevrolet HHR - 00.pod"];
+//    self.frontWheelsNode.name = @"FrontWheels";
+//    [self.frontWheelsNode translateBy:cc3v(0.0, -0.8, 4.1)];
+//    //[self.bodyNode addChild: self.frontWheelsNode];
+//    [self addChild: self.frontWheelsNode];
     
-    self.frontWheelsNode = [CC3PODResourceNode nodeFromFile:@"Exportable Front Wheels - Chevrolet HHR - 00.pod"];
-    self.frontWheelsNode.name = @"FrontWheels";
-    [self.frontWheelsNode translateBy:cc3v(0.0, -0.8, 4.1)];
-    [self.bodyNode addChild: self.frontWheelsNode];
-    
-    
+    // Bunch a
+    self.wheelEmpty = [self.bodyNode getNodeNamed:@"WheelEmpty"];
+    [self.bodyNode removeChild:self.wheelEmpty];
+    [self addChild:self.wheelEmpty];
+    [self printLocation:self.wheelEmpty.location withName:self.wheelEmpty.name];
+
+
+    self.nodeFRWheel = [self wheelFromNode:@"FRWheel"];
+    self.nodeFLWheel = [self wheelFromNode:@"FLWheel"];
+    self.nodeRRWheel = [self wheelFromNode:@"RRWheel"];
+    self.nodeRLWheel = [self wheelFromNode:@"RLWheel"];
+        
     self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Ground Plane.pod"];
+    self.groundPlaneNode.visible = NO;
     //self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Skybox.pod"];
 
     [self addChild: self.groundPlaneNode];
@@ -235,6 +250,24 @@ CGFloat gRollIncrementBy = 1.0;
 //    
 //    [self.locationManager startUpdatingLocation];
 //
+}
+
+-(CC3Node*) wheelFromNode:(NSString*) nodeName {
+    
+    CC3Node* node = [self.wheelEmpty getNodeNamed:nodeName];
+    [node addAxesDirectionMarkers];
+    
+    //[self.bodyNode removeChild:node];
+    //[self addChild:node];
+    
+    //node.shouldDrawDescriptor = YES;
+    [self printLocation:node.location withName: node.name];
+    return node;
+}
+
+-(void) printLocation:(CC3Vector) position withName:(NSString*) info {
+    
+    NSLog(@"%@: x: %f, y: %f, z: %f", info, position.x, position.y, position.z);
 }
 
 //-(void) storeLayer:(FirstCocos3DLayer*) layer {
@@ -514,6 +547,8 @@ CGFloat gRollIncrementBy = 1.0;
 
             } else if(widthSection == 0) { // Reset Roll
 
+                gCurrentRoll = 0.0;
+                
             } else { // Roll Right
 
                 gCurrentRoll -= gRollIncrementBy;
@@ -583,9 +618,24 @@ CGFloat gRollIncrementBy = 1.0;
     [self.bodyNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(gCurrentPitch, course, gCurrentRoll)]];
     [self.groundPlaneNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
 
-    [self.frontWheelsNode runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
-    [self.rearWheelsNode runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
+//    [self.frontWheelsNode runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
+//    [self.rearWheelsNode runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
+//
+//    [self.frontWheelsNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
+//    [self.rearWheelsNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
+
+    [self.nodeFLWheel runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
+    [self.nodeFRWheel runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
+    [self.nodeRLWheel runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
+    [self.nodeRRWheel runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
     
+    [self.wheelEmpty runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(270, course, 0)]];
+    
+    //[self.nodeFLWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
+    //[self.nodeFRWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
+    //[self.nodeRLWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
+    //[self.nodeRRWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
+
 }
 
 -(BOOL) shouldChangeCourse:(double) course {
