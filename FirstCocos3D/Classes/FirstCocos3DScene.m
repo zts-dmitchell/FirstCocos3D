@@ -19,7 +19,7 @@
 @implementation FirstCocos3DScene
 
 #pragma mark Global Variables
-CGFloat gMaxPitchDegrees = 20.0;
+CGFloat gMaxPitchDegrees = 1.6;
 CGFloat gCurrentPitch = 0.0;
 CGFloat gPitchIncrentBy = 1.0;
 
@@ -119,7 +119,7 @@ CGFloat gRollIncrementBy = 1.0;
     self.nodeRLWheel = [self wheelFromNode:@"RLWheel"];
         
     self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Ground Plane.pod"];
-    self.groundPlaneNode.visible = NO;
+    self.groundPlaneNode.visible = YES;
     //self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Skybox.pod"];
 
     [self addChild: self.groundPlaneNode];
@@ -498,7 +498,7 @@ CGFloat gRollIncrementBy = 1.0;
         int widthSection = -2;
         int heightSection = -2;
         
-        NSLog(@"touchPoint.x: %f, touchPoint.y: %f", touchPoint.x, touchPoint.y);
+        //NSLog(@"touchPoint.x: %f, touchPoint.y: %f", touchPoint.x, touchPoint.y);
         // When heightSection == -1, Turning
         // When heightSection ==  0, Changing Speed
         // Nothing for when heightSection == 1.
@@ -536,8 +536,6 @@ CGFloat gRollIncrementBy = 1.0;
                 gCurrentPitch = MAX(gCurrentPitch, -gMaxPitchDegrees);
             }
             
-            //NSLog(@"Current Pitch: %f", gCurrentPitch);
-            
         } else if(heightSection == 0) {
             
             if(widthSection == -1) { // Roll Left
@@ -555,8 +553,6 @@ CGFloat gRollIncrementBy = 1.0;
                 gCurrentRoll = MAX(gCurrentRoll, -gMaxRollDegrees);
             }
             
-            //NSLog(@"Current Roll: %f", gCurrentRoll);
-
         } else {
     
             self.layer->bIsCourse = !self.layer->bIsCourse;
@@ -599,7 +595,6 @@ CGFloat gRollIncrementBy = 1.0;
     [self doDraw:course withSpeed:speed];
     
     self->prevSpeed = speed;
-    
 }
 
 /**
@@ -618,12 +613,6 @@ CGFloat gRollIncrementBy = 1.0;
     [self.bodyNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(gCurrentPitch, course, gCurrentRoll)]];
     [self.groundPlaneNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
 
-//    [self.frontWheelsNode runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
-//    [self.rearWheelsNode runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
-//
-//    [self.frontWheelsNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
-//    [self.rearWheelsNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
-
     [self.nodeFLWheel runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
     [self.nodeFRWheel runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
     [self.nodeRLWheel runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
@@ -631,12 +620,32 @@ CGFloat gRollIncrementBy = 1.0;
     
     [self.wheelEmpty runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(270, course, 0)]];
     
-    //[self.nodeFLWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
-    //[self.nodeFRWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
-    //[self.nodeRLWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
-    //[self.nodeRRWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
-
+    [self.nodeFLWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0.0, 0.0, gCurrentRoll*20)]];
+    [self.nodeFRWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0.0, 0.0, gCurrentRoll*20)]];
+    
 }
+
+-(void) animateBody {
+    
+    if(self.manager == nil) {
+        NSLog(@"CMMotionManager not available");
+        return;
+    }
+    
+    const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
+    const double action = CLAMP((1.0-acceleration.x) * 0.55, 0.0, 0.125);
+    
+    //NSLog(@"action: %f, x: %f, y: %f, z: %f", action , 1.0-acceleration.x, acceleration.y, acceleration.z);
+    
+    CCActionInterval* actionUp = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:action];
+    CCActionInterval* actionDown = [CC3ActionMoveUpBy actionWithDuration:0.15 moveBy:-action];
+    
+    [self.bodyNode runAction: [CCActionSequence actionOne: actionUp two: actionDown]];
+    
+    gCurrentPitch = MIN(acceleration.z * -10, gMaxPitchDegrees);
+    gCurrentRoll  = acceleration.y * 10;
+}
+
 
 -(BOOL) shouldChangeCourse:(double) course {
 
@@ -644,10 +653,12 @@ CGFloat gRollIncrementBy = 1.0;
     const double distance = abs(course - self->prevCourse);
 
     //NSLog(@"Distance: %f", distance);
-    return( distance > 15.0 && distance < 345.0);
+    return(distance > 15.0 && distance < 345.0);
 }
 
 -(double) convertCourseToSimple:(double) course {
+    
+    return 315;
     
     course = 360.0 - course;
     
@@ -662,32 +673,9 @@ CGFloat gRollIncrementBy = 1.0;
     else if(course >= extra)
         course = 45.0;
  
-//    if(course == self->prevCourse )
-//        NSLog(@"No change: %f", course);
-//    else
-//        NSLog(@"Changed!!!  %f", course);
-    
     self->prevCourse = course;
 
     return course;
-}
-
--(void) animateBody {
-    
-    if(self.manager == nil) {
-        NSLog(@"CMMotionManager not available");
-        return;
-    }
-    
-    const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
-    const double action = CLAMP((1.0-acceleration.x) * 0.55, 0.0, 0.125);
-
-    //NSLog(@"action: %f, x: %f, y: %f, z: %f", action , 1.0-acceleration.x, acceleration.y, acceleration.z);
-    
-    CCActionInterval* actionUp = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:action];
-    CCActionInterval* actionDown = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:-action];
-    
-    [self.bodyNode runAction: [CCActionSequence actionOne: actionUp two: actionDown]];
 }
 
 /**
