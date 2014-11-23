@@ -10,8 +10,13 @@
 		5717AF2219DDD31100A29D6B /* KalmanFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5717AF2119DDD31100A29D6B /* KalmanFilter.m */; };
 		572373B319EA38DC00C3CA17 /* Exportable Rear Wheels - Chevrolet HHR - 00.pod in Resources */ = {isa = PBXBuildFile; fileRef = 572373B219EA38DC00C3CA17 /* Exportable Rear Wheels - Chevrolet HHR - 00.pod */; };
 		575707A719FA03BF0010C922 /* Exportable Front Wheels - Chevrolet HHR - 00.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707A619FA03BF0010C922 /* Exportable Front Wheels - Chevrolet HHR - 00.pod */; };
+		575707A919FB0AF60010C922 /* Ground Plane.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707A819FB0AF60010C922 /* Ground Plane.pod */; };
+		575707AB19FB4BDB0010C922 /* Curved Ground.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707AA19FB4BDB0010C922 /* Curved Ground.pod */; };
+		575707B319FC8B510010C922 /* Buildings_750x500.png in Resources */ = {isa = PBXBuildFile; fileRef = 575707B219FC8B510010C922 /* Buildings_750x500.png */; };
+		575707B519FC8D650010C922 /* Skybox.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707B419FC8D650010C922 /* Skybox.pod */; };
+		575707B919FCA2AF0010C922 /* asphalt_250x160.png in Resources */ = {isa = PBXBuildFile; fileRef = 575707B819FCA2AF0010C922 /* asphalt_250x160.png */; };
+		575707C119FD86B30010C922 /* asphalt_240x140.png in Resources */ = {isa = PBXBuildFile; fileRef = 575707C019FD86B30010C922 /* asphalt_240x140.png */; };
 		57628F7719C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */; };
-		57AD218219DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57AD218019DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod */; };
 		57AD218319DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57AD218119DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod */; };
 		57B2346C19D92B9400B492AC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 57B2346719D92B9400B492AC /* AppDelegate.m */; };
 		57B2347919DA3A0400B492AC /* RunningAverage.m in Sources */ = {isa = PBXBuildFile; fileRef = 57B2347819DA3A0400B492AC /* RunningAverage.m */; };
@@ -27,7 +32,6 @@
 		57CAE58A19BC18D400665B4C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57CAE58919BC18D400665B4C /* UIKit.framework */; };
 		57CAE58F19BC18D400665B4C /* FirstCocos3DLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 57CAE58E19BC18D400665B4C /* FirstCocos3DLayer.m */; };
 		57CAE59219BC18D400665B4C /* FirstCocos3DScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 57CAE59119BC18D400665B4C /* FirstCocos3DScene.m */; };
-		57CAE59519BC18D400665B4C /* hello-world.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57CAE59419BC18D400665B4C /* hello-world.pod */; };
 		57CAE59C19BC18D400665B4C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 57CAE59B19BC18D400665B4C /* main.m */; };
 		57CAE5A019BC18D400665B4C /* Icon-29.png in Resources */ = {isa = PBXBuildFile; fileRef = 57CAE59F19BC18D400665B4C /* Icon-29.png */; };
 		57CAE5A219BC18D400665B4C /* Icon-29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 57CAE5A119BC18D400665B4C /* Icon-29@2x.png */; };
@@ -412,8 +416,13 @@
 		5717AF2119DDD31100A29D6B /* KalmanFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KalmanFilter.m; path = Utils/KalmanFilter.m; sourceTree = "<group>"; };
 		572373B219EA38DC00C3CA17 /* Exportable Rear Wheels - Chevrolet HHR - 00.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Rear Wheels - Chevrolet HHR - 00.pod"; path = "Resources/Exportable Rear Wheels - Chevrolet HHR - 00.pod"; sourceTree = "<group>"; };
 		575707A619FA03BF0010C922 /* Exportable Front Wheels - Chevrolet HHR - 00.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Front Wheels - Chevrolet HHR - 00.pod"; path = "Resources/Exportable Front Wheels - Chevrolet HHR - 00.pod"; sourceTree = "<group>"; };
+		575707A819FB0AF60010C922 /* Ground Plane.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Ground Plane.pod"; path = "Resources/Ground Plane.pod"; sourceTree = "<group>"; };
+		575707AA19FB4BDB0010C922 /* Curved Ground.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Curved Ground.pod"; path = "Resources/Curved Ground.pod"; sourceTree = "<group>"; };
+		575707B219FC8B510010C922 /* Buildings_750x500.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Buildings_750x500.png; path = Resources/Buildings_750x500.png; sourceTree = "<group>"; };
+		575707B419FC8D650010C922 /* Skybox.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = Skybox.pod; path = Resources/Skybox.pod; sourceTree = "<group>"; };
+		575707B819FCA2AF0010C922 /* asphalt_250x160.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = asphalt_250x160.png; path = Resources/asphalt_250x160.png; sourceTree = "<group>"; };
+		575707C019FD86B30010C922 /* asphalt_240x140.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = asphalt_240x140.png; path = Resources/asphalt_240x140.png; sourceTree = "<group>"; };
 		57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Body - Holden Efijy - 01.pod"; path = "Resources/Exportable Body - Holden Efijy - 01.pod"; sourceTree = "<group>"; };
-		57AD218019DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Body - Ford Highboy - 01.pod"; path = "Resources/Exportable Body - Ford Highboy - 01.pod"; sourceTree = "<group>"; };
 		57AD218119DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Body - Chevrolet HHR - 00.pod"; path = "Resources/Exportable Body - Chevrolet HHR - 00.pod"; sourceTree = "<group>"; };
 		57B2346619D92B9400B492AC /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
 		57B2346719D92B9400B492AC /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; };
@@ -434,7 +443,6 @@
 		57CAE58E19BC18D400665B4C /* FirstCocos3DLayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = FirstCocos3DLayer.m; path = Classes/FirstCocos3DLayer.m; sourceTree = "<group>"; };
 		57CAE59019BC18D400665B4C /* FirstCocos3DScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FirstCocos3DScene.h; path = Classes/FirstCocos3DScene.h; sourceTree = "<group>"; };
 		57CAE59119BC18D400665B4C /* FirstCocos3DScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = FirstCocos3DScene.m; path = Classes/FirstCocos3DScene.m; sourceTree = "<group>"; };
-		57CAE59419BC18D400665B4C /* hello-world.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "hello-world.pod"; path = "Resources/hello-world.pod"; sourceTree = "<group>"; };
 		57CAE59619BC18D400665B4C /* README!.md */ = {isa = PBXFileReference; lastKnownFileType = text; name = "README!.md"; path = "../README!.md"; sourceTree = "<group>"; };
 		57CAE59B19BC18D400665B4C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		57CAE59D19BC18D400665B4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Resources/Info.plist; sourceTree = "<group>"; };
@@ -1237,12 +1245,16 @@
 		57CAE59319BC18D400665B4C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				575707C019FD86B30010C922 /* asphalt_240x140.png */,
+				575707B819FCA2AF0010C922 /* asphalt_250x160.png */,
+				575707B419FC8D650010C922 /* Skybox.pod */,
+				575707B219FC8B510010C922 /* Buildings_750x500.png */,
+				575707AA19FB4BDB0010C922 /* Curved Ground.pod */,
+				575707A819FB0AF60010C922 /* Ground Plane.pod */,
 				575707A619FA03BF0010C922 /* Exportable Front Wheels - Chevrolet HHR - 00.pod */,
 				572373B219EA38DC00C3CA17 /* Exportable Rear Wheels - Chevrolet HHR - 00.pod */,
-				57AD218019DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod */,
 				57AD218119DFDBAF0082494E /* Exportable Body - Chevrolet HHR - 00.pod */,
 				57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */,
-				57CAE59419BC18D400665B4C /* hello-world.pod */,
 				57CAE59D19BC18D400665B4C /* Info.plist */,
 				57CAE5C419BC18D400665B4C /* fps_images.png */,
 				57CAE5C619BC18D400665B4C /* fps_images-hd.png */,
@@ -2692,6 +2704,7 @@
 				57CAE61F19BC18D400665B4C /* CC3LibVertexPositionNoBones.vsh in Resources */,
 				57CAE5B019BC18D400665B4C /* Icon-60.png in Resources */,
 				57CAE61B19BC18D400665B4C /* CC3LibSingleTexture.vsh in Resources */,
+				575707C119FD86B30010C922 /* asphalt_240x140.png in Resources */,
 				57CAE61719BC18D400665B4C /* CC3LibIlluminatedMaterial.vsh in Resources */,
 				57CAE5E819BC18D400665B4C /* CC3BumpMapObjectSpaceAlphaTest.fsh in Resources */,
 				57CAE5E119BC18D400665B4C /* CC3LibTexturableBumpMapTangentSpace.fsh in Resources */,
@@ -2704,6 +2717,7 @@
 				57CAE5F819BC18D400665B4C /* CC3NoTextureReflect.fsh in Resources */,
 				57CAE5AE19BC18D400665B4C /* Icon-57@2x.png in Resources */,
 				57CAE5D319BC18D400665B4C /* CC3LibEnvironmentReflection.fsh in Resources */,
+				575707B519FC8D650010C922 /* Skybox.pod in Resources */,
 				57CAE5BD19BC18D400665B4C /* Default.png in Resources */,
 				57CAE5CB19BC18D400665B4C /* fps_images_1.png in Resources */,
 				57CAE5B819BC18D400665B4C /* Icon-76.png in Resources */,
@@ -2720,11 +2734,10 @@
 				57CAE5C919BC18D400665B4C /* fps_images-ipadhd.png in Resources */,
 				57CAE5C319BC18D400665B4C /* Default-Landscape~ipad.png in Resources */,
 				57CAE5BF19BC18D400665B4C /* Default-568h@2x.png in Resources */,
+				575707A919FB0AF60010C922 /* Ground Plane.pod in Resources */,
 				57CAE5E619BC18D400665B4C /* CC3BumpMapObjectSpace.fsh in Resources */,
-				57CAE59519BC18D400665B4C /* hello-world.pod in Resources */,
 				57CAE5D119BC18D400665B4C /* CC3LibDualSidedFragmentColor.fsh in Resources */,
 				57CAE62319BC18D400665B4C /* CC3LibVertexPositionRigidBones.vsh in Resources */,
-				57AD218219DFDBAF0082494E /* Exportable Body - Ford Highboy - 01.pod in Resources */,
 				57CAE60B19BC18D400665B4C /* CC3LibBumpMapTangentSpaceLighting.vsh in Resources */,
 				572373B319EA38DC00C3CA17 /* Exportable Rear Wheels - Chevrolet HHR - 00.pod in Resources */,
 				57CAE61D19BC18D400665B4C /* CC3LibVertexPositionBones.vsh in Resources */,
@@ -2736,8 +2749,11 @@
 				57CAE5A619BC18D400665B4C /* Icon-40@2x.png in Resources */,
 				57CAE5C719BC18D400665B4C /* fps_images-hd.png in Resources */,
 				57CAE5D719BC18D400665B4C /* CC3LibSetGLFragColor.fsh in Resources */,
+				575707AB19FB4BDB0010C922 /* Curved Ground.pod in Resources */,
+				575707B919FCA2AF0010C922 /* asphalt_250x160.png in Resources */,
 				57CAE5F019BC18D400665B4C /* CC3ClipSpaceSingleTexture.fsh in Resources */,
 				57CAE5A819BC18D400665B4C /* Icon-50.png in Resources */,
+				575707B319FC8B510010C922 /* Buildings_750x500.png in Resources */,
 				57CAE5DD19BC18D400665B4C /* CC3LibSingleTexture2D.fsh in Resources */,
 				575707A719FA03BF0010C922 /* Exportable Front Wheels - Chevrolet HHR - 00.pod in Resources */,
 				57CAE5D519BC18D400665B4C /* CC3LibLightProbeIllumination.fsh in Resources */,

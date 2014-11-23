@@ -13,8 +13,21 @@
 #import "CC3Camera.h"
 #import "CC3Light.h"
 #import "CC3UtilityMeshNodes.h"
+#import "CCActionManager.h"
+
 
 @implementation FirstCocos3DScene
+
+#pragma mark Global Variables
+CGFloat gMaxPitchDegrees = 20.0;
+CGFloat gCurrentPitch = 0.0;
+CGFloat gPitchIncrentBy = 1.0;
+
+CGFloat gMaxRollDegrees = 20.0;
+CGFloat gCurrentRoll = 0.0;
+CGFloat gRollIncrementBy = 1.0;
+
+#pragma mark End Global Variables
 
 /**
  * Constructs the 3D scene prior to the scene being displayed.
@@ -40,18 +53,20 @@
  */
 -(void) initializeScene {
 
-  //  self.layer = Nil;
+    self.manager = [[CMMotionManager alloc] init];
+    [self.manager startAccelerometerUpdates];
     
     self->prevCourse = 0.0;
+    self->prevSpeed = 0.0;
     
 	// Optionally add a static solid-color, or textured, backdrop, by uncommenting one of these lines.
-    self.backdrop = [CC3Backdrop nodeWithColor: ccc4f(0.52, 0.8, 0.92, 1.0)];
     //self.backdrop = [CC3Backdrop nodeWithColor: ccc4f(0.52, 0.8, 0.92, 1.0)];
-//	self.backdrop = [CC3Backdrop nodeWithTexture: [CC3Texture textureFromFile: @"Default.png"]];
+	self.backdrop = [CC3Backdrop nodeWithTexture: [CC3Texture textureFromFile: @"Buildings_750x500.png"]];
 
+    
 	// Create the camera, place it back a bit, and add it to the scene
-	CC3Camera* cam = [CC3Camera nodeWithName: @"Camera"];
-	cam.location = cc3v( 0.0, 0.0, 18.0 );
+    CC3Camera* cam = [CC3Camera nodeWithName: @"Camera"];
+	cam.location = cc3v( 0.0, 0.0, -15.0 );
 	[self addChild: cam];
 
 	// Create a light, place it back and to the left at a specific
@@ -60,6 +75,7 @@
 	lamp.location = cc3v( -2.0, 0.0, 0.0 );
 	lamp.isDirectionalOnly = NO;
 	[cam addChild: lamp];
+
     
 	// Create and load a POD resource file and add its entire contents to the scene.
 	// If needed, prior to adding the loaded content to the scene, you can customize the
@@ -74,9 +90,12 @@
 	self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Chevrolet HHR - 00.pod"];
 	[self addChild: self.bodyNode];
     
+    // Display the back sides because it looks strange, otherwise.
+    self.bodyNode.shouldCullBackFaces = NO;
+    
     self.rearWheelsNode = [CC3PODResourceNode nodeFromFile:@"Exportable Rear Wheels - Chevrolet HHR - 00.pod"];
     self.rearWheelsNode.name = @"RearWheels";
-    [self.rearWheelsNode translateBy:cc3v(0.0, -0.8, -3.9)];
+    [self.rearWheelsNode translateBy:cc3v(0.0, -0.7, -3.9)];
     [self.bodyNode addChild: self.rearWheelsNode];
     
     self.frontWheelsNode = [CC3PODResourceNode nodeFromFile:@"Exportable Front Wheels - Chevrolet HHR - 00.pod"];
@@ -84,7 +103,12 @@
     [self.frontWheelsNode translateBy:cc3v(0.0, -0.8, 4.1)];
     [self.bodyNode addChild: self.frontWheelsNode];
     
-	
+    
+    self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Ground Plane.pod"];
+    //self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Skybox.pod"];
+
+    [self addChild: self.groundPlaneNode];
+    
 	// Or, if you don't need to modify the resource node at all before adding its content,
 	// you can simply use the following as a shortcut, instead of the previous lines.
 //	[self addContentFromPODFile: @"hello-world.pod"];
@@ -210,7 +234,7 @@
 ////    [parent addChild:scorelabel];
 //    
 //    [self.locationManager startUpdatingLocation];
-//    
+//
 }
 
 //-(void) storeLayer:(FirstCocos3DLayer*) layer {
@@ -346,7 +370,8 @@
 
 	// Move the camera to frame the scene. The resulting configuration of the camera is output as
 	// an [info] log message, so you know where the camera needs to be in order to view your scene.
-	[self.activeCamera moveWithDuration: 1.0 toShowAllOf: self withPadding: 0.1f];
+    [self.activeCamera moveWithDuration: 1.0 toShowAllOf: self.bodyNode withPadding: 0.1f];
+    //[self.activeCamera moveWithDuration:0.5 toShowAllOf:self.bodyNode withPadding:0.1f];
 
 	// Uncomment this line to draw the bounding box of the scene.
 //	self.shouldDrawWireframeBox = YES;
@@ -360,7 +385,8 @@
  */
 -(void) onClose {
 
-//    [self.locationManager stopUpdatingLocation];
+    //[self.locationManager stopUpdatingLocation];
+    [self.manager stopAccelerometerUpdates];
 }
 
 
@@ -432,29 +458,186 @@
 -(void) touchEvent: (uint) touchType at: (CGPoint) touchPoint {
     
     if( touchType == 0 ) {
-        touchDownPoint = touchPoint;
-        return;
-    }
+        
+        const CGSize s = [CCDirector sharedDirector].viewSize;
+        const CGFloat widthDivisionSize = s.width/3.0;
+        const CGFloat heightDivisionsize = s.height/3.0;
+        int widthSection = -2;
+        int heightSection = -2;
+        
+        NSLog(@"touchPoint.x: %f, touchPoint.y: %f", touchPoint.x, touchPoint.y);
+        // When heightSection == -1, Turning
+        // When heightSection ==  0, Changing Speed
+        // Nothing for when heightSection == 1.
+        
+        if(touchPoint.x <= widthDivisionSize)
+            widthSection = -1;
+        else if(touchPoint.x <= (widthDivisionSize*2))
+            widthSection = 0;
+        else
+            widthSection = 1;
+        
+        if(touchPoint.y <= heightDivisionsize)
+            heightSection = -1;
+        else if( touchPoint.y <= (heightDivisionsize*2))
+            heightSection = 0;
+        else if( touchPoint.y <= s.height)
+            heightSection = 1;
+        else
+            NSLog(@"WTF?: %f", s.height);
+        
+        if(heightSection == -1) { // Pitch
+            
+            if(widthSection == -1) { // Backward
+                
+                gCurrentPitch += gPitchIncrentBy;
+                gCurrentPitch = MIN(gCurrentPitch, gMaxPitchDegrees);
+                
+            } else if(widthSection == 0) { // Reset Straight
+                
+                gCurrentPitch = 0.0;
+                
+            } else { // Forward
 
-    self.layer->bIsCourse = !self.layer->bIsCourse;
+                gCurrentPitch -= gPitchIncrentBy;
+                gCurrentPitch = MAX(gCurrentPitch, -gMaxPitchDegrees);
+            }
+            
+            //NSLog(@"Current Pitch: %f", gCurrentPitch);
+            
+        } else if(heightSection == 0) {
+            
+            if(widthSection == -1) { // Roll Left
+
+                gCurrentRoll += gRollIncrementBy;
+                gCurrentRoll = MIN(gCurrentRoll, gMaxRollDegrees);
+
+            } else if(widthSection == 0) { // Reset Roll
+
+            } else { // Roll Right
+
+                gCurrentRoll -= gRollIncrementBy;
+                gCurrentRoll = MAX(gCurrentRoll, -gMaxRollDegrees);
+            }
+            
+            //NSLog(@"Current Roll: %f", gCurrentRoll);
+
+        } else {
+    
+            self.layer->bIsCourse = !self.layer->bIsCourse;
+
+            if(widthSection == -1) {
+
+            }
+            else if(widthSection == 0) {
+
+            }
+            else {
+                
+            }
+
+        }
+
+    }
+//    if( touchType == 0 ) {
+//        self.layer->bIsCourse = !self.layer->bIsCourse;
+//        touchDownPoint = touchPoint;
+//    }
 }
 
+/**
+ * A method for setting the course heading. Includes speed, so that one can
+ * take actions based on velocity.
+ */
 -(void) setCourseHeading:(double)course withSpeed:(double)speed {
 
-    [self doDraw:self.bodyNode.children withCourse:course withSpeed:speed];
+//    if( speed > 0.0 )
+        [self animateBody];
+    
+//    if( ! [self shouldChangeCourse:course] ) {
+//        NSLog(@"Not changing course");
+//        return;
+//    }
+//    
+//    NSLog(@"Changing course");
+    
+    [self doDraw:course withSpeed:speed];
+    
+    self->prevSpeed = speed;
+    
 }
 
--(void) doDraw:(NSArray*)children withCourse:(double)course withSpeed:(double) speed {
-    
-    if(course == 0.0 || course == prevCourse)
-        return;
-    
-    [self.bodyNode runAction: [CC3ActionRotateTo actionWithDuration:0.5 rotateTo:cc3v(0, course, 0)]];
+/**
+ * Draws stuff to the screen for this scene.
+ */
+-(void) doDraw:(double)course withSpeed:(double) speed {
 
-    self->prevCourse = course;
+    course = [self convertCourseToSimple:course];
     
-    [self.frontWheelsNode runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(-30.0 * speed, 0.0, 0.0)]];
-    [self.rearWheelsNode runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(-30.0 * speed, 0.0, 0.0)]];
+    //self->prevCourse = course;
+    //NSLog(@"Corrected course: %f", course);
+    NSLog(@"Current Pitch: %f, Yaw: %f", gCurrentPitch, gCurrentRoll);
+
+    const double durationSpeed = 0.5;
+    
+    [self.bodyNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(gCurrentPitch, course, gCurrentRoll)]];
+    [self.groundPlaneNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
+
+    [self.frontWheelsNode runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
+    [self.rearWheelsNode runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
+    
+}
+
+-(BOOL) shouldChangeCourse:(double) course {
+
+    // Do calcs
+    const double distance = abs(course - self->prevCourse);
+
+    //NSLog(@"Distance: %f", distance);
+    return( distance > 15.0 && distance < 345.0);
+}
+
+-(double) convertCourseToSimple:(double) course {
+    
+    course = 360.0 - course;
+    
+    const double extra = 0.0;
+    
+    if(course >= 271.0 + extra)
+        course = 315.0;
+    else if(course >= 181.0 + extra)
+        course =  225.0;
+    else if(course >= 91.0 + extra)
+        course =  135.0;
+    else if(course >= extra)
+        course = 45.0;
+ 
+//    if(course == self->prevCourse )
+//        NSLog(@"No change: %f", course);
+//    else
+//        NSLog(@"Changed!!!  %f", course);
+    
+    self->prevCourse = course;
+
+    return course;
+}
+
+-(void) animateBody {
+    
+    if(self.manager == nil) {
+        NSLog(@"CMMotionManager not available");
+        return;
+    }
+    
+    const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
+    const double action = CLAMP((1.0-acceleration.x) * 0.55, 0.0, 0.125);
+
+    //NSLog(@"action: %f, x: %f, y: %f, z: %f", action , 1.0-acceleration.x, acceleration.y, acceleration.z);
+    
+    CCActionInterval* actionUp = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:action];
+    CCActionInterval* actionDown = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:-action];
+    
+    [self.bodyNode runAction: [CCActionSequence actionOne: actionUp two: actionDown]];
 }
 
 /**
@@ -466,7 +649,9 @@
  *
  * For more info, read the notes of this method on CC3Scene.
  */
--(void) nodeSelected: (CC3Node*) aNode byTouchEvent: (uint) touchType at: (CGPoint) touchPoint {}
+-(void) nodeSelected: (CC3Node*) aNode byTouchEvent: (uint) touchType at: (CGPoint) touchPoint {
+
+}
 
 @end
 

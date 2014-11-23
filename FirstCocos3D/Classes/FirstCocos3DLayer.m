@@ -24,7 +24,6 @@
 @property (nonatomic) CLLocationSpeed speed;
 @property (strong, nonatomic) RunningAverage *runningAvg;
 @property (strong, nonatomic) RunningAverage *headingRunningAvg;
-@property (strong, nonatomic) KalmanFilter *kalmanHeading;
 
 @end
 
@@ -37,45 +36,52 @@
  */
 -(void) initializeControls {
     
+    NSLog(@"Cocos2D Version: %@", cocos2dVersion());
+
 	//[self scheduleUpdate];
     
     self.userInteractionEnabled = YES;
     [self setTouchEnabled:YES];
     
-    self.mphLabel = [CCLabelTTF labelWithString:@"Speed:" fontName:@"Verdana-Bold" fontSize:18.0f];
+    self.mphLabel = [CCLabelTTF labelWithString:@"" fontName:@"Verdana-Bold" fontSize:18.0f];
     self.mphLabel.positionType = CCPositionTypeNormalized;
-    self.mphLabel.position = ccp(0.15f, 0.96f);
+    self.mphLabel.position = ccp(0.25f, 0.96f);
+    CCColor* color = [CCColor greenColor];
+    
+    [self.mphLabel setColor:color];
     [self addChild:self.mphLabel];
     
-    self.altitudeLabel = [CCLabelTTF labelWithString:@"Altitude: " fontName:@"Verdana-Bold" fontSize:18.0f];
+    self.altitudeLabel = [CCLabelTTF labelWithString:@"" fontName:@"Verdana-Bold" fontSize:18.0f];
     self.altitudeLabel.positionType = CCPositionTypeNormalized;
-    self.altitudeLabel.position = ccp(0.15f, 0.9f);
+    self.altitudeLabel.position = ccp(0.08f, 0.9f);
     [self addChild:self.altitudeLabel];
     
     self.courseLabel = [CCLabelTTF labelWithString:@"Course: " fontName:@"Verdana-Bold" fontSize:18.0f];
     self.courseLabel.positionType = CCPositionTypeNormalized;
-    self.courseLabel.position = ccp(0.15f, 0.84f);
+    self.courseLabel.position = ccp(0.12f, 0.84f);
+    [self.courseLabel setHorizontalAlignment:CCTextAlignmentLeft];
     [self addChild:self.courseLabel];
     
     self.headingLabel = [CCLabelTTF labelWithString:@"Heading: " fontName:@"Verdana-Bold" fontSize:18.0f];
     self.headingLabel.positionType = CCPositionTypeNormalized;
-    self.headingLabel.position = ccp(0.15f, 0.78f);
+    self.headingLabel.position = ccp(0.13f, 0.78f);
+    [self.headingLabel setHorizontalAlignment:CCTextAlignmentLeft];
     [self addChild:self.headingLabel];
     
-    self.headingTypeLabel = [CCLabelTTF labelWithString:@"Type: " fontName:@"Verdana-Bold" fontSize:18.0f];
+    self.headingTypeLabel = [CCLabelTTF labelWithString:@"" fontName:@"Verdana-Bold" fontSize:18.0f];
     self.headingTypeLabel.positionType = CCPositionTypeNormalized;
     self.headingTypeLabel.position = ccp(0.8f, 0.025f);
+    [self.headingTypeLabel setHorizontalAlignment:CCTextAlignmentRight];
     [self addChild:self.headingTypeLabel];
     
 
     // new shit
-    bIsCourse = TRUE;
+    bIsCourse = FALSE;
     FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
     scene.layer = self;
     
     self.runningAvg = [[RunningAverage alloc] initWithAvgLength:2];
     self.headingRunningAvg = [[RunningAverage alloc] initWithAvgLength:2];
-    self.kalmanHeading = [[KalmanFilter alloc] init];
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
@@ -106,21 +112,10 @@
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     
     CLLocation *newLocation = [locations lastObject];
-    CLLocation *oldLocation;
-    
-    if (locations.count > 1) {
-        oldLocation = [locations objectAtIndex:locations.count-2];
-    } else {
-        oldLocation = nil;
-    }
     
     self.speed = [newLocation speed];
     CLLocationDistance altitude = [newLocation altitude] * 3.2808399; // Convert meters to feet
     CLLocationDirection course = [newLocation course];
-    
-    //CLLocationDistance distanceChange = [newLocation distanceFromLocation:oldLocation];
-    //NSTimeInterval sinceLastUpdate = [newLocation.timestamp timeIntervalSinceDate:oldLocation.timestamp];
-    //double calculatedSpeed = distanceChange / sinceLastUpdate;
     
     if( self.speed <= 0.0 ) {
         self.speed = 0.0;
@@ -130,31 +125,26 @@
     }
     
     double average = [self.runningAvg get:self.speed];
-    //double kspeed = [self.kalmanSpeed get:speed];
-    
-    //NSLog(@"didUpdateToLocation %@ from %@. MPH %f. Avg %f. Altitude: %.2f\"",
-    //      newLocation, oldLocation, speed, average, altitude);
-    
-    [self.mphLabel setString:[NSString stringWithFormat:@"Speed: %3.0f MPH, Avg: %3.0f MPH", self.speed, average]];
+
+    [self.mphLabel setString:[NSString stringWithFormat:@"Speed:%3.0f MPH, Avg:%3.0f MPH", self.speed, average]];
     
     if( course == -1 )
         [self.courseLabel setString:@"Course: N/A"];
     else
         [self.courseLabel setString:[NSString stringWithFormat: @"Course: %3.0f°", course]];
+    
     [self.altitudeLabel setString:[NSString stringWithFormat: @"Alt: %3.0f'", altitude]];
+    
     
     if( bIsCourse ) {
         FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
     
         if( course >= 0.0 )
             [scene setCourseHeading: course withSpeed:self.speed];
-    //[self.headingTypeLabel setString:@"Type: "];
     
         [self.headingTypeLabel setString:[NSString stringWithFormat:@"Course: %.f°", course]];
     }
-    
-    //double kheading = [self.kalmanHeading get:course];
-    //[self.headingTypeLabel setString:[NSString stringWithFormat:@"kheading: %.f°", kheading]];
+
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
@@ -197,23 +187,13 @@
     
     if( ! bIsCourse ) {
         FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
-//    
-//    double avgHeading = [self.headingRunningAvg get:theHeading];
-//    [self.headingTypeLabel setString:[NSString stringWithFormat:@"AvgHdng: %.f°", avgHeading]];
-    
-//    if( avgHeading >= 0.0 )
-//        [scene setCourseHeading:avgHeading];
     
         if( theHeading >= 0.0 ) {
             [scene setCourseHeading:theHeading withSpeed:self.speed];
+            
             [self.headingTypeLabel setString:[NSString stringWithFormat:@"Heading: %.f°", theHeading]];
         }
     }
-//    double kheading = [self.kalmanHeading get:theHeading];
-//    [self.headingTypeLabel setString:[NSString stringWithFormat:@"kheading: %.f°", kheading]];
-//    if( kheading >= 0.0 )
-//        [scene setCourseHeading:kheading];
-    
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
