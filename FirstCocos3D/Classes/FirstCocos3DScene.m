@@ -27,6 +27,9 @@ CGFloat gMaxRollDegrees = 20.0;
 CGFloat gCurrentRoll = 0.0;
 CGFloat gRollIncrementBy = 1.0;
 
+CGFloat gMaxWheelTurn = 30.0;
+CGFloat gCurrentTurn = 0.0;
+
 #pragma mark End Global Variables
 
 /**
@@ -606,7 +609,7 @@ CGFloat gRollIncrementBy = 1.0;
     
     //self->prevCourse = course;
     //NSLog(@"Corrected course: %f", course);
-    NSLog(@"Current Pitch: %f, Yaw: %f", gCurrentPitch, gCurrentRoll);
+    NSLog(@"Current Pitch: %f, Yaw: %f, Wheel Pos: %f", gCurrentPitch, gCurrentRoll, gCurrentTurn);
 
     const double durationSpeed = 0.5;
     
@@ -620,8 +623,8 @@ CGFloat gRollIncrementBy = 1.0;
     
     [self.wheelEmpty runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(270, course, 0)]];
     
-    [self.nodeFLWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0.0, 0.0, gCurrentRoll*20)]];
-    [self.nodeFRWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0.0, 0.0, gCurrentRoll*20)]];
+    [self.nodeFLWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0.0, 0.0, gCurrentTurn)]];
+    [self.nodeFRWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0.0, 0.0, gCurrentTurn)]];
     
 }
 
@@ -644,6 +647,9 @@ CGFloat gRollIncrementBy = 1.0;
     
     gCurrentPitch = MIN(acceleration.z * -10, gMaxPitchDegrees);
     gCurrentRoll  = acceleration.y * 10;
+    
+    gCurrentTurn = MAX(MIN(gCurrentRoll * 20, gMaxWheelTurn), -gMaxWheelTurn);
+    
 }
 
 
