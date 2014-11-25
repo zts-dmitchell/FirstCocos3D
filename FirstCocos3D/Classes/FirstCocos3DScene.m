@@ -19,7 +19,8 @@
 @implementation FirstCocos3DScene
 
 #pragma mark Global Variables
-const CGFloat gMaxPitchDegrees = 1.6;
+const CGFloat gMaxPitchDegreesForward = 1.6;
+const CGFloat gMaxPitchDegreesBackward = -2.85;
 const CGFloat gPitchIncrentBy = 1.0;
 CGFloat gCurrentPitch = 0.0;
 CGFloat gPitchOffset = 0.0;
@@ -30,6 +31,11 @@ CGFloat gCurrentRoll = 0.0;
 
 const CGFloat gMaxWheelTurn = 30.0;
 CGFloat gCurrentTurn = 0.0;
+
+CC3Vector gStraight;
+CGFloat gCurrentSpeedPos = 0.0;
+CGFloat gCurrentSpeed = 0.0;
+
 
 #pragma mark End Global Variables
 
@@ -86,29 +92,14 @@ CGFloat gCurrentTurn = 0.0;
 	// nodes in the resource, remove unwanted nodes from the resource (eg- extra cameras),
 	// or extract only specific nodes from the resource to add them directly to the scene,
 	// instead of adding the entire contents.
-	//CC3ResourceNode* rezNode = [CC3PODResourceNode nodeFromFile: @"hello-world.pod"];
     //self.rezNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Ford Highboy - 01.pod"];
-    //CC3ResourceNode* rezNode =
-     //[CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
-    
+     self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
     //self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Chevrolet HHR - 00.pod"];
-    self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
+    //self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
 	[self addChild: self.bodyNode];
     
     // Display the back sides because it looks strange, otherwise.
     self.bodyNode.shouldCullBackFaces = NO;
-    
-//    self.rearWheelsNode = [CC3PODResourceNode nodeFromFile:@"Exportable Rear Wheels - Chevrolet HHR - 00.pod"];
-//    self.rearWheelsNode.name = @"RearWheels";
-//    [self.rearWheelsNode translateBy:cc3v(0.0, -0.7, -3.9)];
-//    //[self.bodyNode addChild: self.rearWheelsNode];
-//    [self addChild: self.rearWheelsNode];
-//    
-//    self.frontWheelsNode = [CC3PODResourceNode nodeFromFile:@"Exportable Front Wheels - Chevrolet HHR - 00.pod"];
-//    self.frontWheelsNode.name = @"FrontWheels";
-//    [self.frontWheelsNode translateBy:cc3v(0.0, -0.8, 4.1)];
-//    //[self.bodyNode addChild: self.frontWheelsNode];
-//    [self addChild: self.frontWheelsNode];
     
     // Bunch a
     self.wheelEmpty = [self.bodyNode getNodeNamed:@"WheelEmpty"];
@@ -116,22 +107,27 @@ CGFloat gCurrentTurn = 0.0;
     [self addChild:self.wheelEmpty];
     [self printLocation:self.wheelEmpty.location withName:self.wheelEmpty.name];
 
+    // Debugging: Remove Plane in
+    CC3Node* plane = [self.bodyNode getNodeNamed:@"Plane"];
+    if(plane != nil)
+        [self.bodyNode removeChild:plane];
 
     self.nodeFRWheel = [self wheelFromNode:@"FRWheel"];
     self.nodeFLWheel = [self wheelFromNode:@"FLWheel"];
     self.nodeRRWheel = [self wheelFromNode:@"RRWheel"];
     self.nodeRLWheel = [self wheelFromNode:@"RLWheel"];
-        
+    
+    gStraight = self.nodeFLWheel.rotation;
+    
     self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Ground Plane.pod"];
-    self.groundPlaneNode.visible = YES;
-    //self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Skybox.pod"];
 
+    CC3Vector groundLocation = self.groundPlaneNode.location;
+    groundLocation.y = -0.35;
+    [self printLocation:self.groundPlaneNode.location withName:@"location"];
+    [self.groundPlaneNode setLocation:groundLocation];
     [self addChild: self.groundPlaneNode];
     
-	// Or, if you don't need to modify the resource node at all before adding its content,
-	// you can simply use the following as a shortcut, instead of the previous lines.
-//	[self addContentFromPODFile: @"hello-world.pod"];
-	
+    self.groundPlaneNode.visible = YES;
 	// In some cases, PODs are created with opacity turned off by mistake. To avoid the possible
 	// surprise of an empty scene, the following line ensures that all nodes loaded so far will
 	// be visible. However, it also removes any translucency or transparency from the nodes, which
@@ -221,8 +217,8 @@ CGFloat gCurrentTurn = 0.0;
 -(CC3Node*) wheelFromNode:(NSString*) nodeName {
     
     CC3Node* node = [self.wheelEmpty getNodeNamed:nodeName];
-    [node addAxesDirectionMarkers];
-    
+    //[node addAxesDirectionMarkers];
+
     //node.shouldDrawDescriptor = YES;
     [self printLocation:node.location withName: node.name];
     return node;
@@ -277,8 +273,19 @@ CGFloat gCurrentTurn = 0.0;
  *
  * For more info, read the notes of this method on CC3Node.
  */
+
 -(void) updateAfterTransform: (CC3NodeUpdatingVisitor*) visitor {
-//    NSLog(@"updateAfterTransform Was here!!!");
+    
+    [self.nodeFLWheel setRotation:gStraight];
+    [self.nodeFRWheel setRotation:gStraight];
+    
+    gCurrentSpeedPos += 30.0 * gCurrentSpeed;
+    
+    [self.nodeFLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
+    [self.nodeFLWheel rotateByAngle:gCurrentTurn aroundAxis:cc3v(0,0,1)];
+    
+    [self.nodeFRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
+    [self.nodeFRWheel rotateByAngle:gCurrentTurn aroundAxis:cc3v(0,0,1)];
 }
 
 
@@ -391,8 +398,9 @@ CGFloat gCurrentTurn = 0.0;
  *
  * For more info, read the notes of this method on CC3Scene.
  */
+
 -(void) touchEvent: (uint) touchType at: (CGPoint) touchPoint {
-    
+
     if( touchType == 0 ) {
         
         const CGSize s = [CCDirector sharedDirector].viewSize;
@@ -427,7 +435,7 @@ CGFloat gCurrentTurn = 0.0;
             if(widthSection == -1) { // Backward
                 
                 gCurrentPitch += gPitchIncrentBy;
-                gCurrentPitch = MIN(gCurrentPitch, gMaxPitchDegrees);
+                gCurrentPitch = MIN(gCurrentPitch, gMaxPitchDegreesForward);
                 
             } else if(widthSection == 0) { // Reset Straight
                 
@@ -436,7 +444,7 @@ CGFloat gCurrentTurn = 0.0;
             } else { // Forward
 
                 gCurrentPitch -= gPitchIncrentBy;
-                gCurrentPitch = MAX(gCurrentPitch, -gMaxPitchDegrees);
+                gCurrentPitch = MAX(gCurrentPitch, -gMaxPitchDegreesForward);
             }
             
         } else if(heightSection == 0) {
@@ -457,7 +465,7 @@ CGFloat gCurrentTurn = 0.0;
             }
             
         } else {
-    
+            
             if(widthSection == -1) {
                 
                 self.layer->bIsCourse = !self.layer->bIsCourse;
@@ -466,19 +474,12 @@ CGFloat gCurrentTurn = 0.0;
             else if(widthSection == 0) {
 
                 [self adjustPitch:true];
-                //gPitchOffset = 0.0;
-                //NSLog(@"Resetting gPitchOffset to 0");
             }
             else {
                 
                 [self adjustPitch:false];
-                //const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
-                //gPitchOffset = acceleration.z * 10;
-                //NSLog(@"Setting gPitchOffset to %f", gPitchOffset);
             }
-
         }
-
     }
 }
 
@@ -519,11 +520,16 @@ CGFloat gCurrentTurn = 0.0;
     self->prevSpeed = speed;
 }
 
+#pragma mark Draw the Scene
+
 /**
  * Draws stuff to the screen for this scene.
  */
 -(void) doDraw:(double)course withSpeed:(double) speed {
 
+    // Store the speed
+    gCurrentSpeed = speed;
+    
     course = [self convertCourseToSimple:course];
     
     //self->prevCourse = course;
@@ -534,17 +540,11 @@ CGFloat gCurrentTurn = 0.0;
     
     [self.bodyNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(gCurrentPitch, course, gCurrentRoll)]];
     [self.groundPlaneNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
-
-    [self.nodeFLWheel runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
-    [self.nodeFRWheel runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
+    
     [self.nodeRLWheel runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
     [self.nodeRRWheel runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
     
     [self.wheelEmpty runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(270, course, 0)]];
-    
-    [self.nodeFLWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0.0, 0.0, gCurrentTurn)]];
-    [self.nodeFRWheel runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0.0, 0.0, gCurrentTurn)]];
-    
 }
 
 -(void) animateBody {
@@ -565,7 +565,8 @@ CGFloat gCurrentTurn = 0.0;
     [self.bodyNode runAction: [CCActionSequence actionOne: actionUp two: actionDown]];
     
     // gPitchOffset adjusts the pitch, which kind of corrects the original model.
-    gCurrentPitch = MIN((acceleration.z * -10) + gPitchOffset, gMaxPitchDegrees);
+    gCurrentPitch = MAX(MIN((acceleration.z * -10) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
+    
     gCurrentRoll  = acceleration.y * 10;
     
     gCurrentTurn = MAX(MIN(gCurrentRoll * 20, gMaxWheelTurn), -gMaxWheelTurn);
@@ -584,9 +585,9 @@ CGFloat gCurrentTurn = 0.0;
 
 -(double) convertCourseToSimple:(double) course {
     
-    return 270;
     course = 360.0 - course;
     
+    return course;
     const double extra = 0.0;
     
     if(course >= 271.0 + extra)
