@@ -128,12 +128,12 @@
 
     [self.mphLabel setString:[NSString stringWithFormat:@"Speed:%3.0f MPH, Avg:%3.0f MPH", self.speed, average]];
     
-    if( course == -1 )
-        [self.courseLabel setString:@"Course: N/A"];
-    else
-        [self.courseLabel setString:[NSString stringWithFormat: @"Course: %3.0f°", course]];
-    
-    [self.altitudeLabel setString:[NSString stringWithFormat: @"Alt: %3.0f'", altitude]];
+//    if( course == -1 )
+//        [self.courseLabel setString:@"Course: N/A"];
+//    else
+//        [self.courseLabel setString:[NSString stringWithFormat: @"Course: %3.0f°", course]];
+//    
+//    [self.altitudeLabel setString:[NSString stringWithFormat: @"Alt: %3.0f'", altitude]];
     
     
     if( bIsCourse ) {
@@ -142,7 +142,7 @@
         if( course >= 0.0 )
             [scene setCourseHeading: course withSpeed:self.speed];
     
-        [self.headingTypeLabel setString:[NSString stringWithFormat:@"Course: %.f°", course]];
+        //[self.headingTypeLabel setString:[NSString stringWithFormat:@"Course: %.f°", course]];
     }
 
 }
@@ -183,7 +183,7 @@
         }
     }
 
-    [self.headingLabel setString:[NSString stringWithFormat: @"Heading: %.0f°", theHeading]];
+    //[self.headingLabel setString:[NSString stringWithFormat: @"Heading: %.0f°", theHeading]];
     
     if( ! bIsCourse ) {
         FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
@@ -191,7 +191,7 @@
         if( theHeading >= 0.0 ) {
             [scene setCourseHeading:theHeading withSpeed:self.speed];
             
-            [self.headingTypeLabel setString:[NSString stringWithFormat:@"Heading: %.f°", theHeading]];
+            //[self.headingTypeLabel setString:[NSString stringWithFormat:@"Heading: %.f°", theHeading]];
         }
     }
 }

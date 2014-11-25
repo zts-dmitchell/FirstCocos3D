@@ -25,7 +25,8 @@ const CGFloat gPitchIncrentBy = 1.0;
 CGFloat gCurrentPitch = 0.0;
 CGFloat gPitchOffset = 0.0;
 
-const CGFloat gMaxRollDegrees = 20.0;
+//const CGFloat gMaxRollDegrees = 20.0; // Chevy HHR
+const CGFloat gMaxRollDegrees = -2.8;   // Holden
 const CGFloat gRollIncrementBy = 1.0;
 CGFloat gCurrentRoll = 0.0;
 
@@ -534,7 +535,7 @@ CGFloat gCurrentSpeed = 0.0;
     
     //self->prevCourse = course;
     //NSLog(@"Corrected course: %f", course);
-    NSLog(@"Current Pitch: %f, Yaw: %f, Wheel Pos: %f", gCurrentPitch, gCurrentRoll, gCurrentTurn);
+    NSLog(@"Current Pitch: %f, Roll: %f, Wheel Pos: %f", gCurrentPitch, gCurrentRoll, gCurrentTurn);
 
     const double durationSpeed = 0.5;
     
@@ -567,7 +568,7 @@ CGFloat gCurrentSpeed = 0.0;
     // gPitchOffset adjusts the pitch, which kind of corrects the original model.
     gCurrentPitch = MAX(MIN((acceleration.z * -10) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
     
-    gCurrentRoll  = acceleration.y * 10;
+    gCurrentRoll  = MAX(MIN(acceleration.y * 10, gMaxRollDegrees), -gMaxRollDegrees);
     
     gCurrentTurn = MAX(MIN(gCurrentRoll * 20, gMaxWheelTurn), -gMaxWheelTurn);
     
