@@ -20,7 +20,8 @@
 
 #pragma mark Global Variables
 const CGFloat gMaxPitchDegreesForward = 1.6;
-const CGFloat gMaxPitchDegreesBackward = -2.85;
+//const CGFloat gMaxPitchDegreesBackward = -2.85; // Holden
+const CGFloat gMaxPitchDegreesBackward = -2.35; // Holden
 const CGFloat gPitchIncrentBy = 1.0;
 CGFloat gCurrentPitch = 0.0;
 CGFloat gPitchOffset = 0.0;
@@ -30,7 +31,7 @@ const CGFloat gMaxRollDegrees = -2.8;   // Holden
 const CGFloat gRollIncrementBy = 1.0;
 CGFloat gCurrentRoll = 0.0;
 
-const CGFloat gMaxWheelTurn = 30.0;
+const CGFloat gMaxWheelTurn = 40.0;
 CGFloat gCurrentTurn = 0.0;
 
 CC3Vector gStraight;
@@ -77,7 +78,7 @@ CGFloat gCurrentSpeed = 0.0;
     
 	// Create the camera, place it back a bit, and add it to the scene
     CC3Camera* cam = [CC3Camera nodeWithName: @"Camera"];
-	cam.location = cc3v( 0.0, 0.0, -15.0 );
+    cam.location = cc3v(0.0, 0.55, 25.0);
 	[self addChild: cam];
 
 	// Create a light, place it back and to the left at a specific
@@ -93,9 +94,7 @@ CGFloat gCurrentSpeed = 0.0;
 	// nodes in the resource, remove unwanted nodes from the resource (eg- extra cameras),
 	// or extract only specific nodes from the resource to add them directly to the scene,
 	// instead of adding the entire contents.
-    //self.rezNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Ford Highboy - 01.pod"];
-     self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
-    //self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Chevrolet HHR - 00.pod"];
+    self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
     //self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
 	[self addChild: self.bodyNode];
     
@@ -127,6 +126,8 @@ CGFloat gCurrentSpeed = 0.0;
     [self printLocation:self.groundPlaneNode.location withName:@"location"];
     [self.groundPlaneNode setLocation:groundLocation];
     [self addChild: self.groundPlaneNode];
+    
+    self.kalmanTurning = [[KalmanFilter alloc] init];
     
     self.groundPlaneNode.visible = YES;
 	// In some cases, PODs are created with opacity turned off by mistake. To avoid the possible
@@ -277,10 +278,11 @@ CGFloat gCurrentSpeed = 0.0;
 
 -(void) updateAfterTransform: (CC3NodeUpdatingVisitor*) visitor {
     
+    // Front Wheel stuff
     [self.nodeFLWheel setRotation:gStraight];
     [self.nodeFRWheel setRotation:gStraight];
     
-    gCurrentSpeedPos += 30.0 * gCurrentSpeed;
+    gCurrentSpeedPos += gCurrentSpeed;
     
     [self.nodeFLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeFLWheel rotateByAngle:gCurrentTurn aroundAxis:cc3v(0,0,1)];
@@ -314,9 +316,9 @@ CGFloat gCurrentSpeed = 0.0;
 
 	// Move the camera to frame the scene. The resulting configuration of the camera is output as
 	// an [info] log message, so you know where the camera needs to be in order to view your scene.
-    [self.activeCamera moveWithDuration: 1.0 toShowAllOf: self.bodyNode withPadding: 0.1f];
+    //[self.activeCamera moveWithDuration: 1.0 toShowAllOf: self.bodyNode withPadding: 0.1f];
     //[self.activeCamera moveWithDuration:0.5 toShowAllOf:self.bodyNode withPadding:0.1f];
-
+    
 	// Uncomment this line to draw the bounding box of the scene.
 //	self.shouldDrawWireframeBox = YES;
 }
@@ -386,20 +388,6 @@ CGFloat gCurrentSpeed = 0.0;
 
 #pragma mark Handling touch events 
 
-/**
- * This method is invoked from the CC3Layer whenever a touch event occurs, if that layer
- * has indicated that it is interested in receiving touch events, and is handling them.
- *
- * Override this method to handle touch events, or remove this method to make use of
- * the superclass behaviour of selecting 3D nodes on each touch-down event.
- *
- * This method is not invoked when gestures are used for user interaction. Your custom
- * CC3Layer processes gestures and invokes higher-level application-defined behaviour
- * on this customized CC3Scene subclass.
- *
- * For more info, read the notes of this method on CC3Scene.
- */
-
 -(void) touchEvent: (uint) touchType at: (CGPoint) touchPoint {
 
     if( touchType == 0 ) {
@@ -410,7 +398,6 @@ CGFloat gCurrentSpeed = 0.0;
         int widthSection = -2;
         int heightSection = -2;
         
-        //NSLog(@"touchPoint.x: %f, touchPoint.y: %f", touchPoint.x, touchPoint.y);
         // When heightSection == -1, Turning
         // When heightSection ==  0, Changing Speed
         // Nothing for when heightSection == 1.
@@ -465,6 +452,7 @@ CGFloat gCurrentSpeed = 0.0;
                 gCurrentRoll = MAX(gCurrentRoll, -gMaxRollDegrees);
             }
             
+            NSLog(@"gCurrentRoll: %f", gCurrentRoll);
         } else {
             
             if(widthSection == -1) {
@@ -498,6 +486,8 @@ CGFloat gCurrentSpeed = 0.0;
         
         NSLog(@"Setting gPitchOffset to %f", gPitchOffset);
     }
+    
+    [self printLocation:[self.activeCamera location] withName:@"Cam Loc"];
 }
 
 /**
@@ -533,8 +523,6 @@ CGFloat gCurrentSpeed = 0.0;
     
     course = [self convertCourseToSimple:course];
     
-    //self->prevCourse = course;
-    //NSLog(@"Corrected course: %f", course);
     NSLog(@"Current Pitch: %f, Roll: %f, Wheel Pos: %f", gCurrentPitch, gCurrentRoll, gCurrentTurn);
 
     const double durationSpeed = 0.5;
@@ -561,17 +549,16 @@ CGFloat gCurrentSpeed = 0.0;
     //NSLog(@"action: %f, x: %f, y: %f, z: %f", action , 1.0-acceleration.x, acceleration.y, acceleration.z);
     
     CCActionInterval* actionUp = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:action];
-    CCActionInterval* actionDown = [CC3ActionMoveUpBy actionWithDuration:0.15 moveBy:-action];
+    CCActionInterval* actionDown = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:-action];
     
-    [self.bodyNode runAction: [CCActionSequence actionOne: actionUp two: actionDown]];
+    [self.bodyNode runAction: [CCActionSequence actionOne:actionUp two:actionDown]];
     
     // gPitchOffset adjusts the pitch, which kind of corrects the original model.
-    gCurrentPitch = MAX(MIN((acceleration.z * -10) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
+    gCurrentPitch = MAX(MIN((acceleration.z * -10.0) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
     
-    gCurrentRoll  = MAX(MIN(acceleration.y * 10, gMaxRollDegrees), -gMaxRollDegrees);
+    gCurrentRoll  = MAX(MIN(acceleration.y * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
     
-    gCurrentTurn = MAX(MIN(gCurrentRoll * 20, gMaxWheelTurn), -gMaxWheelTurn);
-    
+    gCurrentTurn = MAX(MIN(gCurrentRoll * 5.0, gMaxWheelTurn), -gMaxWheelTurn);// [self.kalmanTurning get:];
 }
 
 

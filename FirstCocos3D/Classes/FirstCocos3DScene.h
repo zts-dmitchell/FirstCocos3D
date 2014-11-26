@@ -10,6 +10,7 @@
 #import "CC3Scene.h"
 #import "CC3ResourceNode.h"
 #import "FirstCocos3DLayer.h"
+#import "KalmanFilter.h"
 
 @import CoreMotion;
 
@@ -36,4 +37,5 @@
 -(void) setCourseHeading:(double)course withSpeed:(double) speed;
 
 @property (strong, nonatomic) CMMotionManager* manager;
+@property (strong, nonatomic) KalmanFilter* kalmanTurning;
 @end
