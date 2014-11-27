@@ -10,7 +10,7 @@
 #import "CC3Scene.h"
 #import "CC3ResourceNode.h"
 #import "FirstCocos3DLayer.h"
-#import "KalmanFilter.h"
+#import "Filters.h"
 
 @import CoreMotion;
 
@@ -20,22 +20,27 @@
     CGPoint touchDownPoint;
     double prevCourse;
     double prevSpeed;
+    
 };
 
-@property (strong, nonatomic) CC3ResourceNode* bodyNode;
+typedef enum coolCarTypes { Low, LowDrag, Gasser } CoolCarTypes;
 
+@property(strong, nonatomic) CC3ResourceNode* bodyNode;
+@property(strong, nonatomic) CC3Node* pitchEmpty;
+@property(strong, nonatomic) CC3Node* dashCameraEmpty;
+
+@property(assign, nonatomic) CC3Vector vLowBody;
+@property(assign, nonatomic) CC3Vector vGasserBody;
 @property(strong, nonatomic) CC3Node* wheelEmpty;
 @property(strong, nonatomic) CC3Node* nodeFLWheel;
 @property(strong, nonatomic) CC3Node* nodeFRWheel;
 @property(strong, nonatomic) CC3Node* nodeRLWheel;
 @property(strong, nonatomic) CC3Node* nodeRRWheel;
 
-//@property (strong, nonatomic) CC3ResourceNode* frontWheelsNode;
-//@property (strong, nonatomic) CC3ResourceNode* rearWheelsNode;
 @property (strong, nonatomic) CC3ResourceNode* groundPlaneNode;
 @property (strong, nonatomic) FirstCocos3DLayer* layer;
 -(void) setCourseHeading:(double)course withSpeed:(double) speed;
 
 @property (strong, nonatomic) CMMotionManager* manager;
-@property (strong, nonatomic) KalmanFilter* kalmanTurning;
+@property (strong, nonatomic) id<Filters> turningFilter;
 @end

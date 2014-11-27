@@ -18,16 +18,25 @@
     
     if(self) {
         
-    
+        _resetIfZero = false;
+        
         // Starting values
         [self reset];
     }
     return self;
 }
 
+-(NSString*) filterName {
+    return @"Kalman Filter";
+}
+
+-(void) resetIfZero:(BOOL) resetIfZero {
+    _resetIfZero = resetIfZero;
+}
+
 -(double) get:(double) zk {
 
-    if( zk <= 0.0 ) {
+    if( _resetIfZero && zk <= 0.0 ) {
         [self reset];
         return 0.0;
     }

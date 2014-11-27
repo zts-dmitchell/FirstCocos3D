@@ -15,6 +15,7 @@
 #import "CC3UtilityMeshNodes.h"
 #import "CCActionManager.h"
 
+#import "RunningAverage.h"
 
 @implementation FirstCocos3DScene
 
@@ -98,6 +99,29 @@ CGFloat gCurrentSpeed = 0.0;
     //self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
 	[self addChild: self.bodyNode];
     
+    // Get the pitch empty for pitch rotations
+    self.pitchEmpty = [self.bodyNode getNodeNamed:@"PitchEmpty"];
+
+    // Already in low-body position.
+    self.vLowBody = self.pitchEmpty.location;
+    self.vGasserBody = cc3v(0, -0.01257, 4.07566); // Y and Z are swapped
+    
+    // Get the dash camera empty
+//    self.dashCameraEmpty = [self.bodyNode getNodeNamed:@"DashCameraEmpty"];
+//    //[self.dashCameraEmpty rotateBy:cc3v(0, 0, 0)];
+//    //[self.dashCameraEmpty setForwardDirection:cc3v(0, 0, 1)];
+//    [self printLocation:self.dashCameraEmpty.location withName:@"dashCam loc"];
+//    [self printLocation:self.dashCameraEmpty.forwardDirection withName:@"dashCam forward loc"];
+//    [self printLocation:self.bodyNode.forwardDirection withName:@"bodyNode forward loc"];
+//    [self printLocation:self.dashCameraEmpty.rotation withName:@"dashCam rotation"];
+//    [self printLocation:self.bodyNode.rotation withName:@"bodyNode rotation"];
+//    [self printLocation:self.activeCamera.rotation withName:@"activeCamera rotation"];
+//    [self printLocation:self.activeCamera.forwardDirection withName:@"activeCamera forwardDirection"];
+//    [self printLocation:self.activeCamera.location withName:@"activeCamera location"];
+//    
+//    [self.dashCameraEmpty setForwardDirection:self.activeCamera.forwardDirection];
+//    [self.dashCameraEmpty setRotation:self.activeCamera.rotation];
+    
     // Display the back sides because it looks strange, otherwise.
     self.bodyNode.shouldCullBackFaces = NO;
     
@@ -127,10 +151,16 @@ CGFloat gCurrentSpeed = 0.0;
     [self.groundPlaneNode setLocation:groundLocation];
     [self addChild: self.groundPlaneNode];
     
-    self.kalmanTurning = [[KalmanFilter alloc] init];
     
-    self.groundPlaneNode.visible = YES;
-	// In some cases, PODs are created with opacity turned off by mistake. To avoid the possible
+    //self.turningFilter = [[KalmanFilter alloc] init];
+    self.turningFilter = [[RunningAverage alloc] initWithAvgLength:3];
+    
+    //self.bodyNode.visible = NO;
+    //self.groundPlaneNode.visible = NO;
+    
+
+    
+ 	// In some cases, PODs are created with opacity turned off by mistake. To avoid the possible
 	// surprise of an empty scene, the following line ensures that all nodes loaded so far will
 	// be visible. However, it also removes any translucency or transparency from the nodes, which
 	// may not be what you want. If your model contains transparency or translucency, remove this line.
@@ -422,34 +452,56 @@ CGFloat gCurrentSpeed = 0.0;
             
             if(widthSection == -1) { // Backward
                 
-                gCurrentPitch += gPitchIncrentBy;
-                gCurrentPitch = MIN(gCurrentPitch, gMaxPitchDegreesForward);
+                [self setCoolCarType:Low];
+                //[self.activeCamera translateBy:cc3v(0, -2, 0)];
+                //NSLog(@"Rotated by 5x");
+
+                //gCurrentPitch += gPitchIncrentBy;
+                //gCurrentPitch = MIN(gCurrentPitch, gMaxPitchDegreesForward);
                 
             } else if(widthSection == 0) { // Reset Straight
-                
-                gCurrentPitch = 0.0;
+
+                [self setCoolCarType:LowDrag];
+
+                //[self.activeCamera translateBy:cc3v(0, -4, 0)];
+                //NSLog(@"Rotated by -5x");
+                //gCurrentPitch = 0.0;
                 
             } else { // Forward
 
-                gCurrentPitch -= gPitchIncrentBy;
-                gCurrentPitch = MAX(gCurrentPitch, -gMaxPitchDegreesForward);
+                [self setCoolCarType:Gasser];
+
+                //[self.activeCamera translateBy:cc3v(0, 4, 0)];
+                //NSLog(@"Rotated by 90x");
+                //gCurrentPitch -= gPitchIncrentBy;
+                //gCurrentPitch = MAX(gCurrentPitch, -gMaxPitchDegreesForward);
             }
             
+            [self printLocation:self.nodeFLWheel.location withName:@"FLWheel Pos"];
+            [self printLocation:self.nodeFRWheel.location withName:@"FRWheel Pos"];
         } else if(heightSection == 0) {
             
             if(widthSection == -1) { // Roll Left
 
-                gCurrentRoll += gRollIncrementBy;
-                gCurrentRoll = MIN(gCurrentRoll, gMaxRollDegrees);
+                //NSLog(@"self to dashCam");
+                //[self setCameraTarget:self :self.dashCameraEmpty];
+                //gCurrentRoll += gRollIncrementBy;
+                //gCurrentRoll = MIN(gCurrentRoll, gMaxRollDegrees);
 
             } else if(widthSection == 0) { // Reset Roll
 
-                gCurrentRoll = 0.0;
+                //NSLog(@"dashCam to self");
+                //[self setCameraTarget:self :self.dashCameraEmpty];
+
+                //gCurrentRoll = 0.0;
                 
             } else { // Roll Right
 
-                gCurrentRoll -= gRollIncrementBy;
-                gCurrentRoll = MAX(gCurrentRoll, -gMaxRollDegrees);
+                //NSLog(@"dashCam to self");
+                //[self setCameraTarget:self.dashCameraEmpty :self ];
+
+                //gCurrentRoll -= gRollIncrementBy;
+                //gCurrentRoll = MAX(gCurrentRoll, -gMaxRollDegrees);
             }
             
             NSLog(@"gCurrentRoll: %f", gCurrentRoll);
@@ -470,6 +522,73 @@ CGFloat gCurrentSpeed = 0.0;
             }
         }
     }
+}
+
+/**
+ * Sets the car type to one of the cool pre-sets.
+ **/
+-(void) setCoolCarType:(CoolCarTypes) type {
+
+    CC3Vector location = self.pitchEmpty.location;
+
+    switch(type) {
+            
+        case Low:
+            NSLog(@"Setting Low Body");
+            
+            location.y = self.vLowBody.y;
+            [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
+
+            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.36290, -6.12179, -0.94)]];
+            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.36290, -6.12179, -0.94)]];
+            
+            [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
+            [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
+            break;
+            
+        case LowDrag:
+            NSLog(@"Setting Low Drag Body");
+            
+            location.y = self.vLowBody.y;
+            [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
+            
+            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.94744, -6.12179, -1.19232)]];
+            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.94744, -6.12179, -1.19232)]];
+            
+            [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.306, 0.798, 0.798)]];
+            [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.306, 0.798, 0.798)]];
+            break;
+            
+        case Gasser:
+            NSLog(@"Setting Gasser Body");
+            
+            location.y = self.vGasserBody.y;
+            [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
+     
+            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.94744, -6.12179, -1.19232)]];
+            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.94744, -6.12179, -1.19232)]];
+
+            [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.306, 0.798, 0.798)]];
+            [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.306, 0.798, 0.798)]];
+            break;
+            
+        default:
+            NSLog(@"Unknown type: %d", type);
+    }
+}
+
+-(void) setCameraTarget:(CC3Node*) fromTarget :(CC3Node*) toTarget {
+
+    if(fromTarget == nil || toTarget == nil) {
+        NSLog(@"Camera target is null.  Abandoning");
+        return;
+    }
+    
+    NSLog(@"Removing camera from source, %@, to target, %@", fromTarget.name, toTarget.name);
+    [fromTarget removeChild:self.activeCamera];
+    [self.activeCamera rotateBy:cc3v(-90, 0, 180)];
+    [self.activeCamera setLocation:toTarget.location];
+    [toTarget addChild:self.activeCamera];
 }
 
 -(void) adjustPitch:(BOOL) reset {
@@ -523,11 +642,13 @@ CGFloat gCurrentSpeed = 0.0;
     
     course = [self convertCourseToSimple:course];
     
-    NSLog(@"Current Pitch: %f, Roll: %f, Wheel Pos: %f", gCurrentPitch, gCurrentRoll, gCurrentTurn);
+    //NSLog(@"Current Pitch: %f, Roll: %f, Wheel Pos: %f", gCurrentPitch, gCurrentRoll, gCurrentTurn);
 
     const double durationSpeed = 0.5;
     
-    [self.bodyNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(gCurrentPitch, course, gCurrentRoll)]];
+    [self.bodyNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, gCurrentRoll)]];
+    [self.pitchEmpty runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(gCurrentPitch-90, 0, 0)]];
+    
     [self.groundPlaneNode runAction: [CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(0, course, 0)]];
     
     [self.nodeRLWheel runAction: [CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
@@ -553,12 +674,16 @@ CGFloat gCurrentSpeed = 0.0;
     
     [self.bodyNode runAction: [CCActionSequence actionOne:actionUp two:actionDown]];
     
+    // TODO: Switch these MAX/MIN to CLAMP.
     // gPitchOffset adjusts the pitch, which kind of corrects the original model.
     gCurrentPitch = MAX(MIN((acceleration.z * -10.0) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
     
     gCurrentRoll  = MAX(MIN(acceleration.y * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
     
     gCurrentTurn = MAX(MIN(gCurrentRoll * 5.0, gMaxWheelTurn), -gMaxWheelTurn);// [self.kalmanTurning get:];
+    const double kal = [self.turningFilter get:gCurrentTurn];
+    //NSLog(@"Regular Turn: %f. %@ turn: %f. Diff: %f", gCurrentTurn, [self.turningFilter filterName], kal, gCurrentTurn-kal);
+    gCurrentTurn = kal;
 }
 
 

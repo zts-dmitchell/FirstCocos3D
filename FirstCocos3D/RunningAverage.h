@@ -9,8 +9,9 @@
 #ifndef FirstCocos3D_RunningAverage_h
 #define FirstCocos3D_RunningAverage_h
 
+#import "Filters.h"
 
-@interface RunningAverage : NSObject
+@interface RunningAverage : NSObject <Filters>
 
 @property (strong, nonatomic) NSMutableArray* values;
 @property (nonatomic, assign) int size;

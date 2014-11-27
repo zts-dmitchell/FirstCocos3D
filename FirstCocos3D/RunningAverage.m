@@ -31,6 +31,9 @@
     return self;
 }
 
+-(NSString*) filterName {
+    return @"Running Average Filter";
+}
 /**
  *
  */

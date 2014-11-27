@@ -411,6 +411,7 @@
 
 /* Begin PBXFileReference section */
 		5700692A1A21B03100269F00 /* Chevrolet HHR - Linked.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Chevrolet HHR - Linked.pod"; path = "Resources/Chevrolet HHR - Linked.pod"; sourceTree = "<group>"; };
+		571382F21A2689B400753FD6 /* Filters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Filters.h; path = Utils/Filters.h; sourceTree = "<group>"; };
 		5717AF2019DDD2F600A29D6B /* KalmanFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KalmanFilter.h; path = Utils/KalmanFilter.h; sourceTree = "<group>"; };
 		5717AF2119DDD31100A29D6B /* KalmanFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KalmanFilter.m; path = Utils/KalmanFilter.m; sourceTree = "<group>"; };
 		575707A819FB0AF60010C922 /* Ground Plane.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Ground Plane.pod"; path = "Resources/Ground Plane.pod"; sourceTree = "<group>"; };
@@ -1169,6 +1170,7 @@
 				57B2347819DA3A0400B492AC /* RunningAverage.m */,
 				5717AF2019DDD2F600A29D6B /* KalmanFilter.h */,
 				5717AF2119DDD31100A29D6B /* KalmanFilter.m */,
+				571382F21A2689B400753FD6 /* Filters.h */,
 			);
 			name = Utils;
 			sourceTree = "<group>";

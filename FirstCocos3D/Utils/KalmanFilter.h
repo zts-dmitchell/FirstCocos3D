@@ -9,13 +9,17 @@
 #ifndef FirstCocos3D_KalmanFilter_h
 #define FirstCocos3D_KalmanFilter_h
 
-@interface KalmanFilter : NSObject
+#import "Filters.h"
+
+@interface KalmanFilter : NSObject <Filters>
 {
     @private double _previousXk;
     @private double _previousPk;
+    @private bool   _resetIfZero;
 }
 
 -(id) init;
+-(void) resetIfZero:(BOOL) resetIfZero;
 -(double) get:(double) value;
 -(void) reset;
 
