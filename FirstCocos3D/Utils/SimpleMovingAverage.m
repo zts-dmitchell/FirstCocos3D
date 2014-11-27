@@ -1,18 +1,18 @@
 //
-//  RunningAverage.m
+//  SimpleMovingAverage.m
 //  FirstCocos3D
 //
-//  Created by David Mitchell on 9/29/14.
+//  Created by David Mitchell on 11/27/14.
 //  Copyright (c) 2014 David Mitchell. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import "RunningAverage.h"
+#import "SimpleMovingAverage.h"
 
-@implementation RunningAverage
+@implementation SimpleMovingAverage
 
 -(id) initWithAvgLength:(int) size {
- 
+    
     self = [super init];
     
     if(self) {
@@ -21,11 +21,11 @@
             NSLog(@"Already initialized!!");
             return self;
         }
-    
+        
         self.size = size;
-    
+        
         NSLog(@"Initializing with %d", size);
-    
+        
         self.values = [[NSMutableArray alloc] initWithCapacity:size];
     }
     return self;
@@ -38,7 +38,7 @@
  *
  */
 -(double) get:(double) value {
-
+    
     [self.values addObject:[NSNumber numberWithFloat:value]];
     
     if(self.values.count < self.size) {
@@ -48,7 +48,7 @@
     }
     
     double sum = 0.0;
-        
+    
     for (id object in self.values) {
         NSNumber *val = object;
         sum += [val doubleValue];
@@ -59,11 +59,6 @@
     [self.values removeObjectAtIndex:0];
     
     return avg;
-}
-
-
--(void) boo {
-    NSLog(@"BOOO!!!");
 }
 
 @end

@@ -15,7 +15,7 @@
 #import "CC3UtilityMeshNodes.h"
 #import "CCActionManager.h"
 
-#import "RunningAverage.h"
+#import "SimpleMovingAverage.h"
 
 @implementation FirstCocos3DScene
 
@@ -153,7 +153,7 @@ CGFloat gCurrentSpeed = 0.0;
     
     
     //self.turningFilter = [[KalmanFilter alloc] init];
-    self.turningFilter = [[RunningAverage alloc] initWithAvgLength:3];
+    self.turningFilter = [[SimpleMovingAverage alloc] initWithAvgLength:3];
     
     //self.bodyNode.visible = NO;
     //self.groundPlaneNode.visible = NO;

@@ -1,25 +1,25 @@
 //
-//  RunningAverage.h
+//  ExponentialMovingAverage.h
 //  FirstCocos3D
 //
-//  Created by David Mitchell on 9/29/14.
+//  Created by David Mitchell on 11/27/14.
 //  Copyright (c) 2014 David Mitchell. All rights reserved.
 //
 
-#ifndef FirstCocos3D_RunningAverage_h
-#define FirstCocos3D_RunningAverage_h
+#ifndef FirstCocos3D_ExponentialMovingAverage_h
+#define FirstCocos3D_ExponentialMovingAverage_h
 
 #import "Filters.h"
 
-@interface RunningAverage : NSObject <Filters>
+@interface ExponentialMovingAverage : NSObject <Filters>
 
 @property (strong, nonatomic) NSMutableArray* values;
 @property (nonatomic, assign) int size;
 
 -(id) initWithAvgLength: (int) size;
--(void) boo;
 -(double) get:(double) value;
 
 @end
+
 
 #endif

@@ -8,7 +8,7 @@
 
 #import "FirstCocos3DLayer.h"
 #import "FirstCocos3DScene.h"
-#import "RunningAverage.h"
+#import "SimpleMovingAverage.h"
 #import "KalmanFilter.h"
 
 @import CoreLocation;
@@ -22,8 +22,8 @@
 @property (strong, nonatomic) CCLabelTTF *headingTypeLabel;
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (nonatomic) CLLocationSpeed speed;
-@property (strong, nonatomic) RunningAverage *runningAvg;
-@property (strong, nonatomic) RunningAverage *headingRunningAvg;
+@property (strong, nonatomic) SimpleMovingAverage *runningAvg;
+@property (strong, nonatomic) SimpleMovingAverage *headingRunningAvg;
 
 @end
 
@@ -80,8 +80,8 @@
     FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
     scene.layer = self;
     
-    self.runningAvg = [[RunningAverage alloc] initWithAvgLength:2];
-    self.headingRunningAvg = [[RunningAverage alloc] initWithAvgLength:2];
+    self.runningAvg = [[SimpleMovingAverage alloc] initWithAvgLength:2];
+    self.headingRunningAvg = [[SimpleMovingAverage alloc] initWithAvgLength:2];
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
