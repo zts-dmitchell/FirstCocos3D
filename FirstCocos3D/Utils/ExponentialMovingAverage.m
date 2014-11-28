@@ -11,54 +11,37 @@
 
 @implementation ExponentialMovingAverage
 
--(id) initWithAvgLength:(int) size {
+-(id) initWithNumberOfPeriods:(int) numberOfPeriods {
     
     self = [super init];
     
     if(self) {
         
-        if( self.values != nil ) {
-            NSLog(@"Already initialized!!");
-            return self;
-        }
+        self.previousEMA = 1.0;
+        self.numberOfPeriods = numberOfPeriods;
+        self.smoothingFactor = 2.0/(1+numberOfPeriods);
         
-        self.size = size;
-        
-        NSLog(@"Initializing with %d", size);
-        
-        self.values = [[NSMutableArray alloc] initWithCapacity:size];
+        NSLog(@"Initializing with size: %d, Smoothing factor: %f",
+              self.numberOfPeriods, self.smoothingFactor);
     }
     return self;
 }
 
 -(NSString*) filterName {
-    return @"Running Average Filter";
+    return @"EMA Filter";
 }
+
 /**
  *
  */
 -(double) get:(double) value {
     
-    [self.values addObject:[NSNumber numberWithFloat:value]];
+    const double ema = (value * self.smoothingFactor) + (self.previousEMA * (1.0 - self.smoothingFactor));
     
-    if(self.values.count < self.size) {
-        
-        NSLog(@"Not ready yet.  Size is %lu", (unsigned long)self.values.count);
-        return 0.0;
-    }
+    NSLog(@"Value: %f. EMA: %f", value, ema);
+    self.previousEMA = ema;
     
-    double sum = 0.0;
-    
-    for (id object in self.values) {
-        NSNumber *val = object;
-        sum += [val doubleValue];
-    }
-    
-    double avg = sum / self.values.count;
-    
-    [self.values removeObjectAtIndex:0];
-    
-    return avg;
+    return ema;
 }
 
 @end

@@ -32,7 +32,7 @@
 }
 
 -(NSString*) filterName {
-    return @"Running Average Filter";
+    return @"SMA Filter";
 }
 /**
  *

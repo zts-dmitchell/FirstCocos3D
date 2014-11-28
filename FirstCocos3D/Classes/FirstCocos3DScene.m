@@ -16,6 +16,7 @@
 #import "CCActionManager.h"
 
 #import "SimpleMovingAverage.h"
+#import "ExponentialMovingAverage.h"
 
 @implementation FirstCocos3DScene
 
@@ -153,12 +154,12 @@ CGFloat gCurrentSpeed = 0.0;
     
     
     //self.turningFilter = [[KalmanFilter alloc] init];
-    self.turningFilter = [[SimpleMovingAverage alloc] initWithAvgLength:3];
+    //self.turningFilter = [[SimpleMovingAverage alloc] initWithAvgLength:3];
+    self.turningFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:3];
     
     //self.bodyNode.visible = NO;
     //self.groundPlaneNode.visible = NO;
     
-
     
  	// In some cases, PODs are created with opacity turned off by mistake. To avoid the possible
 	// surprise of an empty scene, the following line ensures that all nodes loaded so far will
@@ -448,7 +449,7 @@ CGFloat gCurrentSpeed = 0.0;
         else
             NSLog(@"WTF?: %f", s.height);
         
-        if(heightSection == -1) { // Pitch
+        if(heightSection == -1) { // Bottom 3rd
             
             if(widthSection == -1) { // Backward
                 
@@ -479,7 +480,8 @@ CGFloat gCurrentSpeed = 0.0;
             
             [self printLocation:self.nodeFLWheel.location withName:@"FLWheel Pos"];
             [self printLocation:self.nodeFRWheel.location withName:@"FRWheel Pos"];
-        } else if(heightSection == 0) {
+            
+        } else if(heightSection == 0) {  // Middle 3rd
             
             if(widthSection == -1) { // Roll Left
 
@@ -490,6 +492,7 @@ CGFloat gCurrentSpeed = 0.0;
 
             } else if(widthSection == 0) { // Reset Roll
 
+                self.pitchEmpty.visible = !self.pitchEmpty.visible;
                 //NSLog(@"dashCam to self");
                 //[self setCameraTarget:self :self.dashCameraEmpty];
 
@@ -504,8 +507,9 @@ CGFloat gCurrentSpeed = 0.0;
                 //gCurrentRoll = MAX(gCurrentRoll, -gMaxRollDegrees);
             }
             
-            NSLog(@"gCurrentRoll: %f", gCurrentRoll);
-        } else {
+            //NSLog(@"gCurrentRoll: %f", gCurrentRoll);
+            
+        } else {    // Top 3rd
             
             if(widthSection == -1) {
                 
@@ -680,9 +684,9 @@ CGFloat gCurrentSpeed = 0.0;
     
     gCurrentRoll  = MAX(MIN(acceleration.y * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
     
-    gCurrentTurn = MAX(MIN(gCurrentRoll * 5.0, gMaxWheelTurn), -gMaxWheelTurn);// [self.kalmanTurning get:];
+    gCurrentTurn = MAX(MIN(acceleration.y * gMaxWheelTurn, gMaxWheelTurn), -gMaxWheelTurn);// [self.kalmanTurning get:];
     const double kal = [self.turningFilter get:gCurrentTurn];
-    //NSLog(@"Regular Turn: %f. %@ turn: %f. Diff: %f", gCurrentTurn, [self.turningFilter filterName], kal, gCurrentTurn-kal);
+    NSLog(@"Regular Turn: %f. %@ turn: %f. Diff: %f", gCurrentTurn, [self.turningFilter filterName], kal, gCurrentTurn-kal);
     gCurrentTurn = kal;
 }
 

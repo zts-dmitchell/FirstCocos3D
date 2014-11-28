@@ -13,10 +13,11 @@
 
 @interface ExponentialMovingAverage : NSObject <Filters>
 
-@property (strong, nonatomic) NSMutableArray* values;
-@property (nonatomic, assign) int size;
+@property (nonatomic, assign) int numberOfPeriods;
+@property (nonatomic, assign) double smoothingFactor;
+@property (nonatomic, assign) double previousEMA;
 
--(id) initWithAvgLength: (int) size;
+-(id) initWithNumberOfPeriods: (int) numberOfPeriods;
 -(double) get:(double) value;
 
 @end

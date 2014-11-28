@@ -75,7 +75,7 @@
     [self addChild:self.headingTypeLabel];
     
 
-    // new shit
+    // New Stuff
     bIsCourse = FALSE;
     FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
     scene.layer = self;
