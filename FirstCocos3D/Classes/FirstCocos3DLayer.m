@@ -114,7 +114,7 @@
     CLLocation *newLocation = [locations lastObject];
     
     self.speed = [newLocation speed];
-    CLLocationDistance altitude = [newLocation altitude] * 3.2808399; // Convert meters to feet
+    //CLLocationDistance altitude = [newLocation altitude] * 3.2808399; // Convert meters to feet
     CLLocationDirection course = [newLocation course];
     
     if( self.speed <= 0.0 ) {
