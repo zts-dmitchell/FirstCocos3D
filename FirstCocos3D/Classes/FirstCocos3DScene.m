@@ -33,12 +33,14 @@ const CGFloat gMaxRollDegrees = -2.8;   // Holden
 const CGFloat gRollIncrementBy = 1.0;
 CGFloat gCurrentRoll = 0.0;
 
-const CGFloat gMaxWheelTurn = 40.0;
+const CGFloat gMaxWheelTurn = 30.0;
 CGFloat gCurrentTurn = 0.0;
+
+CGFloat gCurrentCourse = 0.0;
 
 CC3Vector gStraight;
 CGFloat gCurrentSpeedPos = 0.0;
-CGFloat gCurrentSpeed = 40.0;
+CGFloat gCurrentSpeed = 0.0;
 
 
 #pragma mark End Global Variables
@@ -154,9 +156,10 @@ CGFloat gCurrentSpeed = 40.0;
     
     ///////////////////////
     // F I L T E R S
-    //self.turningFilter = [[KalmanFilter alloc] init];
-    //self.turningFilter = [[SimpleMovingAverage alloc] initWithAvgLength:3];
-    self.turningFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:11];
+    //self.wheelTurningFilter = [[KalmanFilter alloc] init];
+    //self.wheelTurningFilter = [[SimpleMovingAverage alloc] initWithAvgLength:3];
+    self.wheelTurningFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:7];
+    self.bodyTurningFilter  = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:11];
     self.upDownBodyMotionFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:3];
     self.rollFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
     self.pitchFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
@@ -314,14 +317,18 @@ CGFloat gCurrentSpeed = 40.0;
    
     [self storePositionsAndAnimateBody];
 
+    if(gCurrentSpeed <= 0.0)
+        return;
+
     [self turnNodesByAcceleration:0.5];
+    //[self turnNodesByCourse:gCurrentCourse withActionDuration:0.5];
     
     // Front Wheel stuff
     [self.nodeFLWheel setRotation:gStraight];
     [self.nodeFRWheel setRotation:gStraight];
     
     gCurrentSpeedPos += gCurrentSpeed;
-    const double factoredCurrentTurn = gCurrentTurn * 30.0;
+    const double factoredCurrentTurn = gCurrentTurn * 10.0;
   
     // Set rotation about x *before* rotation about z!!!
     [self.nodeFLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
@@ -331,9 +338,6 @@ CGFloat gCurrentSpeed = 40.0;
     [self.nodeFRWheel rotateByAngle:factoredCurrentTurn aroundAxis:cc3v(0,0,1)];
  
     [self.pitchEmpty setRotation:cc3v(gCurrentPitch-90, 0, 0)];
-    
-    if(gCurrentSpeed == 0.0)
-        return;
     
     [self.nodeRLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeRRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
@@ -472,6 +476,7 @@ CGFloat gCurrentSpeed = 40.0;
             if(widthSection == -1) { // Backward
                 
                 [self setCoolCarType:Low];
+                
                 //[self.activeCamera translateBy:cc3v(0, -2, 0)];
                 //NSLog(@"Rotated by 5x");
 
@@ -637,7 +642,11 @@ CGFloat gCurrentSpeed = 40.0;
  */
 -(void) setCourseHeading:(double)course withSpeed:(double)speed {
 
-    // Store the speed
+    // Store the course ...
+    //gCurrentCourse = [self convertCourseToSimple:[self.bodyTurningFilter get:course]];
+    gCurrentCourse = [self.bodyTurningFilter get:course];
+    NSLog(@"Course: %f, gCurrentCourse: %f", course, gCurrentCourse);
+    // ... and speed
     gCurrentSpeed = speed;
 
 //    if( speed > 0.0 )
@@ -678,9 +687,18 @@ CGFloat gCurrentSpeed = 40.0;
 
 -(void) turnNodesByCourse:(double) course withActionDuration:(double) duration {
     
-    [self.bodyNode        runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(0, course, gCurrentRoll)]];
-    [self.groundPlaneNode runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(0, course, 0)]];
-    [self.wheelEmpty      runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(270, course, 0)]];
+    //[self.bodyNode        runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(0, course, gCurrentRoll)]];
+    //[self.groundPlaneNode runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(0, course, 0)]];
+    //[self.wheelEmpty      runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(270, course, 0)]];
+    
+    [self.groundPlaneNode setRotation:cc3v(0, course, 0)];
+    
+    CC3Vector rotation = self.groundPlaneNode.rotation;
+     
+    [self.bodyNode setRotation:cc3v(rotation.x, rotation.y, gCurrentRoll)];
+    
+    rotation.x += 270;
+    [self.wheelEmpty      setRotation:rotation];
 }
 
 -(void) turnNodesByAcceleration:(double) duration {
@@ -713,13 +731,13 @@ CGFloat gCurrentSpeed = 40.0;
     
     // TODO: Switch these MAX/MIN to CLAMP.
     // gPitchOffset adjusts the pitch, which kind of corrects the original model.
-    gCurrentPitch = MAX(MIN(([self.pitchFilter get:acceleration.z * -10.0]) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
-    gCurrentRoll  = MAX(MIN([self.rollFilter get:acceleration.y * 10.0], -gMaxRollDegrees), gMaxRollDegrees);
-    gCurrentTurn = MAX(MIN([self.turningFilter get:acceleration.y], gMaxWheelTurn), -gMaxWheelTurn);// [self.kalmanTurning get:];
+    gCurrentPitch = MAX(MIN(([self.pitchFilter get:acceleration.z] * - 10.0) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
+    gCurrentRoll  = MAX(MIN([self.rollFilter get:acceleration.y] * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
+    gCurrentTurn  = MAX(MIN([self.wheelTurningFilter get:acceleration.y * 5], gMaxWheelTurn), -gMaxWheelTurn);// [self.kalmanTurning get:];
     
-    //const double kal = [self.turningFilter get:gCurrentTurn];
-    NSLog(@"CPitch: %f, GRoll: %f, CTurn: %f", gCurrentPitch, gCurrentRoll, gCurrentTurn);
-    //NSLog(@"Regular Turn: %f. %@ turn: %f. Diff: %f", gCurrentTurn, [self.turningFilter filterName], kal, gCurrentTurn-kal);
+    //const double kal = [self.wheelTurningFilter get:gCurrentTurn];
+    //NSLog(@"CPitch: %f, GRoll: %f, CTurn: %f", gCurrentPitch, gCurrentRoll, gCurrentTurn);
+    //NSLog(@"Regular Turn: %f. %@ turn: %f. Diff: %f", gCurrentTurn, [self.wheelTurningFilter filterName], kal, gCurrentTurn-kal);
     //gCurrentTurn = kal;
 }
 
