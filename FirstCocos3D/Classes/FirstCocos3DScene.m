@@ -35,7 +35,7 @@ CGFloat gCurrentRoll = 0.0;
 
 const CGFloat gMaxWheelTurn = 30.0;
 CGFloat gCurrentTurn = 0.0;
-
+CGFloat gFactoredTurn = 0.0;
 CGFloat gCurrentCourse = 0.0;
 
 CC3Vector gStraight;
@@ -323,19 +323,22 @@ CGFloat gCurrentSpeed = 0.0;
     [self turnNodesByAcceleration:0.5];
     //[self turnNodesByCourse:gCurrentCourse withActionDuration:0.5];
     
+    // TODO: There's got to be a better way.
     // Front Wheel stuff
     [self.nodeFLWheel setRotation:gStraight];
     [self.nodeFRWheel setRotation:gStraight];
+    // Set rears, too, so that they don't spin.
+    [self.nodeRLWheel setRotation:gStraight];
+    [self.nodeRRWheel setRotation:gStraight];
     
     gCurrentSpeedPos += gCurrentSpeed;
-    const double factoredCurrentTurn = gCurrentTurn * 10.0;
-  
+    
     // Set rotation about x *before* rotation about z!!!
     [self.nodeFLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeFRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     
-    [self.nodeFLWheel rotateByAngle:factoredCurrentTurn aroundAxis:cc3v(0,0,1)];
-    [self.nodeFRWheel rotateByAngle:factoredCurrentTurn aroundAxis:cc3v(0,0,1)];
+    [self.nodeFLWheel rotateByAngle:gFactoredTurn aroundAxis:cc3v(0,0,1)];
+    [self.nodeFRWheel rotateByAngle:gFactoredTurn aroundAxis:cc3v(0,0,1)];
  
     [self.pitchEmpty setRotation:cc3v(gCurrentPitch-90, 0, 0)];
     
@@ -508,6 +511,9 @@ CGFloat gCurrentSpeed = 0.0;
             
             if(widthSection == -1) { // Roll Left
 
+                gCurrentSpeed -= 1.0;
+                
+                gCurrentSpeed = MAX(gCurrentSpeed, 0.0);
                 //NSLog(@"self to dashCam");
                 //[self setCameraTarget:self :self.dashCameraEmpty];
                 //gCurrentRoll += gRollIncrementBy;
@@ -515,6 +521,7 @@ CGFloat gCurrentSpeed = 0.0;
 
             } else if(widthSection == 0) { // Reset Roll
 
+                gCurrentSpeed = 0.0;
                 self.pitchEmpty.visible = !self.pitchEmpty.visible;
                 //NSLog(@"dashCam to self");
                 //[self setCameraTarget:self :self.dashCameraEmpty];
@@ -523,6 +530,10 @@ CGFloat gCurrentSpeed = 0.0;
                 
             } else { // Roll Right
 
+                gCurrentSpeed += 1.0;
+
+                gCurrentSpeed = MIN(gCurrentSpeed, 100);
+
                 //NSLog(@"dashCam to self");
                 //[self setCameraTarget:self.dashCameraEmpty :self ];
 
@@ -530,7 +541,7 @@ CGFloat gCurrentSpeed = 0.0;
                 //gCurrentRoll = MAX(gCurrentRoll, -gMaxRollDegrees);
             }
             
-            //NSLog(@"gCurrentRoll: %f", gCurrentRoll);
+            NSLog(@"gCurrentSpeed: %f", gCurrentSpeed);
             
         } else {    // Top 3rd
             
@@ -733,7 +744,17 @@ CGFloat gCurrentSpeed = 0.0;
     // gPitchOffset adjusts the pitch, which kind of corrects the original model.
     gCurrentPitch = MAX(MIN(([self.pitchFilter get:acceleration.z] * - 10.0) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
     gCurrentRoll  = MAX(MIN([self.rollFilter get:acceleration.y] * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
-    gCurrentTurn  = MAX(MIN([self.wheelTurningFilter get:acceleration.y * 5], gMaxWheelTurn), -gMaxWheelTurn);// [self.kalmanTurning get:];
+    gCurrentTurn  = MAX(MIN([self.wheelTurningFilter get:acceleration.y] * 5.0, gMaxWheelTurn), -gMaxWheelTurn);// [self.kalmanTurning get:];
+
+    // Speed and turn factoring
+    const double cosFactor = cos(CC_DEGREES_TO_RADIANS(gCurrentSpeed));
+    const double scaledCosFactor = cosFactor * 10.0;
+    gFactoredTurn = gCurrentTurn * scaledCosFactor;
+    
+    NSLog(@"speed: %f, cosFac: %f, scaledCFac: %f, CurrTurn: %f, factTurn: %f",
+          gCurrentSpeed, cosFactor, scaledCosFactor, gCurrentTurn, gFactoredTurn);
+    
+    
     
     //const double kal = [self.wheelTurningFilter get:gCurrentTurn];
     //NSLog(@"CPitch: %f, GRoll: %f, CTurn: %f", gCurrentPitch, gCurrentRoll, gCurrentTurn);
