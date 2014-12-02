@@ -43,7 +43,7 @@ typedef enum coolCarTypes { Low, LowDrag, Gasser } CoolCarTypes;
 
 @property (strong, nonatomic) CMMotionManager* manager;
 @property (strong, nonatomic) id<Filters> wheelTurningFilter;
-@property (strong, nonatomic) id<Filters> bodyTurningFilter;
+@property (strong, nonatomic) id<Filters> courseFilter;
 @property (strong, nonatomic) id<Filters> rollFilter;
 @property (strong, nonatomic) id<Filters> pitchFilter;
 @property (strong, nonatomic) id<Filters> upDownBodyMotionFilter;

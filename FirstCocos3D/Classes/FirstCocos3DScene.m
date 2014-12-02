@@ -34,8 +34,7 @@ const CGFloat gRollIncrementBy = 1.0;
 CGFloat gCurrentRoll = 0.0;
 
 const CGFloat gMaxWheelTurn = 30.0;
-CGFloat gCurrentTurn = 0.0;
-CGFloat gFactoredTurn = 0.0;
+CGFloat gCurrentWheelPos = 0.0;
 CGFloat gCurrentCourse = 0.0;
 
 CC3Vector gStraight;
@@ -156,10 +155,8 @@ CGFloat gCurrentSpeed = 0.0;
     
     ///////////////////////
     // F I L T E R S
-    //self.wheelTurningFilter = [[KalmanFilter alloc] init];
-    //self.wheelTurningFilter = [[SimpleMovingAverage alloc] initWithAvgLength:3];
     self.wheelTurningFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:7];
-    self.bodyTurningFilter  = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:11];
+    self.courseFilter  = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:11];
     self.upDownBodyMotionFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:3];
     self.rollFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
     self.pitchFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
@@ -320,8 +317,7 @@ CGFloat gCurrentSpeed = 0.0;
     if(gCurrentSpeed <= 0.0)
         return;
 
-    [self turnNodesByAcceleration:0.5];
-    //[self turnNodesByCourse:gCurrentCourse withActionDuration:0.5];
+    [self rotateNodesToCourse:0.5];
     
     // TODO: There's got to be a better way.
     // Front Wheel stuff
@@ -337,8 +333,8 @@ CGFloat gCurrentSpeed = 0.0;
     [self.nodeFLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeFRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     
-    [self.nodeFLWheel rotateByAngle:gFactoredTurn aroundAxis:cc3v(0,0,1)];
-    [self.nodeFRWheel rotateByAngle:gFactoredTurn aroundAxis:cc3v(0,0,1)];
+    [self.nodeFLWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
+    [self.nodeFRWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
  
     [self.pitchEmpty setRotation:cc3v(gCurrentPitch-90, 0, 0)];
     
@@ -655,8 +651,7 @@ CGFloat gCurrentSpeed = 0.0;
 
     // Store the course ...
     //gCurrentCourse = [self convertCourseToSimple:[self.bodyTurningFilter get:course]];
-    gCurrentCourse = [self.bodyTurningFilter get:course];
-    NSLog(@"Course: %f, gCurrentCourse: %f", course, gCurrentCourse);
+    gCurrentCourse = course;
     // ... and speed
     gCurrentSpeed = speed;
 
@@ -687,38 +682,24 @@ CGFloat gCurrentSpeed = 0.0;
     //NSLog(@"Current Pitch: %f, Roll: %f, Wheel Pos: %f", gCurrentPitch, gCurrentRoll, gCurrentTurn);
 
     //const double durationSpeed = 0.5;
-    
-    //[self turnNodesByCourse:course withActionDuration:durationSpeed];
-    //[self turnNodesByAcceleration:durationSpeed];
+    //[self rotateNodesToCourse:course withActionDuration:durationSpeed];
     
     //[self.pitchEmpty  runAction:[CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(gCurrentPitch-90, 0, 0)]];
     //[self.nodeRLWheel runAction:[CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
     //[self.nodeRRWheel runAction:[CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
 }
 
--(void) turnNodesByCourse:(double) course withActionDuration:(double) duration {
+-(void) rotateNodesToCourse:(double) duration {
     
     //[self.bodyNode        runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(0, course, gCurrentRoll)]];
     //[self.groundPlaneNode runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(0, course, 0)]];
     //[self.wheelEmpty      runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(270, course, 0)]];
     
-    [self.groundPlaneNode setRotation:cc3v(0, course, 0)];
+    [self.groundPlaneNode setRotation:cc3v(0, gCurrentCourse, 0)];
     
     CC3Vector rotation = self.groundPlaneNode.rotation;
      
     [self.bodyNode setRotation:cc3v(rotation.x, rotation.y, gCurrentRoll)];
-    
-    rotation.x += 270;
-    [self.wheelEmpty      setRotation:rotation];
-}
-
--(void) turnNodesByAcceleration:(double) duration {
- 
-    [self.groundPlaneNode rotateBy:cc3v(0, gCurrentTurn, 0)];
-
-    CC3Vector rotation = self.groundPlaneNode.rotation;
-
-    [self.bodyNode        setRotation:cc3v(rotation.x, rotation.y, gCurrentRoll)];
     
     rotation.x += 270;
     [self.wheelEmpty      setRotation:rotation];
@@ -744,17 +725,17 @@ CGFloat gCurrentSpeed = 0.0;
     // gPitchOffset adjusts the pitch, which kind of corrects the original model.
     gCurrentPitch = MAX(MIN(([self.pitchFilter get:acceleration.z] * - 10.0) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
     gCurrentRoll  = MAX(MIN([self.rollFilter get:acceleration.y] * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
-    gCurrentTurn  = MAX(MIN([self.wheelTurningFilter get:acceleration.y] * 5.0, gMaxWheelTurn), -gMaxWheelTurn);// [self.kalmanTurning get:];
-
+    
     // Speed and turn factoring
-    const double cosFactor = cos(CC_DEGREES_TO_RADIANS(gCurrentSpeed));
-    const double scaledCosFactor = cosFactor * 10.0;
-    gFactoredTurn = gCurrentTurn * scaledCosFactor;
-    
-    NSLog(@"speed: %f, cosFac: %f, scaledCFac: %f, CurrTurn: %f, factTurn: %f",
-          gCurrentSpeed, cosFactor, scaledCosFactor, gCurrentTurn, gFactoredTurn);
-    
-    
+    const double speedFactor = getFactorFromSpeed();
+    const double scaledWheelPosCosFactor = speedFactor * 60.0;
+
+    gCurrentCourse = [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
+
+    gCurrentWheelPos = MAX(MIN([self.wheelTurningFilter get:acceleration.y] * scaledWheelPosCosFactor, gMaxWheelTurn), -gMaxWheelTurn);
+
+    NSLog(@"speed: %f, speedFac: %f, CurrCourse: %f, scaledWheelPosCosFactor: %f, CurrWheelP: %f",
+          gCurrentSpeed, speedFactor, gCurrentCourse, scaledWheelPosCosFactor, gCurrentWheelPos);
     
     //const double kal = [self.wheelTurningFilter get:gCurrentTurn];
     //NSLog(@"CPitch: %f, GRoll: %f, CTurn: %f", gCurrentPitch, gCurrentRoll, gCurrentTurn);
@@ -762,6 +743,11 @@ CGFloat gCurrentSpeed = 0.0;
     //gCurrentTurn = kal;
 }
 
+double getFactorFromSpeed() {
+    
+    //return cos(CC_DEGREES_TO_RADIANS(gCurrentSpeed)); // Cos percentage
+    return (101.0 - gCurrentSpeed) / 100.0; // Linear percentage
+}
 
 -(BOOL) shouldChangeCourse:(double) course {
 
