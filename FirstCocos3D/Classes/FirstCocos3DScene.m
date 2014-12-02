@@ -166,6 +166,7 @@ CC3Vector gFRLocation;
     self.upDownBodyMotionFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:3];
     self.rollFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
     self.pitchFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
+    self.wheelieFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:6];
     //self.bodyNode.visible = NO;
     //self.groundPlaneNode.visible = NO;
     
@@ -318,7 +319,7 @@ CC3Vector gFRLocation;
 
 -(void) updateAfterTransform: (CC3NodeUpdatingVisitor*) visitor {
    
-    [self storePositionsAndAnimateBody];
+    [self storeRotationsAndAnimateBody];
 
     //if(gCurrentSpeed <= 0.0)
     //    return;
@@ -671,7 +672,7 @@ CC3Vector gFRLocation;
     gCurrentSpeed = speed;
 
 //    if( speed > 0.0 )
-        //[self storePositionsAndAnimateBody];
+        //[self storeRotationsAndAnimateBody];
     
 //    if( ! [self shouldChangeCourse:course] ) {
 //        NSLog(@"Not changing course");
@@ -721,12 +722,12 @@ CC3Vector gFRLocation;
     
     rotation.x += 270;
     [self.wheelEmpty      setRotation:rotation];
-    [self printLocation:rotation withName:@"wheelEmpty Rotation"];
+    //[self printLocation:rotation withName:@"wheelEmpty Rotation"];
     
-    CC3Vector pempty = self.pitchEmpty.location;
-    [self printLocation:pempty withName:@"pitchEmpty"];
+    //CC3Vector pempty = self.pitchEmpty.location;
+    //[self printLocation:pempty withName:@"pitchEmpty"];
 
-    [self printLocation:self.nodeFLWheel.location withName:@"fl"];
+    //[self printLocation:self.nodeFLWheel.location withName:@"fl"];
 
     double theta_sin = sin(CC_DEGREES_TO_RADIANS(gPitchWheelie));
     double theta_cos = cos(CC_DEGREES_TO_RADIANS(gPitchWheelie));
@@ -737,18 +738,18 @@ CC3Vector gFRLocation;
     double pz = theta_cos * (pxpy.z-oxoy.z) - theta_sin * (pxpy.y-oxoy.y) + oxoy.z;
     double py = theta_sin * (pxpy.z-oxoy.z) + theta_cos * (pxpy.y-oxoy.y) + oxoy.y;
     
-    NSLog(@"theta: %f, py: %f, pz: %f", gPitchWheelie, py, pz);
+    //NSLog(@"theta: %f, py: %f, pz: %f", gPitchWheelie, py, pz);
 
     rotation = self.nodeFLWheel.location;
     rotation.z = pz;
     rotation.y = py;
     
     [self.nodeFLWheel setLocation:rotation];
-    [self printLocation:self.nodeFLWheel.location withName:@"fl"];
+    //[self printLocation:self.nodeFLWheel.location withName:@"fl"];
     
     rotation.x = self.nodeFRWheel.location.x;
     [self.nodeFRWheel setLocation:rotation];
-    [self printLocation:self.nodeFRWheel.location withName:@"fr"];
+    //[self printLocation:self.nodeFRWheel.location withName:@"fr"];
     
 
 //    if( gPitchWheelie > 0.0)
@@ -758,7 +759,7 @@ CC3Vector gFRLocation;
     
 }
 
--(void) storePositionsAndAnimateBody {
+-(void) storeRotationsAndAnimateBody {
     
     if(self.manager == nil) {
         NSLog(@"CMMotionManager not available");
@@ -776,7 +777,14 @@ CC3Vector gFRLocation;
     
     // TODO: Switch these MAX/MIN to CLAMP.
     // gPitchOffset adjusts the pitch, which kind of corrects the original model.
-    gCurrentPitch = MAX(MIN(([self.pitchFilter get:acceleration.z] * - 10.0) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
+    gCurrentPitch = MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward);
+    
+    if(gCurrentPitch < (gMaxPitchDegreesBackward+2.0) ) {
+        gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitch - gMaxPitchDegreesBackward)];
+        NSLog(@"Wheelie!!!: %f", gPitchWheelie);
+        
+    }
+    //gCurrentPitch = MAX(MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
     
     
     gCurrentRoll  = MAX(MIN([self.rollFilter get:acceleration.y] * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
@@ -793,7 +801,7 @@ CC3Vector gFRLocation;
     //      gCurrentSpeed, speedFactor, gCurrentCourse, scaledWheelPosCosFactor, gCurrentWheelPos);
     
     //const double kal = [self.wheelTurningFilter get:gCurrentTurn];
-    //NSLog(@"CPitch: %f, GRoll: %f, CTurn: %f", gCurrentPitch, gCurrentRoll, gCurrentTurn);
+    NSLog(@"CPitch: %f, GRoll: %f, CTurn: %f", gCurrentPitch, gCurrentRoll, gCurrentCourse);
     //NSLog(@"Regular Turn: %f. %@ turn: %f. Diff: %f", gCurrentTurn, [self.wheelTurningFilter filterName], kal, gCurrentTurn-kal);
     //gCurrentTurn = kal;
 }
