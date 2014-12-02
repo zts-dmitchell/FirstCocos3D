@@ -722,40 +722,30 @@ CC3Vector gFRLocation;
     
     rotation.x += 270;
     [self.wheelEmpty      setRotation:rotation];
-    //[self printLocation:rotation withName:@"wheelEmpty Rotation"];
-    
-    //CC3Vector pempty = self.pitchEmpty.location;
-    //[self printLocation:pempty withName:@"pitchEmpty"];
 
-    //[self printLocation:self.nodeFLWheel.location withName:@"fl"];
-
-    double theta_sin = sin(CC_DEGREES_TO_RADIANS(gPitchWheelie));
-    double theta_cos = cos(CC_DEGREES_TO_RADIANS(gPitchWheelie));
+    const double theta_sin = sin(CC_DEGREES_TO_RADIANS(gPitchWheelie));
+    const double theta_cos = cos(CC_DEGREES_TO_RADIANS(gPitchWheelie));
     
     CC3Vector pxpy = self.nodeFLWheel.location;
     CC3Vector oxoy = self.nodeRLWheel.location;
     
-    double pz = theta_cos * (pxpy.z-oxoy.z) - theta_sin * (pxpy.y-oxoy.y) + oxoy.z;
-    double py = theta_sin * (pxpy.z-oxoy.z) + theta_cos * (pxpy.y-oxoy.y) + oxoy.y;
-    
-    //NSLog(@"theta: %f, py: %f, pz: %f", gPitchWheelie, py, pz);
+    const double pz = theta_cos * (pxpy.z-oxoy.z) - theta_sin * (pxpy.y-oxoy.y) + oxoy.z;
+    const double py = theta_sin * (pxpy.z-oxoy.z) + theta_cos * (pxpy.y-oxoy.y) + oxoy.y;
 
+    /////////////////////////////////////////////
+    // Set the left wheel
     rotation = self.nodeFLWheel.location;
-    rotation.z = pz;
     rotation.y = py;
+    rotation.z = pz;
     
     [self.nodeFLWheel setLocation:rotation];
-    //[self printLocation:self.nodeFLWheel.location withName:@"fl"];
-    
+ 
+    /////////////////////////////////////////////
+    // Set the right wheel
+    // Reuse the existing y and z, but get the correct x.
     rotation.x = self.nodeFRWheel.location.x;
-    [self.nodeFRWheel setLocation:rotation];
-    //[self printLocation:self.nodeFRWheel.location withName:@"fr"];
     
-
-//    if( gPitchWheelie > 0.0)
-//        gPitchWheelie = -gPitchWheelie;
-//    else if( gPitchWheelie < 0.0)
-//        gPitchWheelie = 0.0;
+    [self.nodeFRWheel setLocation:rotation];
     
 }
 
@@ -780,9 +770,7 @@ CC3Vector gFRLocation;
     gCurrentPitch = MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward);
     
     if(gCurrentPitch < (gMaxPitchDegreesBackward+2.0) ) {
-        gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitch - gMaxPitchDegreesBackward)];
-        NSLog(@"Wheelie!!!: %f", gPitchWheelie);
-        
+        gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitch - (gMaxPitchDegreesBackward+2.0))];
     }
     //gCurrentPitch = MAX(MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
     
@@ -801,7 +789,7 @@ CC3Vector gFRLocation;
     //      gCurrentSpeed, speedFactor, gCurrentCourse, scaledWheelPosCosFactor, gCurrentWheelPos);
     
     //const double kal = [self.wheelTurningFilter get:gCurrentTurn];
-    NSLog(@"CPitch: %f, GRoll: %f, CTurn: %f", gCurrentPitch, gCurrentRoll, gCurrentCourse);
+    //NSLog(@"CPitch: %f, GRoll: %f, CTurn: %f", gCurrentPitch, gCurrentRoll, gCurrentCourse);
     //NSLog(@"Regular Turn: %f. %@ turn: %f. Diff: %f", gCurrentTurn, [self.wheelTurningFilter filterName], kal, gCurrentTurn-kal);
     //gCurrentTurn = kal;
 }
