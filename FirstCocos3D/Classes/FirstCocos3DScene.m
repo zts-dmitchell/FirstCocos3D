@@ -27,13 +27,15 @@ const CGFloat gMaxPitchDegreesBackward = -2.35; // Holden
 const CGFloat gPitchIncrentBy = 1.0;
 CGFloat gCurrentPitch = 0.0;
 CGFloat gPitchOffset = 0.0;
+CGFloat gPitchWheelie = 0.0;
+CGFloat gMaxPitchWheelie = 30.0; // Max 30 degrees of wheelie
 
 //const CGFloat gMaxRollDegrees = 20.0; // Chevy HHR
 const CGFloat gMaxRollDegrees = -2.8;   // Holden
 const CGFloat gRollIncrementBy = 1.0;
 CGFloat gCurrentRoll = 0.0;
 
-const CGFloat gMaxWheelTurn = 30.0;
+const CGFloat gMaxWheelTurn = 40.0;
 CGFloat gCurrentWheelPos = 0.0;
 CGFloat gCurrentCourse = 0.0;
 
@@ -314,8 +316,8 @@ CGFloat gCurrentSpeed = 0.0;
    
     [self storePositionsAndAnimateBody];
 
-    if(gCurrentSpeed <= 0.0)
-        return;
+    //if(gCurrentSpeed <= 0.0)
+    //    return;
 
     [self rotateNodesToCourse:0.5];
     
@@ -336,7 +338,7 @@ CGFloat gCurrentSpeed = 0.0;
     [self.nodeFLWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
     [self.nodeFRWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
  
-    [self.pitchEmpty setRotation:cc3v(gCurrentPitch-90, 0, 0)];
+    [self.pitchEmpty setRotation:cc3v(gCurrentPitch - 90 - gPitchWheelie, 0, 0)];
     
     [self.nodeRLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeRRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
@@ -507,9 +509,12 @@ CGFloat gCurrentSpeed = 0.0;
             
             if(widthSection == -1) { // Roll Left
 
-                gCurrentSpeed -= 1.0;
+                gPitchWheelie -= 0.25;
+                gPitchWheelie = MAX(gPitchWheelie, 0);
                 
-                gCurrentSpeed = MAX(gCurrentSpeed, 0.0);
+                //gCurrentSpeed -= 1.0;
+                //gCurrentSpeed = MAX(gCurrentSpeed, 0.0);
+                
                 //NSLog(@"self to dashCam");
                 //[self setCameraTarget:self :self.dashCameraEmpty];
                 //gCurrentRoll += gRollIncrementBy;
@@ -517,8 +522,11 @@ CGFloat gCurrentSpeed = 0.0;
 
             } else if(widthSection == 0) { // Reset Roll
 
-                gCurrentSpeed = 0.0;
+                gPitchWheelie = 0.0;
+                
+                //gCurrentSpeed = 0.0;
                 self.pitchEmpty.visible = !self.pitchEmpty.visible;
+                
                 //NSLog(@"dashCam to self");
                 //[self setCameraTarget:self :self.dashCameraEmpty];
 
@@ -526,9 +534,12 @@ CGFloat gCurrentSpeed = 0.0;
                 
             } else { // Roll Right
 
-                gCurrentSpeed += 1.0;
+                gPitchWheelie += 0.25;
+                gPitchWheelie = MIN(gPitchWheelie, gMaxPitchWheelie);
+                
 
-                gCurrentSpeed = MIN(gCurrentSpeed, 100);
+                //gCurrentSpeed += 1.0;
+                //gCurrentSpeed = MIN(gCurrentSpeed, 100);
 
                 //NSLog(@"dashCam to self");
                 //[self setCameraTarget:self.dashCameraEmpty :self ];
@@ -537,7 +548,7 @@ CGFloat gCurrentSpeed = 0.0;
                 //gCurrentRoll = MAX(gCurrentRoll, -gMaxRollDegrees);
             }
             
-            NSLog(@"gCurrentSpeed: %f", gCurrentSpeed);
+            NSLog(@"gPitchWheelie: %f", gPitchWheelie);
             
         } else {    // Top 3rd
             
@@ -651,7 +662,7 @@ CGFloat gCurrentSpeed = 0.0;
 
     // Store the course ...
     //gCurrentCourse = [self convertCourseToSimple:[self.bodyTurningFilter get:course]];
-    gCurrentCourse = course;
+    //gCurrentCourse = course;
     // ... and speed
     gCurrentSpeed = speed;
 
@@ -703,6 +714,9 @@ CGFloat gCurrentSpeed = 0.0;
     
     rotation.x += 270;
     [self.wheelEmpty      setRotation:rotation];
+    //CC3Vector pempty = self.pitchEmpty.location;
+    //[self printLocation:pempty withName:@"pitchEmpty"];
+    //[self.wheelEmpty rotateByAngle:gPitchWheelie aroundAxis:cc3v(1,0,0) atLocation:pempty];
 }
 
 -(void) storePositionsAndAnimateBody {
@@ -724,13 +738,15 @@ CGFloat gCurrentSpeed = 0.0;
     // TODO: Switch these MAX/MIN to CLAMP.
     // gPitchOffset adjusts the pitch, which kind of corrects the original model.
     gCurrentPitch = MAX(MIN(([self.pitchFilter get:acceleration.z] * - 10.0) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
+    
+    
     gCurrentRoll  = MAX(MIN([self.rollFilter get:acceleration.y] * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
     
     // Speed and turn factoring
     const double speedFactor = getFactorFromSpeed();
-    const double scaledWheelPosCosFactor = speedFactor * 60.0;
+    const double scaledWheelPosCosFactor = speedFactor * gMaxWheelTurn * 2;
 
-    gCurrentCourse = [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
+    gCurrentCourse += [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
 
     gCurrentWheelPos = MAX(MIN([self.wheelTurningFilter get:acceleration.y] * scaledWheelPosCosFactor, gMaxWheelTurn), -gMaxWheelTurn);
 
