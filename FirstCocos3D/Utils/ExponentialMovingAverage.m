@@ -28,8 +28,8 @@
     self.numberOfPeriods = numberOfPeriods;
     self.smoothingFactor = 2.0 / (1 + numberOfPeriods);
     
-    NSLog(@"Initializing with size: %d, Smoothing factor: %f",
-          self.numberOfPeriods, self.smoothingFactor);
+    NSLog(@"Initializing %@ with size: %d, Smoothing factor: %f",
+          [self filterName], self.numberOfPeriods, self.smoothingFactor);
 }
 
 -(NSString*) filterName {

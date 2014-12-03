@@ -165,11 +165,11 @@ CC3Vector gFRLocation;
     self.courseFilter  = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:11];
     self.upDownBodyMotionFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:3];
     self.rollFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
-    self.pitchFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
-    self.wheelieFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:6];
+    self.pitchFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:11];
+    self.wheelieFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:3];
+    
     //self.bodyNode.visible = NO;
     //self.groundPlaneNode.visible = NO;
-    
     
  	// In some cases, PODs are created with opacity turned off by mistake. To avoid the possible
 	// surprise of an empty scene, the following line ensures that all nodes loaded so far will
@@ -589,11 +589,14 @@ CC3Vector gFRLocation;
             location.y = self.vLowBody.y;
             [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
 
-            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.36290, -6.12179, -0.94)]];
-            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.36290, -6.12179, -0.94)]];
-            
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
             [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
+
+            gFLLocation = cc3v(2.36290, -6.12179, -0.94);
+            gFRLocation = cc3v(-2.36290, -6.12179, -0.94);
+
+            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFLLocation]];
+            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFRLocation]];
             break;
             
         case LowDrag:
@@ -601,12 +604,16 @@ CC3Vector gFRLocation;
             
             location.y = self.vLowBody.y;
             [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
-            
-            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.94, -6.12179, -1.19232)]];
-            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.94, -6.12179, -1.19232)]];
-            
+
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
             [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
+
+            gFLLocation = cc3v(2.94, -6.12179, -1.19232);
+            gFRLocation = cc3v(-2.94, -6.12179, -1.19232);
+            
+            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFLLocation]];
+            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFRLocation]];
+            
             break;
             
         case Gasser:
@@ -615,8 +622,11 @@ CC3Vector gFRLocation;
             location.y = self.vGasserBody.y;
             [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
      
-            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.94, -6.12179, -1.19232)]];
-            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.94, -6.12179, -1.19232)]];
+            gFLLocation = cc3v(2.94, -6.12179, -1.19232);
+            gFRLocation = cc3v(-2.94, -6.12179, -1.19232);
+            
+            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFLLocation]];
+            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFRLocation]];
 
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
             [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
@@ -717,8 +727,9 @@ CC3Vector gFRLocation;
     [self.groundPlaneNode setRotation:cc3v(0, gCurrentCourse, 0)];
     
     CC3Vector rotation = self.groundPlaneNode.rotation;
-     
-    [self.bodyNode setRotation:cc3v(rotation.x, rotation.y, gCurrentRoll)];
+    
+    // TODO: Decide whether to keep " ... + gPitchWheelie" here.
+    [self.bodyNode setRotation:cc3v(rotation.x + gPitchWheelie, rotation.y, gCurrentRoll)];
     
     rotation.x += 270;
     [self.wheelEmpty      setRotation:rotation];
@@ -769,8 +780,8 @@ CC3Vector gFRLocation;
     // gPitchOffset adjusts the pitch, which kind of corrects the original model.
     gCurrentPitch = MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward);
     
-    if(gCurrentPitch < (gMaxPitchDegreesBackward+2.0) ) {
-        gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitch - (gMaxPitchDegreesBackward+2.0))];
+    if(gCurrentPitch < (gMaxPitchDegreesBackward) ) {
+        gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitch - (gMaxPitchDegreesBackward))];
     }
     //gCurrentPitch = MAX(MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
     

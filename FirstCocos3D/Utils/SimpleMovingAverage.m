@@ -24,7 +24,7 @@
         
         self.size = size;
         
-        NSLog(@"Initializing with %d", size);
+        NSLog(@"Initializing %@ with %d", [self filterName], size);
         
         self.values = [[NSMutableArray alloc] initWithCapacity:size];
     }
