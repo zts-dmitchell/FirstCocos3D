@@ -417,6 +417,8 @@
 		571382F41A27DD4800753FD6 /* SimpleMovingAverage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SimpleMovingAverage.m; path = Utils/SimpleMovingAverage.m; sourceTree = "<group>"; };
 		571382F61A27DE2800753FD6 /* ExponentialMovingAverage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ExponentialMovingAverage.h; path = Utils/ExponentialMovingAverage.h; sourceTree = "<group>"; };
 		571382F71A27DE3C00753FD6 /* ExponentialMovingAverage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ExponentialMovingAverage.m; path = Utils/ExponentialMovingAverage.m; sourceTree = "<group>"; };
+		571382FA1A2EF15100753FD6 /* ModelInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelInfo.h; sourceTree = "<group>"; };
+		571382FB1A2FB2EC00753FD6 /* Model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		5717AF2019DDD2F600A29D6B /* KalmanFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KalmanFilter.h; path = Utils/KalmanFilter.h; sourceTree = "<group>"; };
 		5717AF2119DDD31100A29D6B /* KalmanFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KalmanFilter.m; path = Utils/KalmanFilter.m; sourceTree = "<group>"; };
 		575707A819FB0AF60010C922 /* Ground Plane.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Ground Plane.pod"; path = "Resources/Ground Plane.pod"; sourceTree = "<group>"; };
@@ -1166,6 +1168,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		571382F91A2EF06D00753FD6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				571382FA1A2EF15100753FD6 /* ModelInfo.h */,
+				571382FB1A2FB2EC00753FD6 /* Model.h */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		57B2347219D92E5700B492AC /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -1234,6 +1245,7 @@
 		57CAE58C19BC18D400665B4C /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				571382F91A2EF06D00753FD6 /* Models */,
 				57B2347219D92E5700B492AC /* Utils */,
 				57B2346619D92B9400B492AC /* AppDelegate.h */,
 				57B2346719D92B9400B492AC /* AppDelegate.m */,

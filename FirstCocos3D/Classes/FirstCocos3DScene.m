@@ -24,28 +24,32 @@
 const CGFloat gMaxPitchDegreesForward = 1.4;
 //const CGFloat gMaxPitchDegreesBackward = -2.85; // Holden
 const CGFloat gMaxPitchDegreesBackward = -2.35; // Holden
-const CGFloat gPitchIncrentBy = 1.0;
-CGFloat gCurrentPitch = 0.0;
-CGFloat gPitchOffset = 0.0;
-CGFloat gPitchWheelie = 0.0;
-CGFloat gMaxPitchWheelie = 30.0; // Max 30 degrees of wheelie
+const CGFloat gMaxPitchWheelie = 30.0; // Max 30 degrees of wheelie
 
 //const CGFloat gMaxRollDegrees = 20.0; // Chevy HHR
 const CGFloat gMaxRollDegrees = -2.8;   // Holden
-const CGFloat gRollIncrementBy = 1.0;
-CGFloat gCurrentRoll = 0.0;
-
 const CGFloat gMaxWheelTurn = 40.0;
+const CGFloat gGroundPlaneY = -0.35;
+
+
+const CGFloat gPitchIncrentBy = 1.0;
+const CGFloat gRollIncrementBy = 1.0;
+
+CGFloat gCurrentPitch = 0.0;
+CGFloat gPitchOffset = 0.0;
+CGFloat gPitchWheelie = 0.0;
+CGFloat gCurrentRoll = 0.0;
 CGFloat gCurrentWheelPos = 0.0;
 CGFloat gCurrentCourse = 0.0;
-
-CC3Vector gStraight;
 CGFloat gCurrentSpeedPos = 0.0;
 CGFloat gCurrentSpeed = 0.0;
 
+CC3Vector gStraight;
 CC3Vector gFLLocation;
 CC3Vector gFRLocation;
 
+bool gDoWheelies;
+bool gAllowRotationAtRest;
 #pragma mark End Global Variables
 
 /**
@@ -77,6 +81,9 @@ CC3Vector gFRLocation;
     
     self->prevCourse = 0.0;
     self->prevSpeed = 0.0;
+    
+    gDoWheelies = true;
+    gAllowRotationAtRest = true;
     
 	// Optionally add a static solid-color, or textured, backdrop, by uncommenting one of these lines.
     //self.backdrop = [CC3Backdrop nodeWithColor: ccc4f(0.52, 0.8, 0.92, 1.0)];
@@ -154,7 +161,9 @@ CC3Vector gFRLocation;
     self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Ground Plane.pod"];
 
     CC3Vector groundLocation = self.groundPlaneNode.location;
-    groundLocation.y = -0.35;
+    
+    groundLocation.y = gGroundPlaneY;
+    
     [self printLocation:self.groundPlaneNode.location withName:@"location"];
     [self.groundPlaneNode setLocation:groundLocation];
     [self addChild: self.groundPlaneNode];
@@ -318,11 +327,11 @@ CC3Vector gFRLocation;
  */
 
 -(void) updateAfterTransform: (CC3NodeUpdatingVisitor*) visitor {
-   
-    [self storeRotationsAndAnimateBody];
 
-    //if(gCurrentSpeed <= 0.0)
-    //    return;
+    if( ! gAllowRotationAtRest && gCurrentSpeed <= 0.0)
+        return;
+    
+    [self storeRotationsAndAnimateBody];
 
     [self rotateNodesToCourse:0.5];
     
@@ -343,11 +352,11 @@ CC3Vector gFRLocation;
     [self.nodeFLWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
     [self.nodeFRWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
  
-    [self.pitchEmpty setRotation:cc3v(gCurrentPitch - 90 - gPitchWheelie, 0, 0)];
+    //[self.pitchEmpty setRotation:cc3v(gCurrentPitch - 90 - gPitchWheelie, 0, 0)];
+    [self.pitchEmpty setRotation:cc3v(gCurrentPitch + 270 - gPitchWheelie, 0, 0)];
     
     [self.nodeRLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeRRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
-
 }
 
 
@@ -514,8 +523,8 @@ CC3Vector gFRLocation;
             
             if(widthSection == -1) { // Roll Left
 
-                gPitchWheelie -= 0.25;
-                gPitchWheelie = MAX(gPitchWheelie, 0);
+                //gPitchWheelie -= 0.25;
+                //gPitchWheelie = MAX(gPitchWheelie, 0);
                 
                 //gCurrentSpeed -= 1.0;
                 //gCurrentSpeed = MAX(gCurrentSpeed, 0.0);
@@ -527,10 +536,13 @@ CC3Vector gFRLocation;
 
             } else if(widthSection == 0) { // Reset Roll
 
+                gDoWheelies = !gDoWheelies;
+                
+                // Reset the wheelie to zero, so wheels don't remain in the air.
                 gPitchWheelie = 0.0;
                 
                 //gCurrentSpeed = 0.0;
-                self.pitchEmpty.visible = !self.pitchEmpty.visible;
+                //self.pitchEmpty.visible = !self.pitchEmpty.visible;
                 
                 //NSLog(@"dashCam to self");
                 //[self setCameraTarget:self :self.dashCameraEmpty];
@@ -539,8 +551,10 @@ CC3Vector gFRLocation;
                 
             } else { // Roll Right
 
-                gPitchWheelie += 0.25;
-                gPitchWheelie = MIN(gPitchWheelie, gMaxPitchWheelie);
+                gAllowRotationAtRest = !gAllowRotationAtRest;
+                
+                //gPitchWheelie += 0.25;
+                //  gPitchWheelie = MIN(gPitchWheelie, gMaxPitchWheelie);
                 
 
                 //gCurrentSpeed += 1.0;
@@ -780,11 +794,13 @@ CC3Vector gFRLocation;
     // gPitchOffset adjusts the pitch, which kind of corrects the original model.
     gCurrentPitch = MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward);
     
-    if(gCurrentPitch < (gMaxPitchDegreesBackward) ) {
-        gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitch - (gMaxPitchDegreesBackward))];
+    if(gDoWheelies) {
+        if(gCurrentPitch < (gMaxPitchDegreesBackward) ) {
+            gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitch - (gMaxPitchDegreesBackward))];
+        }
+    } else {
+        gCurrentPitch = MAX(MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
     }
-    //gCurrentPitch = MAX(MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
-    
     
     gCurrentRoll  = MAX(MIN([self.rollFilter get:acceleration.y] * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
     
