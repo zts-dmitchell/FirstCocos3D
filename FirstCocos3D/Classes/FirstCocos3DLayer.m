@@ -76,7 +76,7 @@
     
 
     // New Stuff
-    bIsCourse = FALSE;
+    bIsHeading = FALSE;
     FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
     scene.layer = self;
     
@@ -136,7 +136,7 @@
 //    [self.altitudeLabel setString:[NSString stringWithFormat: @"Alt: %3.0f'", altitude]];
     
     
-    if( bIsCourse ) {
+    if( ! bIsHeading ) {
         FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
     
         if( course >= 0.0 )
@@ -185,7 +185,7 @@
 
     //[self.headingLabel setString:[NSString stringWithFormat: @"Heading: %.0f°", theHeading]];
     
-    if( ! bIsCourse ) {
+    if( bIsHeading ) {
         FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
     
         if( theHeading >= 0.0 ) {

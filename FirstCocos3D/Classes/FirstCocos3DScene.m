@@ -15,7 +15,6 @@
 #import "CC3UtilityMeshNodes.h"
 #import "CCActionManager.h"
 
-#import "SimpleMovingAverage.h"
 #import "ExponentialMovingAverage.h"
 
 @implementation FirstCocos3DScene
@@ -352,7 +351,6 @@ bool gAllowRotationAtRest;
     [self.nodeFLWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
     [self.nodeFRWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
  
-    //[self.pitchEmpty setRotation:cc3v(gCurrentPitch - 90 - gPitchWheelie, 0, 0)];
     [self.pitchEmpty setRotation:cc3v(gCurrentPitch + 270 - gPitchWheelie, 0, 0)];
     
     [self.nodeRLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
@@ -573,8 +571,8 @@ bool gAllowRotationAtRest;
             
             if(widthSection == -1) {
                 
-                self.layer->bIsCourse = !self.layer->bIsCourse;
-                NSLog(@"bIsCourse: %d", self.layer->bIsCourse);
+                self.layer->bIsHeading = !self.layer->bIsHeading;
+                NSLog(@"bIsHeading: %d", self.layer->bIsHeading);
             }
             else if(widthSection == 0) {
 
@@ -689,9 +687,13 @@ bool gAllowRotationAtRest;
  */
 -(void) setCourseHeading:(double)course withSpeed:(double)speed {
 
-    // Store the course ...
-    //gCurrentCourse = [self convertCourseToSimple:[self.bodyTurningFilter get:course]];
-    //gCurrentCourse = course;
+    // Store the course/heading ...
+    if(self.layer->bIsHeading) {
+        
+        //gCurrentCourse = [self convertCourseToSimple:[self.courseFilter get:ccourse]];
+        gCurrentCourse = course;
+    }
+    
     // ... and speed
     gCurrentSpeed = speed;
 
@@ -808,7 +810,8 @@ bool gAllowRotationAtRest;
     const double speedFactor = getFactorFromSpeed();
     const double scaledWheelPosCosFactor = speedFactor * gMaxWheelTurn * 2;
 
-    gCurrentCourse += [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
+    if(! self.layer->bIsHeading)
+        gCurrentCourse += [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
 
     gCurrentWheelPos = MAX(MIN([self.wheelTurningFilter get:acceleration.y] * scaledWheelPosCosFactor, gMaxWheelTurn), -gMaxWheelTurn);
 

@@ -12,6 +12,6 @@
 /** A sample application-specific CC3Layer subclass. */
 @interface FirstCocos3DLayer : CC3Layer {
 
-    @public BOOL bIsCourse;
+    @public BOOL bIsHeading;
 }
 @end
