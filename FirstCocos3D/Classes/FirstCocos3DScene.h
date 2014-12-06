@@ -25,6 +25,10 @@
 
 typedef enum coolCarTypes { Low, LowDrag, Gasser } CoolCarTypes;
 
+@property(strong, nonatomic) CC3Camera* mainCamera;
+@property(strong, nonatomic) CC3Camera* frontFenderCam;
+@property(strong, nonatomic) CC3Camera* rearFenderCam;
+@property(strong, nonatomic) CC3Camera* rearFarCam;
 @property(strong, nonatomic) CC3ResourceNode* bodyNode;
 @property(strong, nonatomic) CC3Node* pitchEmpty;
 @property(strong, nonatomic) CC3Node* dashCameraEmpty;

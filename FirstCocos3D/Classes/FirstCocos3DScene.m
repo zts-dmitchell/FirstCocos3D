@@ -91,17 +91,16 @@ bool gAllowRotationAtRest;
 
     
 	// Create the camera, place it back a bit, and add it to the scene
-    CC3Camera* cam = [CC3Camera nodeWithName: @"Camera"];
-    cam.location = cc3v(0.0, 0.55, 25.0);
-	[self addChild: cam];
+    self.mainCamera = [CC3Camera nodeWithName: @"mainCamera"];
+    self.mainCamera.location = cc3v(0.0, 0.55, 25.0);
+	[self addChild: self.mainCamera];
 
 	// Create a light, place it back and to the left at a specific
 	// position (not just directional lighting), and add it to the scene
 	CC3Light* lamp = [CC3Light nodeWithName: @"Lamp"];
 	lamp.location = cc3v( -2.0, 0.0, 0.0 );
 	lamp.isDirectionalOnly = NO;
-	[cam addChild: lamp];
-
+	[self.mainCamera addChild: lamp];
     
 	// Create and load a POD resource file and add its entire contents to the scene.
 	// If needed, prior to adding the loaded content to the scene, you can customize the
@@ -111,6 +110,34 @@ bool gAllowRotationAtRest;
     self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
     //self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
 	[self addChild: self.bodyNode];
+    
+    // Attach the frontFenderCamera
+    self.frontFenderCam = [CC3Camera nodeWithName:@"frontFenderCamera"];
+    self.frontFenderCam.location = cc3v(5, -0.55, 15.0);
+    self.frontFenderCam.rotation = cc3v(0, 15, 0);
+    [self.bodyNode addChild:self.frontFenderCam];
+
+    // Create the rearFenderCamera
+    self.rearFenderCam = [CC3Camera nodeWithName:@"rearFenderCamera"];
+    // Pointing at front wheel
+    //self.rearFenderCam.location = cc3v(10, -0.55, -2.0);
+    //self.rearFenderCam.rotation = cc3v(0, 45+90, 0);
+    self.rearFenderCam.location = cc3v(6, -2.0, -15.0);
+    self.rearFenderCam.rotation = cc3v(5, 170, 0);
+    [self.bodyNode addChild:self.rearFenderCam];
+    
+    // Create the rearFarCamera
+    self.rearFarCam = [CC3Camera nodeWithName:@"rearFarCamera"];
+    self.rearFarCam.location = cc3v(14, -1.0, -20.0); //14, 20, -1   ->  14, -1, -20
+    self.rearFarCam.rotation = cc3v(4, 143, -12); // 94, 12, 141      ->  94, 12, -141
+    [self.bodyNode addChild:self.rearFarCam];
+    
+    // And, the light for this camera
+    CC3Light* rearFarCameralamp = [CC3Light nodeWithName: @"rearFarCameraLamp"];
+    rearFarCameralamp.location = cc3v( -2.0, 0.0, 0.0 );
+    rearFarCameralamp.isDirectionalOnly = NO;
+    [self.rearFarCam addChild: rearFarCameralamp];
+
     
     // Get the pitch empty for pitch rotations
     self.pitchEmpty = [self.bodyNode getNodeNamed:@"PitchEmpty"];
@@ -591,9 +618,12 @@ bool gAllowRotationAtRest;
             else if(widthSection == 0) {
 
                 [self adjustPitch:true];
+                
+                self.activeCamera = self.mainCamera;
             }
             else {
                 
+                self.activeCamera = self.rearFarCam;
                 [self adjustPitch:false];
             }
         }
@@ -832,7 +862,7 @@ void rotateAroundPoint(double angle, CC3Vector point, CC3Vector origin, CC3Vecto
             gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitch - (gMaxPitchDegreesBackward))];
         }
     } else {
-        gCurrentPitch = MAX(gCurrentRoll, gMaxPitchDegreesBackward);
+        gCurrentPitch = MAX(gCurrentPitch, gMaxPitchDegreesBackward);
     }
     
     gCurrentRoll  = MAX(MIN([self.rollFilter get:acceleration.y] * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
