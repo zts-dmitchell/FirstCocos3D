@@ -139,7 +139,7 @@ bool gAllowRotationAtRest;
     self.rearFarCam = [CC3Camera nodeWithName:@"rearFarCamera"];
     self.rearFarCam.location = cc3v(14, -1.0, -20.0); //14, 20, -1   ->  14, -1, -20
     self.rearFarCam.rotation = cc3v(4, 143, -12); // 94, 12, 141      ->  94, 12, -141
-    [self.bodyNode addChild:self.rearFarCam];
+    [self.wheelEmpty addChild:self.rearFarCam];
     
     // And, the light for this camera
     CC3Light* rearFarCameralamp = [CC3Light nodeWithName: @"rearFarCameraLamp"];
