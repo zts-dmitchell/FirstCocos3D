@@ -111,6 +111,15 @@ bool gAllowRotationAtRest;
     //self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
 	[self addChild: self.bodyNode];
     
+    // Display the back sides because it looks strange, otherwise.
+    self.bodyNode.shouldCullBackFaces = NO;
+    
+    // Bunch a
+    self.wheelEmpty = [self.bodyNode getNodeNamed:@"WheelEmpty"];
+    [self.bodyNode removeChild:self.wheelEmpty];
+    [self addChild:self.wheelEmpty];
+    [self printLocation:self.wheelEmpty.location withName:self.wheelEmpty.name];
+
     // Attach the frontFenderCamera
     self.frontFenderCam = [CC3Camera nodeWithName:@"frontFenderCamera"];
     self.frontFenderCam.location = cc3v(5, -0.55, 15.0);
@@ -137,14 +146,7 @@ bool gAllowRotationAtRest;
     rearFarCameralamp.location = cc3v( -2.0, 0.0, 0.0 );
     rearFarCameralamp.isDirectionalOnly = NO;
     [self.rearFarCam addChild: rearFarCameralamp];
-
-    
-    // Get the pitch empty for pitch rotations
-    self.pitchEmpty = [self.bodyNode getNodeNamed:@"PitchEmpty"];
-
-    // Already in low-body position.
-    self.vLowBody = self.pitchEmpty.location;
-    self.vGasserBody = cc3v(0, -0.01257, 4.07566); // Y and Z are swapped
+    //[self printLocation:<#(CC3Vector)#> withName:<#(NSString *)#>]
     
     // Get the dash camera empty
 //    self.dashCameraEmpty = [self.bodyNode getNodeNamed:@"DashCameraEmpty"];
@@ -162,15 +164,14 @@ bool gAllowRotationAtRest;
 //    [self.dashCameraEmpty setForwardDirection:self.activeCamera.forwardDirection];
 //    [self.dashCameraEmpty setRotation:self.activeCamera.rotation];
     
-    // Display the back sides because it looks strange, otherwise.
-    self.bodyNode.shouldCullBackFaces = NO;
+    // Get the pitch empty for pitch rotations
+    self.pitchEmpty = [self.bodyNode getNodeNamed:@"PitchEmpty"];
     
-    // Bunch a
-    self.wheelEmpty = [self.bodyNode getNodeNamed:@"WheelEmpty"];
-    [self.bodyNode removeChild:self.wheelEmpty];
-    [self addChild:self.wheelEmpty];
-    [self printLocation:self.wheelEmpty.location withName:self.wheelEmpty.name];
-
+    // Already in low-body position.
+    self.vLowBody = self.pitchEmpty.location;
+    self.vGasserBody = cc3v(0, -0.01257, 4.07566); // Y and Z are swapped
+    
+    
     // Debugging: Remove Plane in
     CC3Node* plane = [self.bodyNode getNodeNamed:@"Plane"];
     if(plane != nil)
