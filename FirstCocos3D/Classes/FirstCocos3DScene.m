@@ -146,7 +146,8 @@ bool gAllowRotationAtRest;
     rearFarCameralamp.location = cc3v( -2.0, 0.0, 0.0 );
     rearFarCameralamp.isDirectionalOnly = NO;
     [self.rearFarCam addChild: rearFarCameralamp];
-    //[self printLocation:<#(CC3Vector)#> withName:<#(NSString *)#>]
+    [self printLocation:self.bodyNode.rotation withName:@"BodyNodeRotation"];
+    [self printLocation:self.wheelEmpty.rotation withName:@"WheelRotation"];
     
     // Get the dash camera empty
 //    self.dashCameraEmpty = [self.bodyNode getNodeNamed:@"DashCameraEmpty"];
@@ -382,20 +383,14 @@ bool gAllowRotationAtRest;
     [self.nodeFLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeFRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     
-    [self.nodeFLWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
-    [self.nodeFRWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
+    [self.nodeFLWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,1,0)];
+    [self.nodeFRWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,1,0)];
  
     [self.pitchEmpty setRotation:cc3v(gCurrentPitch + 270 - gPitchWheelie, 0, 0)];
     
     [self.nodeRLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeRRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     
-//    CC3Vector camloc = self.activeCamera.location;
-//    camloc = CC3VectorAdd(camloc, cc3v(0,gCurrentRoll,0.0));
-//    [self.activeCamera setLocation:camloc];
-//    //camloc = self.pitchEmpty.location;
-//    [self.activeCamera runAction:[CC3RotateToLookAt actionWithDuration:0.5 targetLocation:self.pitchEmpty.location]];
-
 }
 
 
@@ -654,8 +649,8 @@ bool gAllowRotationAtRest;
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
             [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
 
-            gFLLocation = cc3v(2.36290, -6.12179, -0.94);
-            gFRLocation = cc3v(-2.36290, -6.12179, -0.94);
+            gFLLocation = cc3v(2.36290, -0.94, 6.12179);
+            gFRLocation = cc3v(-2.36290, -0.94, 6.12179);
 
             [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFLLocation]];
             [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFRLocation]];
@@ -670,8 +665,8 @@ bool gAllowRotationAtRest;
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
             [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
 
-            gFLLocation = cc3v(2.94, -6.12179, -1.19232);
-            gFRLocation = cc3v(-2.94, -6.12179, -1.19232);
+            gFLLocation = cc3v(2.94, -1.19232, 6.12179);
+            gFRLocation = cc3v(-2.94, -1.19232, 6.12179);
             
             [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFLLocation]];
             [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFRLocation]];
@@ -684,8 +679,8 @@ bool gAllowRotationAtRest;
             location.y = self.vGasserBody.y;
             [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
      
-            gFLLocation = cc3v(2.94, -6.12179, -1.19232);
-            gFRLocation = cc3v(-2.94, -6.12179, -1.19232);
+            gFLLocation = cc3v(2.94, -1.19232, 6.12179);
+            gFRLocation = cc3v(-2.94, -1.19232, 6.12179);
             
             [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFLLocation]];
             [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFRLocation]];
@@ -803,7 +798,7 @@ void rotateAroundPoint(double angle, CC3Vector point, CC3Vector origin, CC3Vecto
     // TODO: Decide whether to keep " ... + gPitchWheelie" here.
     [self.bodyNode setRotation:cc3v(rotation.x + gPitchWheelie, rotation.y, gCurrentRoll)];
     
-    rotation.x += 270;
+    //rotation.x += 270;
     [self.wheelEmpty      setRotation:rotation];
 
     const double theta_sin = sin(CC_DEGREES_TO_RADIANS(gPitchWheelie));
