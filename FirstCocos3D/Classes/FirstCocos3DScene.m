@@ -309,6 +309,11 @@ bool gAllowRotationAtRest;
     NSLog(@"%@: x: %f, y: %f, z: %f", info, position.x, position.y, position.z);
 }
 
+-(void) printLocation:(CC3Node*) node {
+    
+    [self printLocation:node.location withName:node.name];
+}
+
 /**
  * By populating this method, you can add add additional scene content dynamically and
  * asynchronously after the scene is open.
