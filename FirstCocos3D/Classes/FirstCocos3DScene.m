@@ -137,7 +137,7 @@ bool gAllowRotationAtRest;
     
     // Create the rearFarCamera
     self.rearFarCam = [CC3Camera nodeWithName:@"rearFarCamera"];
-    self.rearFarCam.location = cc3v(14, -1.0, -20.0); //14, 20, -1   ->  14, -1, -20
+    self.rearFarCam.location = cc3v(14, -2.0, -20.0); //14, 20, -1   ->  14, -1, -20
     self.rearFarCam.rotation = cc3v(4, 143, -12); // 94, 12, 141      ->  94, 12, -141
     [self.wheelEmpty addChild:self.rearFarCam];
     
@@ -386,7 +386,7 @@ bool gAllowRotationAtRest;
     [self.nodeFLWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,1,0)];
     [self.nodeFRWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,1,0)];
  
-    [self.pitchEmpty setRotation:cc3v(gCurrentPitch + 270 - gPitchWheelie, 0, 0)];
+    [self.pitchEmpty setRotation:cc3v(gCurrentPitch - gPitchWheelie, 0, 0)];
     
     [self.nodeRLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeRRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
@@ -694,20 +694,6 @@ bool gAllowRotationAtRest;
     }
 }
 
--(void) setCameraTarget:(CC3Node*) fromTarget :(CC3Node*) toTarget {
-
-    if(fromTarget == nil || toTarget == nil) {
-        NSLog(@"Camera target is null.  Abandoning");
-        return;
-    }
-    
-    NSLog(@"Removing camera from source, %@, to target, %@", fromTarget.name, toTarget.name);
-    [fromTarget removeChild:self.activeCamera];
-    [self.activeCamera rotateBy:cc3v(-90, 0, 180)];
-    [self.activeCamera setLocation:toTarget.location];
-    [toTarget addChild:self.activeCamera];
-}
-
 -(void) adjustPitch:(BOOL) reset {
     
     if(reset) {
@@ -786,7 +772,7 @@ void rotateAroundPoint(double angle, CC3Vector point, CC3Vector origin, CC3Vecto
     
     //[self.bodyNode        runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(0, course, gCurrentRoll)]];
     //[self.groundPlaneNode runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(0, course, 0)]];
-    //[self.wheelEmpty      runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(270, course, 0)]];
+    //[self.wheelEmpty      runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(0, course, 0)]];
     
     [self.nodeFLWheel setLocation:gFLLocation];
     [self.nodeFRWheel setLocation:gFRLocation];
@@ -798,7 +784,6 @@ void rotateAroundPoint(double angle, CC3Vector point, CC3Vector origin, CC3Vecto
     // TODO: Decide whether to keep " ... + gPitchWheelie" here.
     [self.bodyNode setRotation:cc3v(rotation.x + gPitchWheelie, rotation.y, gCurrentRoll)];
     
-    //rotation.x += 270;
     [self.wheelEmpty      setRotation:rotation];
 
     const double theta_sin = sin(CC_DEGREES_TO_RADIANS(gPitchWheelie));
