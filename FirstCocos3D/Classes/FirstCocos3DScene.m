@@ -20,8 +20,8 @@
 @implementation FirstCocos3DScene
 
 #pragma mark Global Variables
-const CGFloat gMaxPitchDegreesForward = 1.4;
-//const CGFloat gMaxPitchDegreesBackward = -2.85; // Holden
+const CGFloat gMaxPitchDegreesForward = 0.5;
+//const CGFloat gMaxPitchDegreesBackward = -2.85; // HHR
 const CGFloat gMaxPitchDegreesBackward = -2.35; // Holden
 const CGFloat gMaxPitchWheelie = 30.0; // Max 30 degrees of wheelie
 
@@ -49,6 +49,7 @@ CC3Vector gFRLocation;
 
 bool gDoWheelies;
 bool gAllowRotationAtRest;
+
 #pragma mark End Global Variables
 
 /**
@@ -173,7 +174,7 @@ bool gAllowRotationAtRest;
     self.courseFilter  = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:11];
     self.upDownBodyMotionFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:3];
     self.rollFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
-    self.pitchFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:11];
+    self.pitchFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
     self.wheelieFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:3];
     
     //self.bodyNode.visible = NO;
@@ -355,6 +356,13 @@ bool gAllowRotationAtRest;
     
     [self.nodeRLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeRRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
+    
+//    CC3Vector camloc = self.activeCamera.location;
+//    camloc = CC3VectorAdd(camloc, cc3v(0,gCurrentRoll,0.0));
+//    [self.activeCamera setLocation:camloc];
+//    //camloc = self.pitchEmpty.location;
+//    [self.activeCamera runAction:[CC3RotateToLookAt actionWithDuration:0.5 targetLocation:self.pitchEmpty.location]];
+
 }
 
 
@@ -519,8 +527,14 @@ bool gAllowRotationAtRest;
             
         } else if(heightSection == 0) {  // Middle 3rd
             
+            CC3Vector camloc = self.activeCamera.location;
+            
             if(widthSection == -1) { // Roll Left
 
+                camloc = CC3VectorAdd(camloc, cc3v(gCurrentRoll,0.0,0.3));
+                [self.activeCamera setLocation:camloc];
+                //camloc = self.pitchEmpty.location;
+                [self.activeCamera runAction:[CC3RotateToLookAt actionWithDuration:0.5 targetLocation:self.pitchEmpty.location]];
                 //gPitchWheelie -= 0.25;
                 //gPitchWheelie = MAX(gPitchWheelie, 0);
                 
@@ -673,7 +687,7 @@ bool gAllowRotationAtRest;
         
         const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
         
-        gPitchOffset = acceleration.z * 10;
+        gPitchOffset = CLAMP(acceleration.z * 10, gMaxPitchDegreesForward, gMaxPitchDegreesBackward);
         
         NSLog(@"Setting gPitchOffset to %f", gPitchOffset);
     }
@@ -690,6 +704,7 @@ bool gAllowRotationAtRest;
     // Store the course/heading ...
     if(self.layer->bIsHeading) {
         
+        // The filters don't behave well when course crosses from 359 to 0+ degrees.
         //gCurrentCourse = [self convertCourseToSimple:[self.courseFilter get:ccourse]];
         gCurrentCourse = course;
     }
@@ -729,6 +744,11 @@ bool gAllowRotationAtRest;
     //[self.pitchEmpty  runAction:[CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(gCurrentPitch-90, 0, 0)]];
     //[self.nodeRLWheel runAction:[CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
     //[self.nodeRRWheel runAction:[CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
+}
+
+
+void rotateAroundPoint(double angle, CC3Vector point, CC3Vector origin, CC3Vector result) {
+    
 }
 
 -(void) rotateNodesToCourse:(double) duration {
@@ -786,11 +806,22 @@ bool gAllowRotationAtRest;
     const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
     const double action = [self.upDownBodyMotionFilter get:CLAMP((1.0-acceleration.x) * 0.55, 0.0, 0.125)];
     
-    //NSLog(@"action: %f, x: %f, y: %f, z: %f", action , 1.0-acceleration.x, acceleration.y, acceleration.z);
+    //const double wheelBounce =  acceleration.x *01.75;
+    //action *= 0.25;
     
+    //NSLog(@"raw: %f, action: %f, wheelBounce: %f, y: %f", acceleration.x, action , wheelBounce, 1.0-acceleration.x);
+    
+    // Up/down the body
     CCActionInterval* actionUp = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:action];
     CCActionInterval* actionDown = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:-action];
-    [self.bodyNode runAction: [CCActionSequence actionOne:actionUp two:actionDown]];
+    [self.bodyNode runAction:[CCActionSequence actionOne:actionUp two:actionDown]];
+    
+    // Up/down the wheels
+    //actionUp = [CC3ActionMoveUpBy actionWithDuration:01.05 moveBy:wheelBounce];
+    //actionDown = [CC3ActionMoveUpBy actionWithDuration:01.05 moveBy:-wheelBounce];
+    //[self.nodeFLWheel runAction:[CCActionSequence actionOne:actionUp two:actionDown]];
+    //[self.nodeFLWheel runAction:[CCActionSequence actionOne:actionUp two:actionDown]];
+
     
     // TODO: Switch these MAX/MIN to CLAMP.
     // gPitchOffset adjusts the pitch, which kind of corrects the original model.
@@ -801,7 +832,7 @@ bool gAllowRotationAtRest;
             gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitch - (gMaxPitchDegreesBackward))];
         }
     } else {
-        gCurrentPitch = MAX(MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward),gMaxPitchDegreesBackward);
+        gCurrentPitch = MAX(gCurrentRoll, gMaxPitchDegreesBackward);
     }
     
     gCurrentRoll  = MAX(MIN([self.rollFilter get:acceleration.y] * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
@@ -814,14 +845,6 @@ bool gAllowRotationAtRest;
         gCurrentCourse += [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
 
     gCurrentWheelPos = MAX(MIN([self.wheelTurningFilter get:acceleration.y] * scaledWheelPosCosFactor, gMaxWheelTurn), -gMaxWheelTurn);
-
-    //NSLog(@"speed: %f, speedFac: %f, CurrCourse: %f, scaledWheelPosCosFactor: %f, CurrWheelP: %f",
-    //      gCurrentSpeed, speedFactor, gCurrentCourse, scaledWheelPosCosFactor, gCurrentWheelPos);
-    
-    //const double kal = [self.wheelTurningFilter get:gCurrentTurn];
-    //NSLog(@"CPitch: %f, GRoll: %f, CTurn: %f", gCurrentPitch, gCurrentRoll, gCurrentCourse);
-    //NSLog(@"Regular Turn: %f. %@ turn: %f. Diff: %f", gCurrentTurn, [self.wheelTurningFilter filterName], kal, gCurrentTurn-kal);
-    //gCurrentTurn = kal;
 }
 
 double getFactorFromSpeed() {

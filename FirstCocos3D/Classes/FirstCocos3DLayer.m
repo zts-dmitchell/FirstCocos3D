@@ -37,7 +37,8 @@
 -(void) initializeControls {
     
     NSLog(@"Cocos2D Version: %@", cocos2dVersion());
-
+    NSLog(@"Cocos3D Version: %@", NSStringFromCC3Version());
+    
 	//[self scheduleUpdate];
     
     self.userInteractionEnabled = YES;
@@ -56,13 +57,13 @@
     self.altitudeLabel.position = ccp(0.08f, 0.9f);
     [self addChild:self.altitudeLabel];
     
-    self.courseLabel = [CCLabelTTF labelWithString:@"Course: " fontName:@"Verdana-Bold" fontSize:18.0f];
+    self.courseLabel = [CCLabelTTF labelWithString:@"" fontName:@"Verdana-Bold" fontSize:18.0f];
     self.courseLabel.positionType = CCPositionTypeNormalized;
     self.courseLabel.position = ccp(0.12f, 0.84f);
     [self.courseLabel setHorizontalAlignment:CCTextAlignmentLeft];
     [self addChild:self.courseLabel];
     
-    self.headingLabel = [CCLabelTTF labelWithString:@"Heading: " fontName:@"Verdana-Bold" fontSize:18.0f];
+    self.headingLabel = [CCLabelTTF labelWithString:@"" fontName:@"Verdana-Bold" fontSize:18.0f];
     self.headingLabel.positionType = CCPositionTypeNormalized;
     self.headingLabel.position = ccp(0.13f, 0.78f);
     [self.headingLabel setHorizontalAlignment:CCTextAlignmentLeft];
