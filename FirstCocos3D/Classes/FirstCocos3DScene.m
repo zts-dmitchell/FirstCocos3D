@@ -623,17 +623,37 @@ bool gAllowRotationAtRest;
 
             }
             else if(widthSection == 0) {
-
-                [self adjustPitch:true];
                 
-                self.activeCamera = self.mainCamera;
+                [self move:self.activeCamera from:self.bodyNode to:self.wheelEmpty];
+                //self.activeCamera = self.mainCamera;
+                
+                // Other stuff
+                [self adjustPitch:true];
             }
             else {
                 
-                self.activeCamera = self.rearFarCam;
+                [self move:self.activeCamera from:self.wheelEmpty to:self.bodyNode];
+
+                //self.activeCamera = self.rearFarCam;
+                
+                // Other stuff
                 [self adjustPitch:false];
             }
         }
+    }
+}
+
+// [self move:self.cam1 from:self.par1 to:self.par2];
+// Move thisCamera from thisParent toThat parent
+-(void) move:(CC3Node*) thisNode from:(CC3Node*)oldParent to:(CC3Node*) newParent {
+    
+    NSLog(@"Moving child, %@, from parent, %@, to parent, %@", thisNode.name, oldParent.name, newParent.name);
+    
+    if( [oldParent getNodeNamed:thisNode.name] != nil) {
+        [oldParent removeChild:thisNode];
+        [newParent addChild:thisNode];
+    } else {
+        NSLog(@"Child, %@, is not parented to %@!!", thisNode.name, oldParent);
     }
 }
 
