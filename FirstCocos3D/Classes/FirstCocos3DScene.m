@@ -124,7 +124,7 @@ bool gAllowRotationAtRest;
     self.frontFenderCam = [CC3Camera nodeWithName:@"frontFenderCamera"];
     self.frontFenderCam.location = cc3v(5, -0.55, 15.0);
     self.frontFenderCam.rotation = cc3v(0, 15, 0);
-    [self.bodyNode addChild:self.frontFenderCam];
+    [self.wheelEmpty addChild:self.frontFenderCam];
 
     // Create the rearFenderCamera
     self.rearFenderCam = [CC3Camera nodeWithName:@"rearFenderCamera"];
@@ -133,7 +133,7 @@ bool gAllowRotationAtRest;
     //self.rearFenderCam.rotation = cc3v(0, 45+90, 0);
     self.rearFenderCam.location = cc3v(6, -2.0, -15.0);
     self.rearFenderCam.rotation = cc3v(5, 170, 0);
-    [self.bodyNode addChild:self.rearFenderCam];
+    [self.wheelEmpty addChild:self.rearFenderCam];
     
     // Create the rearFarCamera
     self.rearFarCam = [CC3Camera nodeWithName:@"rearFarCamera"];
@@ -149,6 +149,22 @@ bool gAllowRotationAtRest;
     [self printLocation:self.bodyNode.rotation withName:@"BodyNodeRotation"];
     [self printLocation:self.wheelEmpty.rotation withName:@"WheelRotation"];
     
+    // Add driver position camera
+    self.frontLowPositionCam = [CC3Camera nodeWithName:@"frontLowPositionCamera"];
+    self.frontLowPositionCam.location = cc3v(14.34841, -1.5, 10.64886); //14, 20, -1   ->  14, -1, -20
+    self.frontLowPositionCam.rotation = cc3v(4, 57.693, 0); // 94, 12, 141      ->  94, 12, -141
+    [self.wheelEmpty addChild:self.frontLowPositionCam];
+    [self.frontLowPositionCam setFieldOfView:60];
+ 
+    self->currentCamera = 0;
+    self->numberOfCameras = 0;
+    self->cameras[self->numberOfCameras++] = self.mainCamera;
+    self->cameras[self->numberOfCameras++] = self.frontFenderCam;
+    self->cameras[self->numberOfCameras++] = self.rearFenderCam;
+    self->cameras[self->numberOfCameras++] = self.rearFarCam;
+    self->cameras[self->numberOfCameras++] = self.frontLowPositionCam;
+
+
     // Get the dash camera empty
 //    self.dashCameraEmpty = [self.bodyNode getNodeNamed:@"DashCameraEmpty"];
 //    //[self.dashCameraEmpty rotateBy:cc3v(0, 0, 0)];
@@ -526,9 +542,6 @@ bool gAllowRotationAtRest;
                 
                 [self setCoolCarType:Low];
                 
-                //[self.activeCamera translateBy:cc3v(0, -2, 0)];
-                //NSLog(@"Rotated by 5x");
-
                 //gCurrentPitch += gPitchIncrentBy;
                 //gCurrentPitch = MIN(gCurrentPitch, gMaxPitchDegreesForward);
                 
@@ -536,16 +549,12 @@ bool gAllowRotationAtRest;
 
                 [self setCoolCarType:LowDrag];
 
-                //[self.activeCamera translateBy:cc3v(0, -4, 0)];
-                //NSLog(@"Rotated by -5x");
                 //gCurrentPitch = 0.0;
                 
             } else { // Forward
 
                 [self setCoolCarType:Gasser];
 
-                //[self.activeCamera translateBy:cc3v(0, 4, 0)];
-                //NSLog(@"Rotated by 90x");
                 //gCurrentPitch -= gPitchIncrentBy;
                 //gCurrentPitch = MAX(gCurrentPitch, -gMaxPitchDegreesForward);
             }
@@ -555,14 +564,11 @@ bool gAllowRotationAtRest;
             
         } else if(heightSection == 0) {  // Middle 3rd
             
-            CC3Vector camloc = self.activeCamera.location;
-            
             if(widthSection == -1) { // Roll Left
 
-                camloc = CC3VectorAdd(camloc, cc3v(gCurrentRoll,0.0,0.3));
-                [self.activeCamera setLocation:camloc];
-                //camloc = self.pitchEmpty.location;
-                [self.activeCamera runAction:[CC3RotateToLookAt actionWithDuration:0.5 targetLocation:self.pitchEmpty.location]];
+                self.layer->bIsHeading = !self.layer->bIsHeading;
+                NSLog(@"bIsHeading: %d", self.layer->bIsHeading);
+
                 //gPitchWheelie -= 0.25;
                 //gPitchWheelie = MAX(gPitchWheelie, 0);
                 
@@ -612,9 +618,9 @@ bool gAllowRotationAtRest;
         } else {    // Top 3rd
             
             if(widthSection == -1) {
-                
-                self.layer->bIsHeading = !self.layer->bIsHeading;
-                NSLog(@"bIsHeading: %d", self.layer->bIsHeading);
+
+                self.activeCamera = self->cameras[ (self->currentCamera++ % self->numberOfCameras ) ];
+
             }
             else if(widthSection == 0) {
 
