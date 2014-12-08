@@ -307,8 +307,7 @@ bool gAllowRotationAtRest;
 	// And to add some dynamism, we'll animate the 'hello, world' message
 	// using a couple of actions...
     
-    [self adjustPitch:false];
-	
+    [self adjustPitch:false];	
 }
 
 -(CC3Node*) wheelFromNode:(NSString*) nodeName {
