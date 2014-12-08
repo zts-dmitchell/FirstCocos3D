@@ -559,14 +559,15 @@ bool gAllowRotationAtRest;
                 //gCurrentPitch = MAX(gCurrentPitch, -gMaxPitchDegreesForward);
             }
             
-            [self printLocation:self.nodeFLWheel.location withName:@"FLWheel Pos"];
-            [self printLocation:self.nodeFRWheel.location withName:@"FRWheel Pos"];
+            //[self printLocation:self.nodeFLWheel.location withName:@"FLWheel Pos"];
+            //[self printLocation:self.nodeFRWheel.location withName:@"FRWheel Pos"];
             
         } else if(heightSection == 0) {  // Middle 3rd
             
             if(widthSection == -1) { // Roll Left
 
                 self.layer->bIsHeading = !self.layer->bIsHeading;
+                [self.layer headingState:self.layer->bIsHeading];
                 NSLog(@"bIsHeading: %d", self.layer->bIsHeading);
 
                 //gPitchWheelie -= 0.25;
@@ -613,7 +614,7 @@ bool gAllowRotationAtRest;
                 //gCurrentRoll = MAX(gCurrentRoll, -gMaxRollDegrees);
             }
             
-            NSLog(@"gPitchWheelie: %f", gPitchWheelie);
+            //NSLog(@"gPitchWheelie: %f", gPitchWheelie);
             
         } else {    // Top 3rd
             

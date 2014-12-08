@@ -92,12 +92,6 @@
     self.locationManager.distanceFilter = kCLDistanceFilterNone;
     [self.locationManager requestAlwaysAuthorization];
     
-    // Start heading updates.
-    if ([CLLocationManager headingAvailable]) {
-        self.locationManager.headingFilter = 1;
-        [self.locationManager startUpdatingHeading];
-    }
-    
     [self.locationManager startUpdatingLocation];
 }
 
@@ -202,6 +196,23 @@
     NSLog(@"Failed with: %@", error.localizedDescription);
 }
 
+-(void) headingState:(bool) enabled {
+    
+    NSLog(@"Got message in layer layer: %d", enabled);
+    
+    if(enabled) {
+        // Start heading updates.
+        if ([CLLocationManager headingAvailable]) {
+            self.locationManager.headingFilter = 1;
+            [self.locationManager startUpdatingHeading];
+        }
+    } else {
+
+        if ([CLLocationManager headingAvailable]) {
+            [self.locationManager stopUpdatingHeading];
+        }
+    }
+}
 
 #pragma mark End of my shit
 #pragma mark Updating layer

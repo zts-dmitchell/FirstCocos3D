@@ -14,4 +14,6 @@
 
     @public BOOL bIsHeading;
 }
+
+-(void) headingState:(bool) enabled;
 @end
