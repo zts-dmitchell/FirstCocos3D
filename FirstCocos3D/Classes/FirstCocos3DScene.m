@@ -28,7 +28,7 @@ const CGFloat gMaxPitchWheelie = 30.0; // Max 30 degrees of wheelie
 //const CGFloat gMaxRollDegrees = 20.0; // Chevy HHR
 const CGFloat gMaxRollDegrees = -2.8;   // Holden
 const CGFloat gMaxWheelTurn = 40.0;
-const CGFloat gGroundPlaneY = -0.35;
+const CGFloat gGroundPlaneY = -2.14515;
 
 
 const CGFloat gPitchIncrentBy = 1.0;
@@ -203,7 +203,8 @@ bool gAllowRotationAtRest;
     gFLLocation = self.nodeFLWheel.location;
     gFRLocation = self.nodeFRWheel.location;
     
-    self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Ground Plane.pod"];
+    //self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Ground Plane.pod"];
+    self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Curved Ground.pod"];
 
     CC3Vector groundLocation = self.groundPlaneNode.location;
     
@@ -307,7 +308,7 @@ bool gAllowRotationAtRest;
 	// And to add some dynamism, we'll animate the 'hello, world' message
 	// using a couple of actions...
     
-    [self adjustPitch:false];	
+    [self adjustPitch:false];
 }
 
 -(CC3Node*) wheelFromNode:(NSString*) nodeName {
