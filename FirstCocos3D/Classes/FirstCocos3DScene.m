@@ -82,7 +82,7 @@ bool gAllowRotationAtRest;
     self->prevCourse = 0.0;
     self->prevSpeed = 0.0;
     
-    gDoWheelies = true;
+    gDoWheelies = false;
     gAllowRotationAtRest = true;
     
 	// Optionally add a static solid-color, or textured, backdrop, by uncommenting one of these lines.
@@ -91,16 +91,16 @@ bool gAllowRotationAtRest;
 
     
 	// Create the camera, place it back a bit, and add it to the scene
-    self.mainCamera = [CC3Camera nodeWithName: @"mainCamera"];
-    self.mainCamera.location = cc3v(0.0, 0.55, 25.0);
-	[self addChild: self.mainCamera];
+    CC3Camera* mainCamera = [CC3Camera nodeWithName: @"mainCamera"];
+    mainCamera.location = cc3v(0.0, 0.55, 25.0);
+	[self addChild: mainCamera];
 
 	// Create a light, place it back and to the left at a specific
 	// position (not just directional lighting), and add it to the scene
 	CC3Light* lamp = [CC3Light nodeWithName: @"Lamp"];
 	lamp.location = cc3v( -2.0, 0.0, 0.0 );
 	lamp.isDirectionalOnly = NO;
-	[self.mainCamera addChild: lamp];
+	[mainCamera addChild: lamp];
     
 	// Create and load a POD resource file and add its entire contents to the scene.
 	// If needed, prior to adding the loaded content to the scene, you can customize the
@@ -120,67 +120,35 @@ bool gAllowRotationAtRest;
     [self addChild:self.wheelEmpty];
     [self printLocation:self.wheelEmpty.location withName:self.wheelEmpty.name];
 
+    // Add camera structure
+    self.cameras = [[Camera alloc] init];
+    
     // Attach the frontFenderCamera
-    self.frontFenderCam = [CC3Camera nodeWithName:@"frontFenderCamera"];
-    self.frontFenderCam.location = cc3v(5, -0.55, 15.0);
-    self.frontFenderCam.rotation = cc3v(0, 15, 0);
-    [self.wheelEmpty addChild:self.frontFenderCam];
+    [self.cameras add:cc3v(5, -0.55, 15.0) withRotation:cc3v(0, 15, 0)];
 
-    // Create the rearFenderCamera
-    self.rearFenderCam = [CC3Camera nodeWithName:@"rearFenderCamera"];
     // Pointing at front wheel
-    //self.rearFenderCam.location = cc3v(10, -0.55, -2.0);
-    //self.rearFenderCam.rotation = cc3v(0, 45+90, 0);
-    self.rearFenderCam.location = cc3v(6, -2.0, -15.0);
-    self.rearFenderCam.rotation = cc3v(5, 170, 0);
-    [self.wheelEmpty addChild:self.rearFenderCam];
+    [self.cameras add:cc3v(10, -0.55, -2.0) withRotation:cc3v(0, 45+90, 0)];
+    
+    // Attach the rearFenderCamera
+    [self.cameras add:cc3v(6, -2.0, -15.0) withRotation:cc3v(5, 170, 0)];
     
     // Create the rearFarCamera
-    self.rearFarCam = [CC3Camera nodeWithName:@"rearFarCamera"];
-    self.rearFarCam.location = cc3v(14, -2.0, -20.0); //14, 20, -1   ->  14, -1, -20
-    self.rearFarCam.rotation = cc3v(4, 143, -12); // 94, 12, 141      ->  94, 12, -141
-    [self.wheelEmpty addChild:self.rearFarCam];
+    [self.cameras add:cc3v(14, -2.0, -20.0) withRotation:cc3v(4, 143, -12)];
     
     // And, the light for this camera
-    CC3Light* rearFarCameralamp = [CC3Light nodeWithName: @"rearFarCameraLamp"];
-    rearFarCameralamp.location = cc3v( -2.0, 0.0, 0.0 );
-    rearFarCameralamp.isDirectionalOnly = NO;
-    [self.rearFarCam addChild: rearFarCameralamp];
-    [self printLocation:self.bodyNode.rotation withName:@"BodyNodeRotation"];
-    [self printLocation:self.wheelEmpty.rotation withName:@"WheelRotation"];
+    //CC3Light* rearFarCameralamp = [CC3Light nodeWithName: @"rearFarCameraLamp"];
+    //rearFarCameralamp.location = cc3v( -2.0, 0.0, 0.0 );
+    //rearFarCameralamp.isDirectionalOnly = NO;
+    //[self.rearFarCam addChild: rearFarCameralamp];
+    //[self printLocation:self.bodyNode.rotation withName:@"BodyNodeRotation"];
+    //[self printLocation:self.wheelEmpty.rotation withName:@"WheelRotation"];
     
     // Add driver position camera
-    self.frontLowPositionCam = [CC3Camera nodeWithName:@"frontLowPositionCamera"];
-    self.frontLowPositionCam.location = cc3v(14.34841, -1.5, 10.64886); //14, 20, -1   ->  14, -1, -20
-    self.frontLowPositionCam.rotation = cc3v(4, 57.693, 0); // 94, 12, 141      ->  94, 12, -141
-    [self.wheelEmpty addChild:self.frontLowPositionCam];
-    [self.frontLowPositionCam setFieldOfView:60];
- 
-    self->currentCamera = 0;
-    self->numberOfCameras = 0;
-    self->cameras[self->numberOfCameras++] = self.mainCamera;
-    self->cameras[self->numberOfCameras++] = self.frontFenderCam;
-    self->cameras[self->numberOfCameras++] = self.rearFenderCam;
-    self->cameras[self->numberOfCameras++] = self.rearFarCam;
-    self->cameras[self->numberOfCameras++] = self.frontLowPositionCam;
+    [self.cameras add:cc3v(14.34841, -1.5, 10.64886) withRotation:cc3v(4, 57.693, 0) andFieldOfView:60];
 
+    // Default camera.
+    [self.cameras add:cc3v(0.0, 0.55, 25.0)];
 
-    // Get the dash camera empty
-//    self.dashCameraEmpty = [self.bodyNode getNodeNamed:@"DashCameraEmpty"];
-//    //[self.dashCameraEmpty rotateBy:cc3v(0, 0, 0)];
-//    //[self.dashCameraEmpty setForwardDirection:cc3v(0, 0, 1)];
-//    [self printLocation:self.dashCameraEmpty.location withName:@"dashCam loc"];
-//    [self printLocation:self.dashCameraEmpty.forwardDirection withName:@"dashCam forward loc"];
-//    [self printLocation:self.bodyNode.forwardDirection withName:@"bodyNode forward loc"];
-//    [self printLocation:self.dashCameraEmpty.rotation withName:@"dashCam rotation"];
-//    [self printLocation:self.bodyNode.rotation withName:@"bodyNode rotation"];
-//    [self printLocation:self.activeCamera.rotation withName:@"activeCamera rotation"];
-//    [self printLocation:self.activeCamera.forwardDirection withName:@"activeCamera forwardDirection"];
-//    [self printLocation:self.activeCamera.location withName:@"activeCamera location"];
-//    
-//    [self.dashCameraEmpty setForwardDirection:self.activeCamera.forwardDirection];
-//    [self.dashCameraEmpty setRotation:self.activeCamera.rotation];
-    
     // Get the pitch empty for pitch rotations
     self.pitchEmpty = [self.bodyNode getNodeNamed:@"PitchEmpty"];
     
@@ -620,23 +588,19 @@ bool gAllowRotationAtRest;
             
             if(widthSection == -1) {
 
-                self.activeCamera = self->cameras[ (self->currentCamera++ % self->numberOfCameras ) ];
-
+                [self.cameras transitionToNext:self.activeCamera];
             }
             else if(widthSection == 0) {
                 
-                [self move:self.activeCamera from:self.bodyNode to:self.wheelEmpty];
-                //self.activeCamera = self.mainCamera;
-                
+                [self move:self.activeCamera from:self to:self.wheelEmpty];
+
                 // Other stuff
                 [self adjustPitch:true];
             }
             else {
                 
-                [self move:self.activeCamera from:self.wheelEmpty to:self.bodyNode];
+                [self move:self.activeCamera from:self.wheelEmpty to:self];
 
-                //self.activeCamera = self.rearFarCam;
-                
                 // Other stuff
                 [self adjustPitch:false];
             }

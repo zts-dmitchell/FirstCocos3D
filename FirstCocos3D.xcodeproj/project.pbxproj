@@ -10,6 +10,7 @@
 		5700692B1A21B03100269F00 /* Chevrolet HHR - Linked.pod in Resources */ = {isa = PBXBuildFile; fileRef = 5700692A1A21B03100269F00 /* Chevrolet HHR - Linked.pod */; };
 		571382F51A27DD4800753FD6 /* SimpleMovingAverage.m in Sources */ = {isa = PBXBuildFile; fileRef = 571382F41A27DD4800753FD6 /* SimpleMovingAverage.m */; };
 		571382F81A27DE3C00753FD6 /* ExponentialMovingAverage.m in Sources */ = {isa = PBXBuildFile; fileRef = 571382F71A27DE3C00753FD6 /* ExponentialMovingAverage.m */; };
+		57177BC01A37870600477239 /* Camera.m in Sources */ = {isa = PBXBuildFile; fileRef = 57177BBF1A37870600477239 /* Camera.m */; };
 		5717AF2219DDD31100A29D6B /* KalmanFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5717AF2119DDD31100A29D6B /* KalmanFilter.m */; };
 		575707A919FB0AF60010C922 /* Ground Plane.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707A819FB0AF60010C922 /* Ground Plane.pod */; };
 		575707AB19FB4BDB0010C922 /* Curved Ground.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707AA19FB4BDB0010C922 /* Curved Ground.pod */; };
@@ -417,6 +418,8 @@
 		571382F71A27DE3C00753FD6 /* ExponentialMovingAverage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ExponentialMovingAverage.m; path = Utils/ExponentialMovingAverage.m; sourceTree = "<group>"; };
 		571382FA1A2EF15100753FD6 /* ModelInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelInfo.h; sourceTree = "<group>"; };
 		571382FB1A2FB2EC00753FD6 /* Model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
+		57177BBE1A37842E00477239 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Camera.h; path = Utils/Camera.h; sourceTree = "<group>"; };
+		57177BBF1A37870600477239 /* Camera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Camera.m; path = Utils/Camera.m; sourceTree = "<group>"; };
 		5717AF2019DDD2F600A29D6B /* KalmanFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KalmanFilter.h; path = Utils/KalmanFilter.h; sourceTree = "<group>"; };
 		5717AF2119DDD31100A29D6B /* KalmanFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KalmanFilter.m; path = Utils/KalmanFilter.m; sourceTree = "<group>"; };
 		575707A819FB0AF60010C922 /* Ground Plane.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Ground Plane.pod"; path = "Resources/Ground Plane.pod"; sourceTree = "<group>"; };
@@ -1183,6 +1186,8 @@
 				571382F41A27DD4800753FD6 /* SimpleMovingAverage.m */,
 				571382F61A27DE2800753FD6 /* ExponentialMovingAverage.h */,
 				571382F71A27DE3C00753FD6 /* ExponentialMovingAverage.m */,
+				57177BBE1A37842E00477239 /* Camera.h */,
+				57177BBF1A37870600477239 /* Camera.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -2814,6 +2819,7 @@
 				571382F81A27DE3C00753FD6 /* ExponentialMovingAverage.m in Sources */,
 				57CAE58F19BC18D400665B4C /* FirstCocos3DLayer.m in Sources */,
 				5717AF2219DDD31100A29D6B /* KalmanFilter.m in Sources */,
+				57177BC01A37870600477239 /* Camera.m in Sources */,
 				571382F51A27DD4800753FD6 /* SimpleMovingAverage.m in Sources */,
 				57CAE59C19BC18D400665B4C /* main.m in Sources */,
 				57B2346C19D92B9400B492AC /* AppDelegate.m in Sources */,
