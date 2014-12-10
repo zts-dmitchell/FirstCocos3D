@@ -111,9 +111,6 @@ bool gAllowRotationAtRest;
     //self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
 	[self addChild: self.bodyNode];
     
-    // Display the back sides because it looks strange, otherwise.
-    self.bodyNode.shouldCullBackFaces = NO;
-    
     // Bunch a
     self.wheelEmpty = [self.bodyNode getNodeNamed:@"WheelEmpty"];
     [self.bodyNode removeChild:self.wheelEmpty];
@@ -134,7 +131,11 @@ bool gAllowRotationAtRest;
     
     // Create the rearFarCamera
     [self.cameras add:cc3v(14, -2.0, -20.0) withRotation:cc3v(4, 143, -12)];
+
+    // Above from rear
+    [self.cameras add:cc3v(0.0, 35.0, 35.0) withRotation:cc3v(-45, 0, 0)];
     
+
     // And, the light for this camera
     //CC3Light* rearFarCameralamp = [CC3Light nodeWithName: @"rearFarCameraLamp"];
     //rearFarCameralamp.location = cc3v( -2.0, 0.0, 0.0 );
@@ -181,6 +182,9 @@ bool gAllowRotationAtRest;
     [self printLocation:self.groundPlaneNode.location withName:@"location"];
     [self.groundPlaneNode setLocation:groundLocation];
     [self addChild: self.groundPlaneNode];
+    
+    // Display the back sides because it looks strange, otherwise.
+    self.bodyNode.shouldCullBackFaces = NO;
     
     ///////////////////////
     // F I L T E R S
@@ -534,8 +538,8 @@ bool gAllowRotationAtRest;
             
             if(widthSection == -1) { // Roll Left
 
-                self.layer->bIsHeading = !self.layer->bIsHeading;
-                [self.layer headingState:self.layer->bIsHeading];
+                //self.layer->bIsHeading = !self.layer->bIsHeading;
+                //[self.layer headingState:self.layer->bIsHeading];
                 NSLog(@"bIsHeading: %d", self.layer->bIsHeading);
 
                 //gPitchWheelie -= 0.25;
@@ -592,17 +596,18 @@ bool gAllowRotationAtRest;
             }
             else if(widthSection == 0) {
                 
-                [self move:self.activeCamera from:self to:self.wheelEmpty];
+                [self move:self.activeCamera from:self.wheelEmpty to:self];
+                
 
                 // Other stuff
-                [self adjustPitch:true];
+                [self adjustPitch:true]; // Resets w/o Accelerometer
             }
             else {
                 
-                [self move:self.activeCamera from:self.wheelEmpty to:self];
+                [self move:self.activeCamera from:self to:self.wheelEmpty];
 
                 // Other stuff
-                [self adjustPitch:false];
+                [self adjustPitch:false];  // Sets w/Accelerometer
             }
         }
     }
