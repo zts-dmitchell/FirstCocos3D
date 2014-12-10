@@ -12,6 +12,7 @@
 #import "FirstCocos3DLayer.h"
 #import "Filters.h"
 #import "Camera.h"
+#import "ColorBooth.h"
 
 @import CoreMotion;
 
@@ -26,6 +27,7 @@
 typedef enum coolCarTypes { Low, LowDrag, Gasser } CoolCarTypes;
 
 @property(strong, nonatomic) Camera* cameras;
+@property(strong, nonatomic) ColorBooth* colorBooth;
 @property(strong, nonatomic) CC3ResourceNode* bodyNode;
 @property(strong, nonatomic) CC3Node* pitchEmpty;
 @property(strong, nonatomic) CC3Node* dashCameraEmpty;

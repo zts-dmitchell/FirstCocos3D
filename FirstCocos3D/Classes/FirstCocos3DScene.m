@@ -16,6 +16,7 @@
 #import "CCActionManager.h"
 
 #import "ExponentialMovingAverage.h"
+#import "ColorBooth.h"
 
 @implementation FirstCocos3DScene
 
@@ -111,6 +112,10 @@ bool gAllowRotationAtRest;
     //self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
 	[self addChild: self.bodyNode];
     
+    // Get the pitch empty for pitch rotations
+    self.pitchEmpty = [self.bodyNode getNodeNamed:@"PitchEmpty"];
+    
+
     // Bunch a
     self.wheelEmpty = [self.bodyNode getNodeNamed:@"WheelEmpty"];
     [self.bodyNode removeChild:self.wheelEmpty];
@@ -136,22 +141,17 @@ bool gAllowRotationAtRest;
     [self.cameras add:cc3v(0.0, 35.0, 35.0) withRotation:cc3v(-45, 0, 0)];
     
 
-    // And, the light for this camera
-    //CC3Light* rearFarCameralamp = [CC3Light nodeWithName: @"rearFarCameraLamp"];
-    //rearFarCameralamp.location = cc3v( -2.0, 0.0, 0.0 );
-    //rearFarCameralamp.isDirectionalOnly = NO;
-    //[self.rearFarCam addChild: rearFarCameralamp];
-    //[self printLocation:self.bodyNode.rotation withName:@"BodyNodeRotation"];
-    //[self printLocation:self.wheelEmpty.rotation withName:@"WheelRotation"];
-    
     // Add driver position camera
     [self.cameras add:cc3v(14.34841, -1.5, 10.64886) withRotation:cc3v(4, 57.693, 0) andFieldOfView:60];
 
     // Default camera.
     [self.cameras add:cc3v(0.0, 0.55, 25.0)];
 
-    // Get the pitch empty for pitch rotations
-    self.pitchEmpty = [self.bodyNode getNodeNamed:@"PitchEmpty"];
+    self.colorBooth = [[ColorBooth alloc] init];
+    
+    CC3MeshNode* node = [self.bodyNode getMeshNodeNamed:@"Trunk Lid"];
+    
+    [self.colorBooth addColor:node.diffuseColor];
     
     // Already in low-body position.
     self.vLowBody = self.pitchEmpty.location;
@@ -537,6 +537,11 @@ bool gAllowRotationAtRest;
         } else if(heightSection == 0) {  // Middle 3rd
             
             if(widthSection == -1) { // Roll Left
+
+                NSArray *parts = @[ @"Main Body-submesh1", @"Trunk Lid"];
+                
+                [self.colorBooth nextColor:parts inNode:self.bodyNode];
+                
 
                 //self.layer->bIsHeading = !self.layer->bIsHeading;
                 //[self.layer headingState:self.layer->bIsHeading];
