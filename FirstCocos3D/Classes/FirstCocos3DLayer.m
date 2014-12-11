@@ -93,6 +93,7 @@
     [self.locationManager requestAlwaysAuthorization];
     
     [self.locationManager startUpdatingLocation];
+    
 }
 
 #pragma mark - My Shit
@@ -195,6 +196,7 @@
 {
     NSLog(@"Failed with: %@", error.localizedDescription);
 }
+
 
 -(void) headingState:(bool) enabled {
     

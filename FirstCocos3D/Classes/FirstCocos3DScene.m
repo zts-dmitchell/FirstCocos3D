@@ -79,7 +79,8 @@ bool gAllowRotationAtRest;
 
     self.manager = [[CMMotionManager alloc] init];
     [self.manager startAccelerometerUpdates];
-    
+    [self.manager startDeviceMotionUpdates];
+
     self->prevCourse = 0.0;
     self->prevSpeed = 0.0;
     
@@ -391,9 +392,7 @@ bool gAllowRotationAtRest;
     
     [self.nodeRLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeRRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
-    
 }
-
 
 #pragma mark Scene opening and closing
 
@@ -841,9 +840,14 @@ void rotateAroundPoint(double angle, CC3Vector point, CC3Vector origin, CC3Vecto
     const double speedFactor = getFactorFromSpeed();
     const double scaledWheelPosCosFactor = speedFactor * gMaxWheelTurn * 2;
 
-    if(! self.layer->bIsHeading)
-        gCurrentCourse += [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
-
+    if(! self.layer->bIsHeading) {
+        //gCurrentCourse += [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
+        
+        CMDeviceMotion *deviceMotion = self.manager.deviceMotion;
+        CMAttitude *attitude = deviceMotion.attitude;
+        gCurrentCourse = CC_RADIANS_TO_DEGREES(attitude.yaw);
+    }
+    
     gCurrentWheelPos = MAX(MIN([self.wheelTurningFilter get:acceleration.y] * scaledWheelPosCosFactor, gMaxWheelTurn), -gMaxWheelTurn);
 }
 
