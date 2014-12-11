@@ -35,6 +35,7 @@
         bodyPart.reflectivity = kCC3MaximumMaterialShininess;
         bodyPart.material.reflectivity = bodyPart.reflectivity;
         bodyPart.material.diffuseColor = color;
+        bodyPart.material.specularColor = kCCC4FWhite;
         //NSLog(@"bodyPart: %@", bodyPart.material.fullDescription);
     }
 }

@@ -632,11 +632,13 @@ bool gUseGyroScope;
             location.y = self.vLowBody.y;
             [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
 
-            [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
-            [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
+            [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 1.0, 1.0)]];
+            [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 1.0, 1.0)]];
 
-            gFLLocation = cc3v(2.94, -1.19232, 6.12179);
-            gFRLocation = cc3v(-2.94, -1.19232, 6.12179);
+            //gFLLocation = cc3v(2.94, -1.19232, 6.12179);
+            //gFRLocation = cc3v(-2.94, -1.19232, 6.12179);
+            gFLLocation = cc3v(2.66, -0.94, 6.12179);
+            gFRLocation = cc3v(-2.66, -0.94, 6.12179);
             
             [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFLLocation]];
             [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFRLocation]];
