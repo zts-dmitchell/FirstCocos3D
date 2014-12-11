@@ -45,6 +45,7 @@
     
     ccColor4F nextColor;
     [pCi getValue:&nextColor];
+    NSLog(@"New color: %@", NSStringFromCCC4F(nextColor));
     [ColorBooth changeColor:parts inNode:node asColor:nextColor];
 }
 
@@ -58,7 +59,7 @@
     
     self.colors = [[NSMutableArray alloc] init];
     
-    NSValue * pColor = [NSValue valueWithBytes:&kCCC4FRed objCType:@encode(ccColor4F)];
+    NSValue * pColor = [NSValue valueWithBytes:&kCCC4FOrange objCType:@encode(ccColor4F)];
     [self.colors addObject:pColor];
 
     pColor = [NSValue valueWithBytes:&kCCC4FGreen objCType:@encode(ccColor4F)];
@@ -76,7 +77,7 @@
     pColor = [NSValue valueWithBytes:&kCCC4FYellow objCType:@encode(ccColor4F)];
     [self.colors addObject:pColor];
     
-    pColor = [NSValue valueWithBytes:&kCCC4FOrange objCType:@encode(ccColor4F)];
+    pColor = [NSValue valueWithBytes:&kCCC4FRed objCType:@encode(ccColor4F)];
     [self.colors addObject:pColor];
     
     pColor = [NSValue valueWithBytes:&kCCC4FLightGray objCType:@encode(ccColor4F)];

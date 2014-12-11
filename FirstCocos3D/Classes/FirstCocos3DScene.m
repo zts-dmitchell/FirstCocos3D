@@ -115,6 +115,19 @@ bool gAllowRotationAtRest;
     // Get the pitch empty for pitch rotations
     self.pitchEmpty = [self.bodyNode getNodeNamed:@"PitchEmpty"];
     
+    CC3Node* node2 = [self.bodyNode getNodeNamed:@"Headlamps"];
+    NSLog(@"Headlamps: %@", node2.fullDescription);
+    CC3MeshNode* m0 = node2.children[0];
+    //m0.diffuseColor = kCCC4FBlack;
+    NSLog(@"Info: %@", m0.material.fullDescription);
+    CC3MeshNode* m1 = node2.children[1];
+    NSLog(@"Info: %@", m1.material.fullDescription);
+    m1.emissionColor = kCCC4FWhite;
+    m1.shininess = 255;
+    m1.reflectivity = 255;
+    //mesh.emissionColor = kCCC4FYellow;
+    //CC3Node* node2 = [self.bodyNode getNodeNamed:@"Headlamps"];
+    //node2.emissionColor = kCCC4FYellow;
 
     // Bunch a
     self.wheelEmpty = [self.bodyNode getNodeNamed:@"WheelEmpty"];
@@ -542,21 +555,9 @@ bool gAllowRotationAtRest;
                 
                 [self.colorBooth nextColor:parts inNode:self.bodyNode];
                 
-
                 //self.layer->bIsHeading = !self.layer->bIsHeading;
                 //[self.layer headingState:self.layer->bIsHeading];
-                NSLog(@"bIsHeading: %d", self.layer->bIsHeading);
-
-                //gPitchWheelie -= 0.25;
-                //gPitchWheelie = MAX(gPitchWheelie, 0);
-                
-                //gCurrentSpeed -= 1.0;
-                //gCurrentSpeed = MAX(gCurrentSpeed, 0.0);
-                
-                //NSLog(@"self to dashCam");
-                //[self setCameraTarget:self :self.dashCameraEmpty];
-                //gCurrentRoll += gRollIncrementBy;
-                //gCurrentRoll = MIN(gCurrentRoll, gMaxRollDegrees);
+                //NSLog(@"bIsHeading: %d", self.layer->bIsHeading);
 
             } else if(widthSection == 0) { // Reset Roll
 
@@ -568,27 +569,10 @@ bool gAllowRotationAtRest;
                 //gCurrentSpeed = 0.0;
                 //self.pitchEmpty.visible = !self.pitchEmpty.visible;
                 
-                //NSLog(@"dashCam to self");
-                //[self setCameraTarget:self :self.dashCameraEmpty];
-
-                //gCurrentRoll = 0.0;
-                
             } else { // Roll Right
 
                 gAllowRotationAtRest = !gAllowRotationAtRest;
                 
-                //gPitchWheelie += 0.25;
-                //  gPitchWheelie = MIN(gPitchWheelie, gMaxPitchWheelie);
-                
-
-                //gCurrentSpeed += 1.0;
-                //gCurrentSpeed = MIN(gCurrentSpeed, 100);
-
-                //NSLog(@"dashCam to self");
-                //[self setCameraTarget:self.dashCameraEmpty :self ];
-
-                //gCurrentRoll -= gRollIncrementBy;
-                //gCurrentRoll = MAX(gCurrentRoll, -gMaxRollDegrees);
             }
             
             //NSLog(@"gPitchWheelie: %f", gPitchWheelie);
@@ -602,7 +586,6 @@ bool gAllowRotationAtRest;
             else if(widthSection == 0) {
                 
                 [self move:self.activeCamera from:self.wheelEmpty to:self];
-                
 
                 // Other stuff
                 [self adjustPitch:true]; // Resets w/o Accelerometer
