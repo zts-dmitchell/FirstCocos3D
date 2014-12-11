@@ -49,7 +49,7 @@ CC3Vector gFLLocation;
 CC3Vector gFRLocation;
 
 bool gDoWheelies;
-bool gAllowRotationAtRest;
+bool gUseGyroScope;
 
 #pragma mark End Global Variables
 
@@ -85,7 +85,7 @@ bool gAllowRotationAtRest;
     self->prevSpeed = 0.0;
     
     gDoWheelies = false;
-    gAllowRotationAtRest = true;
+    gUseGyroScope = true;
     
 	// Optionally add a static solid-color, or textured, backdrop, by uncommenting one of these lines.
     //self.backdrop = [CC3Backdrop nodeWithColor: ccc4f(0.52, 0.8, 0.92, 1.0)];
@@ -364,8 +364,8 @@ bool gAllowRotationAtRest;
 
 -(void) updateAfterTransform: (CC3NodeUpdatingVisitor*) visitor {
 
-    if( ! gAllowRotationAtRest && gCurrentSpeed <= 0.0)
-        return;
+    //if(!gUseGyroScope && gCurrentSpeed <= 0.0)
+    //    return;
     
     [self storeRotationsAndAnimateBody];
 
@@ -526,25 +526,15 @@ bool gAllowRotationAtRest;
                 
                 [self setCoolCarType:Low];
                 
-                //gCurrentPitch += gPitchIncrentBy;
-                //gCurrentPitch = MIN(gCurrentPitch, gMaxPitchDegreesForward);
-                
             } else if(widthSection == 0) { // Reset Straight
 
                 [self setCoolCarType:LowDrag];
-
-                //gCurrentPitch = 0.0;
                 
             } else { // Forward
 
                 [self setCoolCarType:Gasser];
 
-                //gCurrentPitch -= gPitchIncrentBy;
-                //gCurrentPitch = MAX(gCurrentPitch, -gMaxPitchDegreesForward);
             }
-            
-            //[self printLocation:self.nodeFLWheel.location withName:@"FLWheel Pos"];
-            //[self printLocation:self.nodeFRWheel.location withName:@"FRWheel Pos"];
             
         } else if(heightSection == 0) {  // Middle 3rd
             
@@ -565,16 +555,13 @@ bool gAllowRotationAtRest;
                 // Reset the wheelie to zero, so wheels don't remain in the air.
                 gPitchWheelie = 0.0;
                 
-                //gCurrentSpeed = 0.0;
                 //self.pitchEmpty.visible = !self.pitchEmpty.visible;
                 
             } else { // Roll Right
 
-                gAllowRotationAtRest = !gAllowRotationAtRest;
+                gUseGyroScope = !gUseGyroScope;
                 
             }
-            
-            //NSLog(@"gPitchWheelie: %f", gPitchWheelie);
             
         } else {    // Top 3rd
             
@@ -841,11 +828,18 @@ void rotateAroundPoint(double angle, CC3Vector point, CC3Vector origin, CC3Vecto
     const double scaledWheelPosCosFactor = speedFactor * gMaxWheelTurn * 2;
 
     if(! self.layer->bIsHeading) {
-        //gCurrentCourse += [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
         
-        CMDeviceMotion *deviceMotion = self.manager.deviceMotion;
-        CMAttitude *attitude = deviceMotion.attitude;
-        gCurrentCourse = CC_RADIANS_TO_DEGREES(attitude.yaw);
+        if(gUseGyroScope) {
+
+            CMDeviceMotion *deviceMotion = self.manager.deviceMotion;
+            CMAttitude *attitude = deviceMotion.attitude;
+            gCurrentCourse = CC_RADIANS_TO_DEGREES(attitude.yaw);
+
+        } else {
+            
+            gCurrentCourse += [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
+            
+        }
     }
     
     gCurrentWheelPos = MAX(MIN([self.wheelTurningFilter get:acceleration.y] * scaledWheelPosCosFactor, gMaxWheelTurn), -gMaxWheelTurn);
