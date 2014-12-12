@@ -82,14 +82,13 @@ bool gUseGyroScope;
     [self.manager startDeviceMotionUpdates];
 
     self->prevCourse = 0.0;
-    self->prevSpeed = 0.0;
     
     gDoWheelies = false;
     gUseGyroScope = true;
     
 	// Optionally add a static solid-color, or textured, backdrop, by uncommenting one of these lines.
     //self.backdrop = [CC3Backdrop nodeWithColor: ccc4f(0.52, 0.8, 0.92, 1.0)];
-	self.backdrop = [CC3Backdrop nodeWithTexture: [CC3Texture textureFromFile: @"Buildings_750x500.png"]];
+	//self.backdrop = [CC3Backdrop nodeWithTexture: [CC3Texture textureFromFile: @"Buildings_750x500.png"]];
 
     
 	// Create the camera, place it back a bit, and add it to the scene
@@ -700,51 +699,12 @@ bool gUseGyroScope;
     
     // ... and speed
     gCurrentSpeed = speed;
-
-//    if( speed > 0.0 )
-        //[self storeRotationsAndAnimateBody];
     
-//    if( ! [self shouldChangeCourse:course] ) {
-//        NSLog(@"Not changing course");
-//        return;
-//    }
-//    
-//    NSLog(@"Changing course");
-    
-    //[self doDraw:course withSpeed:speed];
-    
-    self->prevSpeed = speed;
 }
 
 #pragma mark Draw the Scene
 
-/**
- * Draws stuff to the screen for this scene.
- */
--(void) doDraw:(double)course withSpeed:(double) speed {
-
-    //course = [self convertCourseToSimple:course];
-    
-    //NSLog(@"Current Pitch: %f, Roll: %f, Wheel Pos: %f", gCurrentPitch, gCurrentRoll, gCurrentTurn);
-
-    //const double durationSpeed = 0.5;
-    //[self rotateNodesToCourse:course withActionDuration:durationSpeed];
-    
-    //[self.pitchEmpty  runAction:[CC3ActionRotateTo actionWithDuration:durationSpeed rotateTo:cc3v(gCurrentPitch-90, 0, 0)]];
-    //[self.nodeRLWheel runAction:[CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
-    //[self.nodeRRWheel runAction:[CC3ActionRotateForever actionWithRotationRate: cc3v(30.0 * speed, 0.0, 0.0)]];
-}
-
-
-void rotateAroundPoint(double angle, CC3Vector point, CC3Vector origin, CC3Vector result) {
-    
-}
-
 -(void) rotateNodesToCourse:(double) duration {
-    
-    //[self.bodyNode        runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(0, course, gCurrentRoll)]];
-    //[self.groundPlaneNode runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(0, course, 0)]];
-    //[self.wheelEmpty      runAction:[CC3ActionRotateTo actionWithDuration:duration rotateTo:cc3v(0, course, 0)]];
     
     [self.nodeFLWheel setLocation:gFLLocation];
     [self.nodeFRWheel setLocation:gFRLocation];

@@ -21,7 +21,6 @@
     
     CGPoint touchDownPoint;
     double prevCourse;
-    double prevSpeed;
 };
 
 typedef enum coolCarTypes { Low, LowDrag, Gasser } CoolCarTypes;
