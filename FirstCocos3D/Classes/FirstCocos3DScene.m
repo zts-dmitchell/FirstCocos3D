@@ -115,19 +115,20 @@ bool gUseGyroScope;
     self.pitchEmpty = [self.bodyNode getNodeNamed:@"PitchEmpty"];
     
     CC3Node* node2 = [self.bodyNode getNodeNamed:@"Headlamps"];
-    NSLog(@"Headlamps: %@", node2.fullDescription);
-    CC3MeshNode* m0 = node2.children[0];
-    //m0.diffuseColor = kCCC4FBlack;
-    NSLog(@"Info: %@", m0.material.fullDescription);
     CC3MeshNode* m1 = node2.children[1];
-    NSLog(@"Info: %@", m1.material.fullDescription);
     m1.emissionColor = kCCC4FWhite;
-    m1.shininess = 255;
-    m1.reflectivity = 255;
-    //mesh.emissionColor = kCCC4FYellow;
-    //CC3Node* node2 = [self.bodyNode getNodeNamed:@"Headlamps"];
-    //node2.emissionColor = kCCC4FYellow;
+    m1.shininess = 128;
+    m1.reflectivity = 1;
 
+    node2 = [self.bodyNode getNodeNamed:@"Taillight"];
+    m1 = node2.children[1];
+    NSLog(@"Info 1: %@", m1.material.fullDescription);
+    m1.emissionColor = kCCC4FRed;
+    m1.shininess = 128.0;
+    m1.reflectivity = 1.0;
+    NSLog(@"Info 2: %@", m1.material.fullDescription);
+    
+    
     // Bunch a
     self.wheelEmpty = [self.bodyNode getNodeNamed:@"WheelEmpty"];
     [self.bodyNode removeChild:self.wheelEmpty];
@@ -382,6 +383,7 @@ bool gUseGyroScope;
     // Front Wheel stuff
     [self.nodeFLWheel setRotation:gStraight];
     [self.nodeFRWheel setRotation:gStraight];
+    
     // Set rears, too, so that they don't spin.
     [self.nodeRLWheel setRotation:gStraight];
     [self.nodeRRWheel setRotation:gStraight];
@@ -628,6 +630,7 @@ bool gUseGyroScope;
 
             [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.36290, 0, 0)]];
             [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.36290, 0, 0)]];
+            //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
             break;
             
         case LowDrag:
@@ -641,7 +644,7 @@ bool gUseGyroScope;
 
             [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.66, 0, 0)]];
             [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.66, 0, 0)]];
-            
+            //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
             break;
             
         case Gasser:
@@ -655,6 +658,7 @@ bool gUseGyroScope;
 
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
             [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
+            //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(0, 0, -03.2)]];
             break;
             
         default:

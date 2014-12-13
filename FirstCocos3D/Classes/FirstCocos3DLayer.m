@@ -47,7 +47,7 @@
     self.mphLabel = [CCLabelTTF labelWithString:@"" fontName:@"Verdana-Bold" fontSize:18.0f];
     self.mphLabel.positionType = CCPositionTypeNormalized;
     self.mphLabel.position = ccp(0.25f, 0.96f);
-    CCColor* color = [CCColor greenColor];
+    CCColor* color = [CCColor blackColor];
     
     [self.mphLabel setColor:color];
     [self addChild:self.mphLabel];
