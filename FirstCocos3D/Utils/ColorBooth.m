@@ -11,6 +11,9 @@
 
 @implementation ColorBooth
 
+/*
+ Initializer.
+*/
 -(id) init {
     self = [super init];
     
@@ -22,14 +25,21 @@
     }
     
     return self;
-    
 }
 
-+(void) changeColor:(NSArray*) parts inNode:(CC3Node*) node asColor:(ccColor4F) color{
+/*
+ Change the color of the given body party parts.
+*/
++(void) changeColor:(NSArray*) parts inNode:(CC3Node*) node asColor:(ccColor4F) color {
     
     for( NSString* part in parts) {
         
         CC3MeshNode* bodyPart = [node getMeshNodeNamed: part];
+        
+        if(bodyPart == nil) {
+            NSLog(@"Unknown body part: %@", part);
+            continue;
+        }
         
         bodyPart.material = [CC3Material shiny];
         bodyPart.reflectivity = kCC3MaximumMaterialShininess;
@@ -40,6 +50,10 @@
     }
 }
 
+/*
+ Set the part to the next color. Doesn't hold state, so if the node is different, 
+ colors will resume wherever it was left.
+*/
 -(void) nextColor:(NSArray*) parts inNode:(CC3Node*) node {
     
     NSValue *pCi = [self.colors objectAtIndex: (self.currentColor++ % self.colors.count)];
@@ -50,17 +64,50 @@
     [ColorBooth changeColor:parts inNode:node asColor:nextColor];
 }
 
+/*
+ Allows the user to add a custom color, separate from the built-in ones.
+*/
 -(void) addColor:(ccColor4F) color {
 
     NSValue * pColor = [NSValue valueWithBytes:&color objCType:@encode(ccColor4F)];
     [self.colors addObject:pColor];
 }
 
+/*
+ Resets to color iterator to the beginning.
+*/
+-(void) resetColorIterator {
+    self.currentColor = 0;
+}
+
+/*
+ Returns the current color position.
+*/
+-(int) getCurrentColorPosition {
+    return (self.currentColor % self.colors.count);
+}
+
+/*
+ Initializes the default colors.
+*/
 -(void) initColors {
     
     self.colors = [[NSMutableArray alloc] init];
+
+    ccColor4F tan;
+    tan.r = 0.979;
+    tan.g = 0.897;
+    tan.b = 0.597;
+    tan.a = 1.0;
     
-    NSValue * pColor = [NSValue valueWithBytes:&kCCC4FOrange objCType:@encode(ccColor4F)];
+    NSValue * pColor = [NSValue valueWithBytes:&tan objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+    
+
+    pColor = [NSValue valueWithBytes:&kCCC4FOrange objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+
+    pColor = [NSValue valueWithBytes:&kCCC4FRed objCType:@encode(ccColor4F)];
     [self.colors addObject:pColor];
 
     pColor = [NSValue valueWithBytes:&kCCC4FGreen objCType:@encode(ccColor4F)];
@@ -78,9 +125,6 @@
     pColor = [NSValue valueWithBytes:&kCCC4FYellow objCType:@encode(ccColor4F)];
     [self.colors addObject:pColor];
     
-    pColor = [NSValue valueWithBytes:&kCCC4FRed objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
-    
     pColor = [NSValue valueWithBytes:&kCCC4FLightGray objCType:@encode(ccColor4F)];
     [self.colors addObject:pColor];
     
@@ -94,10 +138,7 @@
     [self.colors addObject:pColor];
     
     pColor = [NSValue valueWithBytes:&kCCC4FBlack objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
-    
-    pColor = [NSValue valueWithBytes:&kCCC4FBlackTransparent objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
+    [self.colors addObject:pColor];    
 }
 
 @end

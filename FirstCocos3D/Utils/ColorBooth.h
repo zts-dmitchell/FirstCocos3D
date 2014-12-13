@@ -19,6 +19,9 @@
 -(void) addColor:(ccColor4F) color;
 +(void) changeColor:(NSArray*) parts inNode:(CC3Node*) node asColor:(ccColor4F) color;
 
+-(void) resetColorIterator;
+-(int) getCurrentColorPosition;
+
 @property (strong, nonatomic) NSMutableArray* colors;
 @property (assign, nonatomic) int currentColor;
 @end
