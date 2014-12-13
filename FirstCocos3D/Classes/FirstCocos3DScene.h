@@ -29,11 +29,12 @@ typedef enum coolCarTypes { Low, LowDrag, Gasser } CoolCarTypes;
 @property(strong, nonatomic) ColorBooth* colorBooth;
 @property(strong, nonatomic) CC3ResourceNode* bodyNode;
 @property(strong, nonatomic) CC3Node* pitchEmpty;
-@property(strong, nonatomic) CC3Node* dashCameraEmpty;
 
 @property(assign, nonatomic) CC3Vector vLowBody;
 @property(assign, nonatomic) CC3Vector vGasserBody;
 @property(strong, nonatomic) CC3Node* wheelEmpty;
+@property(strong, nonatomic) CC3Node* frontAxle;
+@property(strong, nonatomic) CC3Node* rearAxle;
 @property(strong, nonatomic) CC3Node* nodeFLWheel;
 @property(strong, nonatomic) CC3Node* nodeFRWheel;
 @property(strong, nonatomic) CC3Node* nodeRLWheel;

@@ -45,8 +45,7 @@ CGFloat gCurrentSpeedPos = 0.0;
 CGFloat gCurrentSpeed = 0.0;
 
 CC3Vector gStraight;
-CC3Vector gFLLocation;
-CC3Vector gFRLocation;
+CC3Vector gFrontAxle;
 
 bool gDoWheelies;
 bool gUseGyroScope;
@@ -135,6 +134,15 @@ bool gUseGyroScope;
     [self addChild:self.wheelEmpty];
     [self printLocation:self.wheelEmpty.location withName:self.wheelEmpty.name];
 
+    // Unparent from body, so that it can rotate freely.
+    self.frontAxle = [self.wheelEmpty getNodeNamed:@"Front Axle"];
+    //[self.bodyNode removeChild:self.frontAxle];
+    //[self addChild:self.frontAxle];
+    
+    self.rearAxle = [self.wheelEmpty getNodeNamed:@"Rear Axle"];
+    //[self.bodyNode removeChild:self.rearAxle];
+    //[self addChild:self.rearAxle];
+
     // Add camera structure
     self.cameras = [[Camera alloc] init];
     
@@ -182,8 +190,8 @@ bool gUseGyroScope;
     self.nodeRLWheel = [self wheelFromNode:@"RLWheel"];
     
     gStraight = self.nodeFLWheel.rotation;
-    gFLLocation = self.nodeFLWheel.location;
-    gFRLocation = self.nodeFRWheel.location;
+    gFrontAxle = self.frontAxle.location;
+    
     
     //self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Ground Plane.pod"];
     self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Curved Ground.pod"];
@@ -384,8 +392,8 @@ bool gUseGyroScope;
     [self.nodeFLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeFRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     
-    [self.nodeFLWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,1,0)];
-    [self.nodeFRWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,1,0)];
+    [self.nodeFLWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
+    [self.nodeFRWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
  
     [self.pitchEmpty setRotation:cc3v(gCurrentPitch - gPitchWheelie, 0, 0)];
     
@@ -618,11 +626,8 @@ bool gUseGyroScope;
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
             [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
 
-            gFLLocation = cc3v(2.36290, -0.94, 6.12179);
-            gFRLocation = cc3v(-2.36290, -0.94, 6.12179);
-
-            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFLLocation]];
-            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFRLocation]];
+            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.36290, 0, 0)]];
+            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.36290, 0, 0)]];
             break;
             
         case LowDrag:
@@ -634,13 +639,8 @@ bool gUseGyroScope;
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 1.0, 1.0)]];
             [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 1.0, 1.0)]];
 
-            //gFLLocation = cc3v(2.94, -1.19232, 6.12179);
-            //gFRLocation = cc3v(-2.94, -1.19232, 6.12179);
-            gFLLocation = cc3v(2.66, -0.94, 6.12179);
-            gFRLocation = cc3v(-2.66, -0.94, 6.12179);
-            
-            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFLLocation]];
-            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFRLocation]];
+            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.66, 0, 0)]];
+            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.66, 0, 0)]];
             
             break;
             
@@ -650,11 +650,8 @@ bool gUseGyroScope;
             location.y = self.vGasserBody.y;
             [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
      
-            gFLLocation = cc3v(2.94, -1.19232, 6.12179);
-            gFRLocation = cc3v(-2.94, -1.19232, 6.12179);
-            
-            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFLLocation]];
-            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:gFRLocation]];
+            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.94, 0, -0.2)]];
+            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.94, 0, -0.2)]];
 
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
             [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
@@ -706,8 +703,7 @@ bool gUseGyroScope;
 
 -(void) rotateNodesToCourse:(double) duration {
     
-    [self.nodeFLWheel setLocation:gFLLocation];
-    [self.nodeFRWheel setLocation:gFRLocation];
+    [self.frontAxle setLocation:gFrontAxle];
     
     [self.groundPlaneNode setRotation:cc3v(0, gCurrentCourse, 0)];
     
@@ -717,31 +713,23 @@ bool gUseGyroScope;
     [self.bodyNode setRotation:cc3v(rotation.x + gPitchWheelie, rotation.y, gCurrentRoll)];
     
     [self.wheelEmpty      setRotation:rotation];
-
+    
     const double theta_sin = sin(CC_DEGREES_TO_RADIANS(gPitchWheelie));
     const double theta_cos = cos(CC_DEGREES_TO_RADIANS(gPitchWheelie));
     
-    CC3Vector pxpy = self.nodeFLWheel.location;
-    CC3Vector oxoy = self.nodeRLWheel.location;
+    CC3Vector pxpy = self.frontAxle.location;
+    CC3Vector oxoy = self.rearAxle.location;
     
     const double pz = theta_cos * (pxpy.z-oxoy.z) - theta_sin * (pxpy.y-oxoy.y) + oxoy.z;
     const double py = theta_sin * (pxpy.z-oxoy.z) + theta_cos * (pxpy.y-oxoy.y) + oxoy.y;
 
     /////////////////////////////////////////////
     // Set the left wheel
-    rotation = self.nodeFLWheel.location;
+    rotation = self.frontAxle.location;
     rotation.y = py;
     rotation.z = pz;
     
-    [self.nodeFLWheel setLocation:rotation];
- 
-    /////////////////////////////////////////////
-    // Set the right wheel
-    // Reuse the existing y and z, but get the correct x.
-    rotation.x = self.nodeFRWheel.location.x;
-    
-    [self.nodeFRWheel setLocation:rotation];
-    
+    self.frontAxle.location = rotation;
 }
 
 -(void) storeRotationsAndAnimateBody {
