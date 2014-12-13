@@ -17,7 +17,6 @@
 		575707A919FB0AF60010C922 /* Ground Plane.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707A819FB0AF60010C922 /* Ground Plane.pod */; };
 		575707AB19FB4BDB0010C922 /* Curved Ground.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707AA19FB4BDB0010C922 /* Curved Ground.pod */; };
 		575707B319FC8B510010C922 /* Buildings_750x500.png in Resources */ = {isa = PBXBuildFile; fileRef = 575707B219FC8B510010C922 /* Buildings_750x500.png */; };
-		575707B519FC8D650010C922 /* Skybox.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707B419FC8D650010C922 /* Skybox.pod */; };
 		57628F7719C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */; };
 		57B2346C19D92B9400B492AC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 57B2346719D92B9400B492AC /* AppDelegate.m */; };
 		57CAE57819BC18D400665B4C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57CAE57719BC18D400665B4C /* AudioToolbox.framework */; };
@@ -430,7 +429,6 @@
 		575707A819FB0AF60010C922 /* Ground Plane.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Ground Plane.pod"; path = "Resources/Ground Plane.pod"; sourceTree = "<group>"; };
 		575707AA19FB4BDB0010C922 /* Curved Ground.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Curved Ground.pod"; path = "Resources/Curved Ground.pod"; sourceTree = "<group>"; };
 		575707B219FC8B510010C922 /* Buildings_750x500.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Buildings_750x500.png; path = Resources/Buildings_750x500.png; sourceTree = "<group>"; };
-		575707B419FC8D650010C922 /* Skybox.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = Skybox.pod; path = Resources/Skybox.pod; sourceTree = "<group>"; };
 		57628F7619C4D43D00102F3E /* Exportable Body - Holden Efijy - 01.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exportable Body - Holden Efijy - 01.pod"; path = "Resources/Exportable Body - Holden Efijy - 01.pod"; sourceTree = "<group>"; };
 		57B2346619D92B9400B492AC /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
 		57B2346719D92B9400B492AC /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; };
@@ -1273,7 +1271,6 @@
 				574C49691A3AA430009255B2 /* SevierDesert_2kpx.jpg */,
 				574C49671A3A9774009255B2 /* Atacama-Desert-Panorama.jpg */,
 				5700692A1A21B03100269F00 /* Chevrolet HHR - Linked.pod */,
-				575707B419FC8D650010C922 /* Skybox.pod */,
 				575707B219FC8B510010C922 /* Buildings_750x500.png */,
 				575707AA19FB4BDB0010C922 /* Curved Ground.pod */,
 				575707A819FB0AF60010C922 /* Ground Plane.pod */,
@@ -2740,7 +2737,6 @@
 				57CAE5AE19BC18D400665B4C /* Icon-57@2x.png in Resources */,
 				574C496A1A3AA430009255B2 /* SevierDesert_2kpx.jpg in Resources */,
 				57CAE5D319BC18D400665B4C /* CC3LibEnvironmentReflection.fsh in Resources */,
-				575707B519FC8D650010C922 /* Skybox.pod in Resources */,
 				57CAE5BD19BC18D400665B4C /* Default.png in Resources */,
 				57CAE5CB19BC18D400665B4C /* fps_images_1.png in Resources */,
 				57CAE5B819BC18D400665B4C /* Icon-76.png in Resources */,
