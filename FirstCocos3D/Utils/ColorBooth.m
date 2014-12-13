@@ -43,10 +43,10 @@
         }
         
         //bodyPart.material = [CC3Material shiny];
-        bodyPart.reflectivity = kCC3MaximumMaterialShininess;
+        bodyPart.reflectivity = 90.0;
         bodyPart.material.reflectivity = bodyPart.reflectivity;
         //bodyPart.material.diffuseColor = color;
-        [bodyPart runAction:[CC3ActionTintDiffuseTo actionWithDuration:1.0 colorTo:color]];
+        [bodyPart runAction:[CC3ActionTintDiffuseTo actionWithDuration:0.65 colorTo:color]];
         bodyPart.material.specularColor = kCCC4FWhite;
         //NSLog(@"bodyPart: %@", bodyPart.material.fullDescription);
     }
@@ -73,6 +73,13 @@
 
     NSValue * pColor = [NSValue valueWithBytes:&color objCType:@encode(ccColor4F)];
     [self.colors addObject:pColor];
+}
+
+#define Z255_TO_Z1(x)   ((x)/255.0)
+
+-(void) addColor:(int) r :(int) g :(int) b {
+
+    [self addColor:ccc4f(Z255_TO_Z1(r),Z255_TO_Z1(g),Z255_TO_Z1(b), 1)];
 }
 
 /*

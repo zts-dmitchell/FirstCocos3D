@@ -17,6 +17,7 @@
 -(id) init;
 -(void) nextColor:(NSArray*) parts inNode:(CC3Node*) node;
 -(void) addColor:(ccColor4F) color;
+-(void) addColor:(int) r :(int) g :(int) b;
 +(void) changeColor:(NSArray*) parts inNode:(CC3Node*) node asColor:(ccColor4F) color;
 
 -(void) resetColorIterator;

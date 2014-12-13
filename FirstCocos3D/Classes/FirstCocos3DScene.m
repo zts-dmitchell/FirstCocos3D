@@ -175,6 +175,9 @@ bool gUseGyroScope;
     
     [self.colorBooth addColor:node.diffuseColor];
     
+    [self.colorBooth addColor:153 :0 :153];
+    [self.colorBooth addColor:102 :0 :102];
+    
     // Already in low-body position.
     self.vLowBody = self.pitchEmpty.location;
     self.vGasserBody = cc3v(0, -0.01257, 4.07566); // Y and Z are swapped
