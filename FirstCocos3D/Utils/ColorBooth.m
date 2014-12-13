@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CC3Actions.h"
 #import "ColorBooth.h"
 
 @implementation ColorBooth
@@ -41,10 +42,11 @@
             continue;
         }
         
-        bodyPart.material = [CC3Material shiny];
+        //bodyPart.material = [CC3Material shiny];
         bodyPart.reflectivity = kCC3MaximumMaterialShininess;
         bodyPart.material.reflectivity = bodyPart.reflectivity;
-        bodyPart.material.diffuseColor = color;
+        //bodyPart.material.diffuseColor = color;
+        [bodyPart runAction:[CC3ActionTintDiffuseTo actionWithDuration:1.0 colorTo:color]];
         bodyPart.material.specularColor = kCCC4FWhite;
         //NSLog(@"bodyPart: %@", bodyPart.material.fullDescription);
     }
