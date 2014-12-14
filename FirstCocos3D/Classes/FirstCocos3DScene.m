@@ -29,7 +29,7 @@ const CGFloat gMaxPitchWheelie = 30.0; // Max 30 degrees of wheelie
 //const CGFloat gMaxRollDegrees = 20.0; // Chevy HHR
 const CGFloat gMaxRollDegrees = -2.8;   // Holden
 const CGFloat gMaxWheelTurn = 40.0;
-const CGFloat gGroundPlaneY = -2.14515;
+const CGFloat gGroundPlaneY = 2.14515;
 
 
 const CGFloat gPitchIncrentBy = 1.0;
@@ -84,16 +84,25 @@ bool gUseGyroScope;
     
     gDoWheelies = false;
     gUseGyroScope = true;
+
+    //////////////////////////////////////////////////////////////////////////////////
+    // The Ground Plane. The car body and related assemblies will be parented to this.
+    //self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Ground Plane.pod"];
+    self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Curved Ground.pod"];
+    
+    [self addChild:self.groundPlaneNode];
+    //////////////////////////////////////////////////////////////////////////////////
     
 	// Optionally add a static solid-color, or textured, backdrop, by uncommenting one of these lines.
     //self.backdrop = [CC3Backdrop nodeWithColor: ccc4f(0.52, 0.8, 0.92, 1.0)];
 	//self.backdrop = [CC3Backdrop nodeWithTexture: [CC3Texture textureFromFile: @"Buildings_750x500.png"]];
 
     
+    //////////////////////////////////////////////////////////////////////////////////
 	// Create the camera, place it back a bit, and add it to the scene
     CC3Camera* mainCamera = [CC3Camera nodeWithName: @"mainCamera"];
     mainCamera.location = cc3v(0.0, 0.55, 25.0);
-	[self addChild: mainCamera];
+    [self addChildToGroundPlane:mainCamera];
 
 	// Create a light, place it back and to the left at a specific
 	// position (not just directional lighting), and add it to the scene
@@ -102,6 +111,7 @@ bool gUseGyroScope;
 	lamp.isDirectionalOnly = NO;
 	[mainCamera addChild: lamp];
     
+    //////////////////////////////////////////////////////////////////////////////////
 	// Create and load a POD resource file and add its entire contents to the scene.
 	// If needed, prior to adding the loaded content to the scene, you can customize the
 	// nodes in the resource, remove unwanted nodes from the resource (eg- extra cameras),
@@ -109,7 +119,8 @@ bool gUseGyroScope;
 	// instead of adding the entire contents.
     self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
     //self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
-	[self addChild: self.bodyNode];
+    
+    [self addChildToGroundPlane:self.bodyNode];
     
     // Get the pitch empty for pitch rotations
     self.pitchEmpty = [self.bodyNode getNodeNamed:@"PitchEmpty"];
@@ -122,53 +133,49 @@ bool gUseGyroScope;
 
     node2 = [self.bodyNode getNodeNamed:@"Taillight"];
     m1 = node2.children[1];
-    NSLog(@"Info 1: %@", m1.material.fullDescription);
+    //NSLog(@"Info 1: %@", m1.material.fullDescription);
     m1.emissionColor = kCCC4FRed;
     m1.shininess = 128.0;
     m1.reflectivity = 1.0;
-    NSLog(@"Info 2: %@", m1.material.fullDescription);
+    //NSLog(@"Info 2: %@", m1.material.fullDescription);
     
     
     // Bunch a
     self.wheelEmpty = [self.bodyNode getNodeNamed:@"WheelEmpty"];
     [self.bodyNode removeChild:self.wheelEmpty];
-    [self addChild:self.wheelEmpty];
+    [self addChildToGroundPlane:self.wheelEmpty];
     [self printLocation:self.wheelEmpty.location withName:self.wheelEmpty.name];
 
-    // Unparent from body, so that it can rotate freely.
     self.frontAxle = [self.wheelEmpty getNodeNamed:@"Front Axle"];
-    //[self.bodyNode removeChild:self.frontAxle];
-    //[self addChild:self.frontAxle];
-    
     self.rearAxle = [self.wheelEmpty getNodeNamed:@"Rear Axle"];
-    //[self.bodyNode removeChild:self.rearAxle];
-    //[self addChild:self.rearAxle];
 
-    // Add camera structure
+    //////////////////////////////////////////////////////////////////////////////////
+    // Add Camera Locations
     self.cameras = [[Camera alloc] init];
     
     // Attach the frontFenderCamera
-    [self.cameras add:cc3v(5, -0.55, 15.0) withRotation:cc3v(0, 15, 0)];
+    [self.cameras add:cc3v(5, -0.55 + gGroundPlaneY, 15.0) withRotation:cc3v(0, 15, 0)];
 
     // Pointing at front wheel
-    [self.cameras add:cc3v(10, -0.55, -2.0) withRotation:cc3v(0, 45+90, 0)];
+    [self.cameras add:cc3v(10, -0.55 + gGroundPlaneY, -2.0) withRotation:cc3v(0, 45+90, 0)];
     
     // Attach the rearFenderCamera
-    [self.cameras add:cc3v(6, -2.0, -15.0) withRotation:cc3v(5, 170, 0)];
+    [self.cameras add:cc3v(6, -2.0 + gGroundPlaneY, -15.0) withRotation:cc3v(5, 170, 0)];
     
     // Create the rearFarCamera
-    [self.cameras add:cc3v(14, -2.0, -20.0) withRotation:cc3v(4, 143, -12)];
+    [self.cameras add:cc3v(14, -2.0 + gGroundPlaneY, -20.0) withRotation:cc3v(4, 143, -12)];
 
     // Above from rear
-    [self.cameras add:cc3v(0.0, 35.0, 35.0) withRotation:cc3v(-45, 0, 0)];
-    
+    [self.cameras add:cc3v(0.0, 35.0 + gGroundPlaneY, 35.0) withRotation:cc3v(-45, 0, 0)];
 
     // Add driver position camera
-    [self.cameras add:cc3v(14.34841, -1.5, 10.64886) withRotation:cc3v(4, 57.693, 0) andFieldOfView:60];
+    [self.cameras add:cc3v(14.34841, -1.5 + gGroundPlaneY, 10.64886) withRotation:cc3v(4, 57.693, 0) andFieldOfView:60];
 
     // Default camera.
-    [self.cameras add:cc3v(0.0, 0.55, 25.0)];
+    [self.cameras add:cc3v(0.0, 0.55 + gGroundPlaneY, 25.0)];
 
+    //////////////////////////////////////////////////////////////////////////////////
+    // The Coloring Object
     self.colorBooth = [[ColorBooth alloc] init];
     
     CC3MeshNode* node = [self.bodyNode getMeshNodeNamed:@"Trunk Lid"];
@@ -178,6 +185,7 @@ bool gUseGyroScope;
     [self.colorBooth addColor:153 :0 :153];
     [self.colorBooth addColor:102 :0 :102];
     
+    //////////////////////////////////////////////////////////////////////////////////
     // Already in low-body position.
     self.vLowBody = self.pitchEmpty.location;
     self.vGasserBody = cc3v(0, -0.01257, 4.07566); // Y and Z are swapped
@@ -196,22 +204,10 @@ bool gUseGyroScope;
     gStraight = self.nodeFLWheel.rotation;
     gFrontAxle = self.frontAxle.location;
     
-    
-    //self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Ground Plane.pod"];
-    self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Curved Ground.pod"];
-
-    CC3Vector groundLocation = self.groundPlaneNode.location;
-    
-    groundLocation.y = gGroundPlaneY;
-    
-    [self printLocation:self.groundPlaneNode.location withName:@"location"];
-    [self.groundPlaneNode setLocation:groundLocation];
-    [self addChild: self.groundPlaneNode];
-    
     // Display the back sides because it looks strange, otherwise.
     self.bodyNode.shouldCullBackFaces = NO;
     
-    ///////////////////////
+    //////////////////////////////////////////////////////////////////////////////////
     // F I L T E R S
     self.wheelTurningFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:7];
     self.courseFilter  = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:11];
@@ -306,6 +302,23 @@ bool gUseGyroScope;
 	// using a couple of actions...
     
     [self adjustPitch:false];
+}
+
+-(void) addChildToGroundPlane:(CC3Node*) node {
+
+    CC3Vector location = node.location;
+    
+    NSString* fmt = [NSString stringWithFormat:@"Before: %@", node.name];
+    
+    [self printLocation:location withName:fmt];
+    location.y += gGroundPlaneY;
+
+    fmt = [NSString stringWithFormat:@"After adding %f: %@", gGroundPlaneY, node.name];
+    [self printLocation:location withName:fmt];
+
+    [node setLocation:location];
+    
+    [self.groundPlaneNode addChild:node];
 }
 
 -(CC3Node*) wheelFromNode:(NSString*) nodeName {
@@ -506,6 +519,8 @@ bool gUseGyroScope;
 
     if( touchType == 0 ) {
         
+        [self printLocation:self.groundPlaneNode];
+        
         const CGSize s = [CCDirector sharedDirector].viewSize;
         const CGFloat widthDivisionSize = s.width/3.0;
         const CGFloat heightDivisionsize = s.height/3.0;
@@ -583,14 +598,21 @@ bool gUseGyroScope;
             }
             else if(widthSection == 0) {
                 
-                [self move:self.activeCamera from:self.wheelEmpty to:self];
+                [self move:self.activeCamera from:self.wheelEmpty to:self.groundPlaneNode];
+
+                float loc = self.groundPlaneNode.location.y + self.activeCamera.location.y;
+                NSLog(@"Camera height: %f", loc);
 
                 // Other stuff
                 [self adjustPitch:true]; // Resets w/o Accelerometer
             }
             else {
                 
-                [self move:self.activeCamera from:self to:self.wheelEmpty];
+                [self move:self.activeCamera from:self.groundPlaneNode to:self.wheelEmpty];
+                
+                float loc = self.wheelEmpty.location.y + self.activeCamera.location.y;
+                NSLog(@"Camera height: %f", loc);
+                [self printLocation:self.activeCamera.location withName:@"Camera location"];
 
                 // Other stuff
                 [self adjustPitch:false];  // Sets w/Accelerometer
@@ -717,9 +739,9 @@ bool gUseGyroScope;
     CC3Vector rotation = self.groundPlaneNode.rotation;
     
     // TODO: Decide whether to keep " ... + gPitchWheelie" here.
-    [self.bodyNode setRotation:cc3v(rotation.x + gPitchWheelie, rotation.y, gCurrentRoll)];
+    //[self.bodyNode setRotation:cc3v(rotation.x + gPitchWheelie, rotation.y, gCurrentRoll)];
     
-    [self.wheelEmpty      setRotation:rotation];
+    //[self.wheelEmpty      setRotation:rotation];
     
     const double theta_sin = sin(CC_DEGREES_TO_RADIANS(gPitchWheelie));
     const double theta_cos = cos(CC_DEGREES_TO_RADIANS(gPitchWheelie));
