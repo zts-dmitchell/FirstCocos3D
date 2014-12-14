@@ -102,7 +102,8 @@ bool gUseGyroScope;
 	// Create the camera, place it back a bit, and add it to the scene
     CC3Camera* mainCamera = [CC3Camera nodeWithName: @"mainCamera"];
     mainCamera.location = cc3v(0.0, 0.55, 25.0);
-    [self addChildToGroundPlane:mainCamera];
+    self.activeCamera = mainCamera;
+    [self addChild:mainCamera];
 
 	// Create a light, place it back and to the left at a specific
 	// position (not just directional lighting), and add it to the scene
@@ -598,7 +599,7 @@ bool gUseGyroScope;
             }
             else if(widthSection == 0) {
                 
-                [self move:self.activeCamera from:self.wheelEmpty to:self.groundPlaneNode];
+                [self move:self.activeCamera from:self to:self.groundPlaneNode];
 
                 float loc = self.groundPlaneNode.location.y + self.activeCamera.location.y;
                 NSLog(@"Camera height: %f", loc);
@@ -608,7 +609,7 @@ bool gUseGyroScope;
             }
             else {
                 
-                [self move:self.activeCamera from:self.groundPlaneNode to:self.wheelEmpty];
+                [self move:self.activeCamera from:self.groundPlaneNode to:self];
                 
                 float loc = self.wheelEmpty.location.y + self.activeCamera.location.y;
                 NSLog(@"Camera height: %f", loc);
@@ -739,9 +740,10 @@ bool gUseGyroScope;
     CC3Vector rotation = self.groundPlaneNode.rotation;
     
     // TODO: Decide whether to keep " ... + gPitchWheelie" here.
-    //[self.bodyNode setRotation:cc3v(rotation.x + gPitchWheelie, rotation.y, gCurrentRoll)];
+    [self.bodyNode setRotation:cc3v(rotation.x + gPitchWheelie, 0, gCurrentRoll)];
     
-    //[self.wheelEmpty      setRotation:rotation];
+    if(!gDoWheelies)
+        return;
     
     const double theta_sin = sin(CC_DEGREES_TO_RADIANS(gPitchWheelie));
     const double theta_cos = cos(CC_DEGREES_TO_RADIANS(gPitchWheelie));
