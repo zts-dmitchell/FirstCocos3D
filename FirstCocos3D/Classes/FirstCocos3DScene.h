@@ -29,6 +29,7 @@ typedef enum coolCarTypes { Low, LowDrag, Gasser } CoolCarTypes;
 @property(strong, nonatomic) ColorBooth* colorBooth;
 @property(strong, nonatomic) CC3ResourceNode* bodyNode;
 @property(strong, nonatomic) CC3Node* pitchEmpty;
+@property(strong, nonatomic) CC3Node* background;
 
 @property(assign, nonatomic) CC3Vector vLowBody;
 @property(assign, nonatomic) CC3Vector vGasserBody;

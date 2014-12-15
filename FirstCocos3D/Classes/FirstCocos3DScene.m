@@ -56,7 +56,7 @@ CC3Vector gFrontAxle;
 
 bool gDoWheelies = true;
 bool gUseGyroScope = true;
-bool gRotateGroundPlane = true;
+bool gRotateGroundPlane = false;
 
 #pragma mark End Global Variables
 
@@ -96,6 +96,12 @@ bool gRotateGroundPlane = true;
     self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Curved Ground.pod"];
     
     [self addChild:self.groundPlaneNode];
+    
+    // Get the background node, separate from ground, add as child.
+    self.background = [self.groundPlaneNode getNodeNamed:@"Background"];
+    [self.groundPlaneNode removeChild:self.background];
+    [self addChild:self.background];
+
     //////////////////////////////////////////////////////////////////////////////////
     
 	// Optionally add a static solid-color, or textured, backdrop, by uncommenting one of these lines.
@@ -188,7 +194,6 @@ bool gRotateGroundPlane = true;
     
     [self.colorBooth addColor:node.diffuseColor];
     
-    [self.colorBooth addColor:153 :0 :153];
     [self.colorBooth addColor:102 :0 :102];
     
     //////////////////////////////////////////////////////////////////////////////////
@@ -221,8 +226,9 @@ bool gRotateGroundPlane = true;
     self.rollFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
     self.pitchFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
     self.wheelieFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:3];
+    self.groundPlaneGyroFilter = [[KalmanFilter alloc] init];
     //self.groundPlaneGyroFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
-    self.groundPlaneGyroFilter = [[SimpleMovingAverage alloc] initWithAvgLength:22];
+    //self.groundPlaneGyroFilter = [[SimpleMovingAverage alloc] initWithAvgLength:22];
     //self.groundPlaneGyroFilter = [[EmptyFilter alloc] init];
     
     
@@ -759,6 +765,11 @@ bool gRotateGroundPlane = true;
     
     CC3Vector rotation = self.groundPlaneNode.rotation;
     
+    CC3Vector gr = self.background.rotation;
+    gr.y = rotation.y;
+    
+    [self.background setRotation:gr];
+
     // TODO: Decide whether to keep " ... + gPitchWheelie" here.
     [self.bodyNode setRotation:cc3v(rotation.x + gPitchWheelie + gCurrentGroundPitch, 0, gCurrentRoll)];
     
