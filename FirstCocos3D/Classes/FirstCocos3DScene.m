@@ -54,8 +54,9 @@ CGFloat gMaxGroundPitch = 25.0; // degrees;
 CC3Vector gStraight;
 CC3Vector gFrontAxle;
 
-bool gDoWheelies;
-bool gUseGyroScope;
+bool gDoWheelies = true;
+bool gUseGyroScope = true;
+bool gRotateGroundPlane = true;
 
 #pragma mark End Global Variables
 
@@ -89,9 +90,6 @@ bool gUseGyroScope;
 
     self->prevCourse = 0.0;
     
-    gDoWheelies = false;
-    gUseGyroScope = true;
-
     //////////////////////////////////////////////////////////////////////////////////
     // The Ground Plane. The car body and related assemblies will be parented to this.
     //self.groundPlaneNode = [CC3PODResourceNode nodeFromFile: @"Ground Plane.pod"];
@@ -564,6 +562,8 @@ bool gUseGyroScope;
             
             if(widthSection == -1) { // Backward
                 
+                gRotateGroundPlane = !gRotateGroundPlane;
+                
                 [self setCoolCarType:Low];
                 
             } else if(widthSection == 0) { // Reset Straight
@@ -836,10 +836,13 @@ bool gUseGyroScope;
             CMAttitude *attitude = deviceMotion.attitude;
             gCurrentCourse = CC_RADIANS_TO_DEGREES(attitude.yaw);
             
-            gCurrentGroundPitch = [self.groundPlaneGyroFilter get:attitude.roll];
-            
-            gCurrentGroundPitch = CLAMP(CC_RADIANS_TO_DEGREES(gCurrentGroundPitch) - 90.0 - gGroundPitchOffset, -gMaxGroundPitch, gMaxGroundPitch);
-            //NSLog(@"gCurrentGroundPitch: %f", gCurrentGroundPitch);
+            if(gRotateGroundPlane) {
+                gCurrentGroundPitch = [self.groundPlaneGyroFilter get:attitude.roll];
+                gCurrentGroundPitch = CLAMP(CC_RADIANS_TO_DEGREES(gCurrentGroundPitch) - 90.0 - gGroundPitchOffset, -gMaxGroundPitch, gMaxGroundPitch);
+                //NSLog(@"gCurrentGroundPitch: %f", gCurrentGroundPitch);
+            } else {
+                gCurrentGroundPitch = 0.0;
+            }
 
         } else {
             
