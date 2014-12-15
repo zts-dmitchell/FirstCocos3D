@@ -15,7 +15,10 @@
 #import "CC3UtilityMeshNodes.h"
 #import "CCActionManager.h"
 
+#import "EmptyFilter.h"
+#import "KalmanFilter.h"
 #import "ExponentialMovingAverage.h"
+#import "SimpleMovingAverage.h"
 #import "ColorBooth.h"
 
 @implementation FirstCocos3DScene
@@ -35,7 +38,7 @@ const CGFloat gGroundPlaneY = 2.14515;
 const CGFloat gPitchIncrentBy = 1.0;
 const CGFloat gRollIncrementBy = 1.0;
 
-CGFloat gCurrentPitch = 0.0;
+CGFloat gCurrentPitchEmpty = 0.0;
 CGFloat gPitchOffset = 0.0;
 CGFloat gPitchWheelie = 0.0;
 CGFloat gCurrentRoll = 0.0;
@@ -43,6 +46,10 @@ CGFloat gCurrentWheelPos = 0.0;
 CGFloat gCurrentCourse = 0.0;
 CGFloat gCurrentSpeedPos = 0.0;
 CGFloat gCurrentSpeed = 0.0;
+
+CGFloat gCurrentGroundPitch = 0.0;
+CGFloat gGroundPitchOffset = 0.0;
+CGFloat gMaxGroundPitch = 25.0; // degrees;
 
 CC3Vector gStraight;
 CC3Vector gFrontAxle;
@@ -216,6 +223,11 @@ bool gUseGyroScope;
     self.rollFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
     self.pitchFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
     self.wheelieFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:3];
+    //self.groundPlaneGyroFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
+    self.groundPlaneGyroFilter = [[SimpleMovingAverage alloc] initWithAvgLength:22];
+    //self.groundPlaneGyroFilter = [[EmptyFilter alloc] init];
+    
+    
     
     //self.bodyNode.visible = NO;
     //self.groundPlaneNode.visible = NO;
@@ -414,7 +426,7 @@ bool gUseGyroScope;
     [self.nodeFLWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
     [self.nodeFRWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
  
-    [self.pitchEmpty setRotation:cc3v(gCurrentPitch - gPitchWheelie, 0, 0)];
+    [self.pitchEmpty setRotation:cc3v(gCurrentPitchEmpty - gPitchWheelie, 0, 0)];
     
     [self.nodeRLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeRRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
@@ -697,14 +709,21 @@ bool gUseGyroScope;
     if(reset) {
         
         gPitchOffset = 0.0;
-        NSLog(@"Resetting gPitchOffset to 0");
+        gGroundPitchOffset = 0.0;
+        
+        NSLog(@"Resetting gPitchOffset ad gGroundPitchOffset to 0");
     } else {
         
         const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
         
         gPitchOffset = CLAMP(acceleration.z * 10, gMaxPitchDegreesForward, gMaxPitchDegreesBackward);
         
-        NSLog(@"Setting gPitchOffset to %f", gPitchOffset);
+        CMDeviceMotion *deviceMotion = self.manager.deviceMotion;
+        CMAttitude *attitude = deviceMotion.attitude;
+        
+        gGroundPitchOffset = CLAMP(CC_RADIANS_TO_DEGREES(attitude.roll) - 90.0, -gMaxGroundPitch, gMaxGroundPitch);
+        
+        NSLog(@"Setting gPitchOffset to %f, gGroundPitchOffset to %f", gPitchOffset, gGroundPitchOffset);
     }
     
     [self printLocation:[self.activeCamera location] withName:@"Cam Loc"];
@@ -735,12 +754,13 @@ bool gUseGyroScope;
     
     [self.frontAxle setLocation:gFrontAxle];
     
-    [self.groundPlaneNode setRotation:cc3v(0, gCurrentCourse, 0)];
+    // Rotate the ground by gCurrentGroundPitch.
+    [self.groundPlaneNode setRotation:cc3v(-gCurrentGroundPitch, gCurrentCourse, 0)];
     
     CC3Vector rotation = self.groundPlaneNode.rotation;
     
     // TODO: Decide whether to keep " ... + gPitchWheelie" here.
-    [self.bodyNode setRotation:cc3v(rotation.x + gPitchWheelie, 0, gCurrentRoll)];
+    [self.bodyNode setRotation:cc3v(rotation.x + gPitchWheelie + gCurrentGroundPitch, 0, gCurrentRoll)];
     
     if(!gDoWheelies)
         return;
@@ -792,14 +812,14 @@ bool gUseGyroScope;
     
     // TODO: Switch these MAX/MIN to CLAMP.
     // gPitchOffset adjusts the pitch, which kind of corrects the original model.
-    gCurrentPitch = MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward);
+    gCurrentPitchEmpty = MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward);
     
     if(gDoWheelies) {
-        if(gCurrentPitch < (gMaxPitchDegreesBackward) ) {
-            gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitch - (gMaxPitchDegreesBackward))];
+        if(gCurrentPitchEmpty < (gMaxPitchDegreesBackward) ) {
+            gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitchEmpty - (gMaxPitchDegreesBackward))];
         }
     } else {
-        gCurrentPitch = MAX(gCurrentPitch, gMaxPitchDegreesBackward);
+        gCurrentPitchEmpty = MAX(gCurrentPitchEmpty, gMaxPitchDegreesBackward);
     }
     
     gCurrentRoll  = MAX(MIN([self.rollFilter get:acceleration.y] * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
@@ -815,6 +835,11 @@ bool gUseGyroScope;
             CMDeviceMotion *deviceMotion = self.manager.deviceMotion;
             CMAttitude *attitude = deviceMotion.attitude;
             gCurrentCourse = CC_RADIANS_TO_DEGREES(attitude.yaw);
+            
+            gCurrentGroundPitch = [self.groundPlaneGyroFilter get:attitude.roll];
+            
+            gCurrentGroundPitch = CLAMP(CC_RADIANS_TO_DEGREES(gCurrentGroundPitch) - 90.0 - gGroundPitchOffset, -gMaxGroundPitch, gMaxGroundPitch);
+            //NSLog(@"gCurrentGroundPitch: %f", gCurrentGroundPitch);
 
         } else {
             
