@@ -15,7 +15,10 @@
 #import "CC3UtilityMeshNodes.h"
 #import "CCActionManager.h"
 
+#import "EmptyFilter.h"
+#import "KalmanFilter.h"
 #import "ExponentialMovingAverage.h"
+#import "SimpleMovingAverage.h"
 #import "ColorBooth.h"
 
 @implementation FirstCocos3DScene
@@ -220,6 +223,11 @@ bool gUseGyroScope;
     self.rollFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
     self.pitchFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
     self.wheelieFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:3];
+    //self.groundPlaneGyroFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:22];
+    self.groundPlaneGyroFilter = [[SimpleMovingAverage alloc] initWithAvgLength:22];
+    //self.groundPlaneGyroFilter = [[EmptyFilter alloc] init];
+    
+    
     
     //self.bodyNode.visible = NO;
     //self.groundPlaneNode.visible = NO;
@@ -828,7 +836,10 @@ bool gUseGyroScope;
             CMAttitude *attitude = deviceMotion.attitude;
             gCurrentCourse = CC_RADIANS_TO_DEGREES(attitude.yaw);
             
-            gCurrentGroundPitch = CLAMP(CC_RADIANS_TO_DEGREES(attitude.roll) - 90.0 - gGroundPitchOffset, -gMaxGroundPitch, gMaxGroundPitch);
+            gCurrentGroundPitch = [self.groundPlaneGyroFilter get:attitude.roll];
+            
+            gCurrentGroundPitch = CLAMP(CC_RADIANS_TO_DEGREES(gCurrentGroundPitch) - 90.0 - gGroundPitchOffset, -gMaxGroundPitch, gMaxGroundPitch);
+            //NSLog(@"gCurrentGroundPitch: %f", gCurrentGroundPitch);
 
         } else {
             
