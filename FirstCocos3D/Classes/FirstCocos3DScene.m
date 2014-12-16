@@ -739,7 +739,7 @@ bool gRotateGroundPlane = false;
  * A method for setting the course heading. Includes speed, so that one can
  * take actions based on velocity.
  */
--(void) setCourseHeading:(double)course withSpeed:(double)speed {
+-(void) setCourseHeading:(double)course withSpeed:(double)speed andAltitudePitchSlope:(double) slope {
 
     // Store the course/heading ...
     if(self.layer->bIsHeading) {
@@ -751,6 +751,9 @@ bool gRotateGroundPlane = false;
     
     // ... and speed
     gCurrentSpeed = speed;
+    
+    if(gUseGyroScope)
+        gCurrentGroundPitch = slope;
     
 }
 
@@ -848,9 +851,10 @@ bool gRotateGroundPlane = false;
             gCurrentCourse = CC_RADIANS_TO_DEGREES(attitude.yaw);
             
             if(gRotateGroundPlane) {
-                gCurrentGroundPitch = [self.groundPlaneGyroFilter get:attitude.roll];
-                gCurrentGroundPitch = CLAMP(CC_RADIANS_TO_DEGREES(gCurrentGroundPitch) - 90.0 - gGroundPitchOffset, -gMaxGroundPitch, gMaxGroundPitch);
-                //NSLog(@"gCurrentGroundPitch: %f", gCurrentGroundPitch);
+                // Set elsewhere
+                //gCurrentGroundPitch = [self.groundPlaneGyroFilter get:attitude.roll];
+                //gCurrentGroundPitch = CLAMP(CC_RADIANS_TO_DEGREES(gCurrentGroundPitch) - 90.0 - gGroundPitchOffset, -gMaxGroundPitch, gMaxGroundPitch);
+                NSLog(@"gCurrentGroundPitch: %f", gCurrentGroundPitch);
             } else {
                 gCurrentGroundPitch = 0.0;
             }
