@@ -10,6 +10,9 @@
 #import "FirstCocos3DScene.h"
 #import "SimpleMovingAverage.h"
 #import "KalmanFilter.h"
+#import "EmptyFilter.h"
+#import "SlopeCalculator.h"
+#import "ExponentialMovingAverage.h"
 
 @import CoreLocation;
 
@@ -24,6 +27,9 @@
 @property (nonatomic) CLLocationSpeed speed;
 @property (strong, nonatomic) SimpleMovingAverage *runningAvg;
 @property (strong, nonatomic) SimpleMovingAverage *headingRunningAvg;
+@property(strong, nonatomic) id<Filters> altitudeFilter;
+
+@property(strong, nonatomic) SlopeCalculator* slopeCalculator;
 
 @end
 
@@ -40,6 +46,11 @@
     NSLog(@"Cocos3D Version: %@", NSStringFromCC3Version());
     
 	//[self scheduleUpdate];
+    
+    //self.altitudeFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:10];
+    //self.altitudeFilter = [[EmptyFilter alloc] init];
+
+    //self.slopeCalculator = [[SlopeCalculator alloc] init];
     
     self.userInteractionEnabled = YES;
     [self setTouchEnabled:YES];
@@ -105,12 +116,14 @@
     [self locationManager:manager didUpdateToLocation:newLocation fromLocation:oldLocation];
 }
 
+#define METERS_TO_FEET(m)   ((m) * 3.2808399);
+
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     
     CLLocation *newLocation = [locations lastObject];
     
     self.speed = [newLocation speed];
-    //CLLocationDistance altitude = [newLocation altitude] * 3.2808399; // Convert meters to feet
+    CLLocationDistance altitude = METERS_TO_FEET([newLocation altitude]); // Convert meters to feet
     CLLocationDirection course = [newLocation course];
     
     if( self.speed <= 0.0 ) {
@@ -120,10 +133,8 @@
         self.speed *= 2.23694; // Convert KPH to MPH
     }
     
-    double average = [self.runningAvg get:self.speed];
+    //double average = [self.runningAvg get:self.speed];
 
-    [self.mphLabel setString:[NSString stringWithFormat:@"Speed:%3.0f MPH, Avg:%3.0f MPH", self.speed, average]];
-    
 //    if( course == -1 )
 //        [self.courseLabel setString:@"Course: N/A"];
 //    else
@@ -131,12 +142,18 @@
 //    
 //    [self.altitudeLabel setString:[NSString stringWithFormat: @"Alt: %3.0f'", altitude]];
     
+    //altitude = [self.altitudeFilter get:altitude];
+
+    // Calculate time since previous
+    //const double angle = [self.slopeCalculator getAngle:newLocation fromAltitude:altitude andSpeed:self.speed];
+    
+    [self.mphLabel setString:[NSString stringWithFormat:@"Speed:%3.0f MPH, Alt: %3.3f\"", self.speed, altitude]];
     
     if( ! bIsHeading ) {
         FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
     
         if( course >= 0.0 )
-            [scene setCourseHeading: course withSpeed:self.speed];
+            [scene setCourseHeading:course withSpeed:self.speed andAltitudePitchSlope:0.0];
     
         //[self.headingTypeLabel setString:[NSString stringWithFormat:@"Course: %.f°", course]];
     }
@@ -185,7 +202,7 @@
         FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
     
         if( theHeading >= 0.0 ) {
-            [scene setCourseHeading:theHeading withSpeed:self.speed];
+            [scene setCourseHeading:theHeading withSpeed:self.speed andAltitudePitchSlope:-10.0];
             
             //[self.headingTypeLabel setString:[NSString stringWithFormat:@"Heading: %.f°", theHeading]];
         }

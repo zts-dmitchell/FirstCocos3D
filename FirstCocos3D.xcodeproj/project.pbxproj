@@ -15,6 +15,7 @@
 		574C497D1A3E86BC009255B2 /* ExponentialMovingAverage.m in Sources */ = {isa = PBXBuildFile; fileRef = 574C49761A3E86BC009255B2 /* ExponentialMovingAverage.m */; };
 		574C497E1A3E86BC009255B2 /* KalmanFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 574C49791A3E86BC009255B2 /* KalmanFilter.m */; };
 		574C497F1A3E86BC009255B2 /* SimpleMovingAverage.m in Sources */ = {isa = PBXBuildFile; fileRef = 574C497B1A3E86BC009255B2 /* SimpleMovingAverage.m */; };
+		574C49851A3F85AC009255B2 /* SlopeCalculator.m in Sources */ = {isa = PBXBuildFile; fileRef = 574C49831A3F85AC009255B2 /* SlopeCalculator.m */; };
 		575707A919FB0AF60010C922 /* Ground Plane.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707A819FB0AF60010C922 /* Ground Plane.pod */; };
 		575707AB19FB4BDB0010C922 /* Curved Ground.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707AA19FB4BDB0010C922 /* Curved Ground.pod */; };
 		575707B319FC8B510010C922 /* Buildings_750x500.png in Resources */ = {isa = PBXBuildFile; fileRef = 575707B219FC8B510010C922 /* Buildings_750x500.png */; };
@@ -429,6 +430,8 @@
 		574C497B1A3E86BC009255B2 /* SimpleMovingAverage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleMovingAverage.m; sourceTree = "<group>"; };
 		574C49811A3E8700009255B2 /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		574C49821A3E8700009255B2 /* ModelInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelInfo.h; sourceTree = "<group>"; };
+		574C49831A3F85AC009255B2 /* SlopeCalculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SlopeCalculator.m; path = Utils/SlopeCalculator.m; sourceTree = "<group>"; };
+		574C49841A3F85AC009255B2 /* SlopeCalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SlopeCalculator.h; path = Utils/SlopeCalculator.h; sourceTree = "<group>"; };
 		575707A819FB0AF60010C922 /* Ground Plane.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Ground Plane.pod"; path = "Resources/Ground Plane.pod"; sourceTree = "<group>"; };
 		575707AA19FB4BDB0010C922 /* Curved Ground.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Curved Ground.pod"; path = "Resources/Curved Ground.pod"; sourceTree = "<group>"; };
 		575707B219FC8B510010C922 /* Buildings_750x500.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Buildings_750x500.png; path = Resources/Buildings_750x500.png; sourceTree = "<group>"; };
@@ -1212,6 +1215,8 @@
 		57B2347219D92E5700B492AC /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				574C49831A3F85AC009255B2 /* SlopeCalculator.m */,
+				574C49841A3F85AC009255B2 /* SlopeCalculator.h */,
 				574C49721A3E86BC009255B2 /* Filters */,
 				57177BBE1A37842E00477239 /* Camera.h */,
 				57177BBF1A37870600477239 /* Camera.m */,
@@ -2849,6 +2854,7 @@
 				57CAE59219BC18D400665B4C /* FirstCocos3DScene.m in Sources */,
 				57CAE58F19BC18D400665B4C /* FirstCocos3DLayer.m in Sources */,
 				57F8C5B11A39043D002FE0AB /* ColorBooth.m in Sources */,
+				574C49851A3F85AC009255B2 /* SlopeCalculator.m in Sources */,
 				574C497C1A3E86BC009255B2 /* EmptyFilter.m in Sources */,
 				574C497E1A3E86BC009255B2 /* KalmanFilter.m in Sources */,
 				57177BC01A37870600477239 /* Camera.m in Sources */,
