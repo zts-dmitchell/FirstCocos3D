@@ -24,11 +24,11 @@
         
         self.previousLocation = nil;
         self.secondsSinceLastUpdate = 0.0;
-        self.secondsBetweenUpdates = 0.5;
+        self.secondsBetweenUpdates = 0.0;
         self.previousAltitude = 0.0;
         self.previousAngle = 0.0;
         
-        self.angleFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:10];
+        self.angleFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:6];
         //self.angleFilter = [[EmptyFilter alloc] init];
     }
     
@@ -53,7 +53,7 @@
 
 -(double) getAngle:(CLLocation*) location fromAltitude:(double) altitude andSpeed:(double) speed {
      
-    if(speed == 0.0) {
+    if(speed == 0.0 && self.previousAngle == 0.0) {
         
         NSLog(@"SlopeCalculator: Too slow: 0 MPH");
         return self.previousAngle;
@@ -76,16 +76,21 @@
         
     self.secondsSinceLastUpdate = 0.0;
     
-    const CLLocationDistance distance = METERS_TO_FEET([location distanceFromLocation:self.previousLocation]);
+    CLLocationDistance distance = METERS_TO_FEET([location distanceFromLocation:self.previousLocation]);
 
-    const double changeInAltitude = altitude - self.previousAltitude;
+    double changeInAltitude = altitude - self.previousAltitude;
     
     NSLog(@"distance: %f, alt: %f, prevAlt: %f, diff: %f", distance, altitude, self.previousAltitude, changeInAltitude);
 
     self.previousLocation = location;
     self.previousAltitude = altitude;
 
-    if(changeInAltitude == 0.0 || distance == 0.0)
+    if(distance == 0.0) {
+        distance = -changeInAltitude;
+        changeInAltitude = 0.0;
+    }
+    
+    if(distance == 0.0)
         return self.previousAngle;
     
     // angle = atan(altitude/distance);

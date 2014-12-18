@@ -56,7 +56,7 @@ CC3Vector gFrontAxle;
 
 bool gDoWheelies = true;
 bool gUseGyroScope = true;
-bool gRotateGroundPlane = true;
+bool gRotateGroundPlane = false;
 
 #pragma mark End Global Variables
 
@@ -568,8 +568,6 @@ bool gRotateGroundPlane = true;
             
             if(widthSection == -1) { // Backward
                 
-                gRotateGroundPlane = !gRotateGroundPlane;
-                
                 [self setCoolCarType:Low];
                 
             } else if(widthSection == 0) { // Reset Straight
@@ -728,8 +726,6 @@ bool gRotateGroundPlane = true;
         CMAttitude *attitude = deviceMotion.attitude;
         
         gGroundPitchOffset = CLAMP(CC_RADIANS_TO_DEGREES(attitude.roll) - 90.0, -gMaxGroundPitch, gMaxGroundPitch);
-        
-        NSLog(@"Setting gPitchOffset to %f, gGroundPitchOffset to %f", gPitchOffset, gGroundPitchOffset);
     }
     
     [self printLocation:[self.activeCamera location] withName:@"Cam Loc"];
@@ -850,14 +846,14 @@ bool gRotateGroundPlane = true;
             CMAttitude *attitude = deviceMotion.attitude;
             gCurrentCourse = CC_RADIANS_TO_DEGREES(attitude.yaw);
             
-            if(gRotateGroundPlane) {
-                // Set elsewhere
-                //gCurrentGroundPitch = [self.groundPlaneGyroFilter get:attitude.roll];
-                //gCurrentGroundPitch = CLAMP(CC_RADIANS_TO_DEGREES(gCurrentGroundPitch) - 90.0 - gGroundPitchOffset, -gMaxGroundPitch, gMaxGroundPitch);
-                //NSLog(@"gCurrentGroundPitch: %f", gCurrentGroundPitch);
-            } else {
-                gCurrentGroundPitch = 0.0;
-            }
+//            if(gRotateGroundPlane) {
+//                // Set elsewhere
+//                //gCurrentGroundPitch = [self.groundPlaneGyroFilter get:attitude.roll];
+//                //gCurrentGroundPitch = CLAMP(CC_RADIANS_TO_DEGREES(gCurrentGroundPitch) - 90.0 - gGroundPitchOffset, -gMaxGroundPitch, gMaxGroundPitch);
+//                //NSLog(@"gCurrentGroundPitch: %f", gCurrentGroundPitch);
+//            } else {
+//                gCurrentGroundPitch = 0.0;
+//            }
 
         } else {
             
