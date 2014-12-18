@@ -56,7 +56,7 @@ CC3Vector gFrontAxle;
 
 bool gDoWheelies = true;
 bool gUseGyroScope = true;
-bool gRotateGroundPlane = false;
+bool gRotateGroundPlane = true;
 
 #pragma mark End Global Variables
 
@@ -112,7 +112,7 @@ bool gRotateGroundPlane = false;
     //////////////////////////////////////////////////////////////////////////////////
 	// Create the camera, place it back a bit, and add it to the scene
     CC3Camera* mainCamera = [CC3Camera nodeWithName: @"mainCamera"];
-    mainCamera.location = cc3v(0.0, 0.55, 25.0);
+    mainCamera.location = cc3v(0.0, 0.55 + gGroundPlaneY, 25.0);
     self.activeCamera = mainCamera;
     [self addChild:mainCamera];
 
@@ -770,7 +770,7 @@ bool gRotateGroundPlane = false;
     
     CC3Vector gr = self.background.rotation;
     gr.y = rotation.y;
-    
+
     [self.background setRotation:gr];
 
     // TODO: Decide whether to keep " ... + gPitchWheelie" here.
@@ -854,7 +854,7 @@ bool gRotateGroundPlane = false;
                 // Set elsewhere
                 //gCurrentGroundPitch = [self.groundPlaneGyroFilter get:attitude.roll];
                 //gCurrentGroundPitch = CLAMP(CC_RADIANS_TO_DEGREES(gCurrentGroundPitch) - 90.0 - gGroundPitchOffset, -gMaxGroundPitch, gMaxGroundPitch);
-                NSLog(@"gCurrentGroundPitch: %f", gCurrentGroundPitch);
+                //NSLog(@"gCurrentGroundPitch: %f", gCurrentGroundPitch);
             } else {
                 gCurrentGroundPitch = 0.0;
             }

@@ -18,7 +18,7 @@
 
 -(id) init;
 -(id) initWithSecondsBetweenUpdates:(double) secondsBetweenUpdates;
--(double) getAngle:(CLLocation*) location fromAltitude:(double) altitude;
+-(double) getAngle:(CLLocation*) location fromAltitude:(double) altitude andSpeed:(double) speed;
 
 @property(strong, nonatomic) CLLocation* previousLocation;
 @property(strong, nonatomic) id<Filters> angleFilter;

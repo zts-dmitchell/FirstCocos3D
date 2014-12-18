@@ -11,6 +11,7 @@
 #import "SimpleMovingAverage.h"
 #import "KalmanFilter.h"
 #import "SlopeCalculator.h"
+#import "ExponentialMovingAverage.h"
 
 @import CoreLocation;
 
@@ -25,6 +26,7 @@
 @property (nonatomic) CLLocationSpeed speed;
 @property (strong, nonatomic) SimpleMovingAverage *runningAvg;
 @property (strong, nonatomic) SimpleMovingAverage *headingRunningAvg;
+@property(strong, nonatomic) id<Filters> altitudeFilter;
 
 @property(strong, nonatomic) SlopeCalculator* slopeCalculator;
 
@@ -44,6 +46,8 @@
     
 	//[self scheduleUpdate];
     
+    self.altitudeFilter = [[ExponentialMovingAverage alloc] initWithNumberOfPeriods:10];
+
     self.slopeCalculator = [[SlopeCalculator alloc] init];
     
     self.userInteractionEnabled = YES;
@@ -127,10 +131,8 @@
         self.speed *= 2.23694; // Convert KPH to MPH
     }
     
-    double average = [self.runningAvg get:self.speed];
+    //double average = [self.runningAvg get:self.speed];
 
-    [self.mphLabel setString:[NSString stringWithFormat:@"Speed:%3.0f MPH, Avg:%3.0f MPH", self.speed, average]];
-    
 //    if( course == -1 )
 //        [self.courseLabel setString:@"Course: N/A"];
 //    else
@@ -138,9 +140,14 @@
 //    
 //    [self.altitudeLabel setString:[NSString stringWithFormat: @"Alt: %3.0f'", altitude]];
     
+    altitude = [self.altitudeFilter get:altitude];
+
     // Calculate time since previous
-    double angle = [self.slopeCalculator getAngle:newLocation fromAltitude:altitude];
-        NSLog(@"Altitude: %f, angle: %f", altitude, angle);
+    const double angle = [self.slopeCalculator getAngle:newLocation fromAltitude:altitude andSpeed:self.speed];
+    //NSLog(@"Altitude: %f, angle: %f", altitude, angle);
+
+    
+    [self.mphLabel setString:[NSString stringWithFormat:@"Speed:%3.0f MPH, Angle:%3.1f•, Alt: %3.3f", self.speed, angle, altitude]];
     
     if( ! bIsHeading ) {
         FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
