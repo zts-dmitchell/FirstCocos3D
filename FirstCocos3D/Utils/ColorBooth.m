@@ -12,6 +12,7 @@
 
 @implementation ColorBooth
 
+#pragma mark Initializing Code
 /*
  Initializer.
 */
@@ -22,11 +23,70 @@
         
         self.currentColor = 0;
         
+        self.meshByMaterialName = [[NSMutableDictionary alloc] init];
+        
         [self initColors];
     }
     
     return self;
 }
+
+/*
+ Initializes the default colors.
+ */
+-(void) initColors {
+    
+    self.colors = [[NSMutableArray alloc] init];
+    
+    ccColor4F tan;
+    tan.r = 0.979;
+    tan.g = 0.897;
+    tan.b = 0.597;
+    tan.a = 1.0;
+    
+    NSValue * pColor = [NSValue valueWithBytes:&tan objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+    
+    
+    pColor = [NSValue valueWithBytes:&kCCC4FOrange objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+    
+    pColor = [NSValue valueWithBytes:&kCCC4FRed objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+    
+    pColor = [NSValue valueWithBytes:&kCCC4FGreen objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+    
+    pColor = [NSValue valueWithBytes:&kCCC4FBlue objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+    
+    pColor = [NSValue valueWithBytes:&kCCC4FCyan objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+    
+    pColor = [NSValue valueWithBytes:&kCCC4FMagenta objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+    
+    pColor = [NSValue valueWithBytes:&kCCC4FYellow objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+    
+    pColor = [NSValue valueWithBytes:&kCCC4FLightGray objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+    
+    pColor = [NSValue valueWithBytes:&kCCC4FGray objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+    
+    pColor = [NSValue valueWithBytes:&kCCC4FDarkGray objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+    
+    pColor = [NSValue valueWithBytes:&kCCC4FWhite objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+    
+    pColor = [NSValue valueWithBytes:&kCCC4FBlack objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+}
+
+
+#pragma mark Changing Colors
 
 /*
  Change the color of the given body party parts.
@@ -42,18 +102,28 @@
             continue;
         }
         
-        //bodyPart.material = [CC3Material shiny];
-        bodyPart.reflectivity = 90.0;
-        bodyPart.material.reflectivity = bodyPart.reflectivity;
-        //bodyPart.material.diffuseColor = color;
+        //bodyPart.reflectivity = 90.0;
+        //bodyPart.material.reflectivity = bodyPart.reflectivity;
         [bodyPart runAction:[CC3ActionTintDiffuseTo actionWithDuration:0.65 colorTo:color]];
-        bodyPart.material.specularColor = kCCC4FWhite;
-        //NSLog(@"bodyPart: %@", bodyPart.material.fullDescription);
+        //bodyPart.material.specularColor = kCCC4FWhite;
     }
 }
 
+-(void) changeColor:(NSString*) materialName toColor:(ccColor4F) color {
+    
+    CC3MeshNode* n = [self.meshByMaterialName objectForKey:materialName];
+    
+    NSArray *parts = @[ n.name ];
+
+    [ColorBooth changeColor:parts inNode:n asColor:color];
+    //CC3MeshNode* bodyPart = [n getMeshNodeNamed: n.name];
+    
+    //bodyPart.material.color = [self getMaterial:materialName].color;
+
+}
+
 /*
- Set the part to the next color. Doesn't hold state, so if the node is different, 
+ Set the part to the next color. Doesn't hold state, so if the node is different,
  colors will resume wherever it was left.
 */
 -(void) nextColor:(NSArray*) parts inNode:(CC3Node*) node {
@@ -96,58 +166,105 @@
     return (self.currentColor % self.colors.count);
 }
 
-/*
- Initializes the default colors.
-*/
--(void) initColors {
-    
-    self.colors = [[NSMutableArray alloc] init];
+#pragma mark Materials Section
 
-    ccColor4F tan;
-    tan.r = 0.979;
-    tan.g = 0.897;
-    tan.b = 0.597;
-    tan.a = 1.0;
+-(void) swapMaterialsInNode:(CC3Node*) node withMaterial:(NSString*) namedThis with:(NSString*) namedThat {
     
-    NSValue * pColor = [NSValue valueWithBytes:&tan objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
+    CC3Material* newMat = [self getMaterial:namedThat];
     
+    if(!newMat) {
+        NSLog(@"Couldn't find material: %@", namedThat);
+        return;
+    }
+    
+    for(CC3MeshNode* n in node.children) {
+        
+        CC3Material* mat = n.material;
+        
+        if(!mat)
+            continue;
+        
+        if([mat.name compare:namedThis] == NSOrderedSame) {
+            NSLog(@"Found it: %@", mat.name);
+            [n setMaterial:newMat];
+            return;
+        }
+    }
+}
 
-    pColor = [NSValue valueWithBytes:&kCCC4FOrange objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
+-(void) saveMaterial:(NSString*) materialName inNode:(CC3Node*) node {
+    
+    CC3Material* mat = [self findMaterialWithNameInNode:materialName inNode:node];
+    
+    if(mat != nil)
+        [self addMaterial:mat withKey:materialName];
+    else
+        NSLog(@"Couldn't find material: %@", materialName);
 
-    pColor = [NSValue valueWithBytes:&kCCC4FRed objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
+}
 
-    pColor = [NSValue valueWithBytes:&kCCC4FGreen objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
+-(void) storeMeshNodeByMaterialName:(NSString*) materialName inNode:(CC3Node*) node {
     
-    pColor = [NSValue valueWithBytes:&kCCC4FBlue objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
+    NSArray* children = node.children;
     
-    pColor = [NSValue valueWithBytes:&kCCC4FCyan objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
+    for(CC3MeshNode* n in children) {
+        NSLog(@"Description of parent, %@: %@", node.name, n.description);
+        
+        CC3Material* mat = n.material;
+        
+        if(!mat)
+            continue;
+        
+        if([mat.name compare:materialName] == NSOrderedSame) {
+            NSLog(@"Found it: %@", mat.name);
+            
+            [self.meshByMaterialName setObject:n forKey:materialName];
+            
+        } else {
+            NSLog(@"Material was: %@", mat.name);
+        }        
+    }
+}
+
+
+-(CC3Material*) findMaterialWithNameInNode:(NSString*) materialName inNode:(CC3Node*) node {
+
+    NSArray* children = node.children;
     
-    pColor = [NSValue valueWithBytes:&kCCC4FMagenta objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
+    for(CC3MeshNode* n in children) {
+        NSLog(@"Description of parent, %@: %@", node.name, n.description);
+        
+        CC3Material* mat = n.material;
+        
+        if(!mat)
+            continue;
+        
+        if([mat.name compare:materialName] == NSOrderedSame) {
+            NSLog(@"Found it: %@", mat.name);
+            return [mat copy];
+        } else {
+            NSLog(@"Material was: %@", mat.name);
+        }
+        
+        [self saveMaterial:materialName inNode:n];
+    }
+
+    return nil;
+}
+
+-(void) addMaterial:(CC3Material*) theMaterial withKey:(NSString*) theKey {
     
-    pColor = [NSValue valueWithBytes:&kCCC4FYellow objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
+    if(self.materials == nil)
+        self.materials = [[NSMutableDictionary alloc] init];
     
-    pColor = [NSValue valueWithBytes:&kCCC4FLightGray objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
+    [self.materials setObject:theMaterial forKey:theKey];
+}
+
+-(CC3Material*) getMaterial:(NSString*) materialName {
     
-    pColor = [NSValue valueWithBytes:&kCCC4FGray objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
+    if(!self.materials) return nil;
     
-    pColor = [NSValue valueWithBytes:&kCCC4FDarkGray objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
-    
-    pColor = [NSValue valueWithBytes:&kCCC4FWhite objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
-    
-    pColor = [NSValue valueWithBytes:&kCCC4FBlack objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];    
+    return [self.materials objectForKey:materialName];
 }
 
 @end

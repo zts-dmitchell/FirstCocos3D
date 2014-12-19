@@ -19,13 +19,23 @@
 -(void) addColor:(ccColor4F) color;
 -(void) addColor:(int) r :(int) g :(int) b;
 +(void) changeColor:(NSArray*) parts inNode:(CC3Node*) node asColor:(ccColor4F) color;
+-(void) changeColor:(NSString*) materialName toColor:(ccColor4F) color;
+
+// Materials
+-(void) swapMaterialsInNode:(CC3Node*) node withMaterial:(NSString*) namedThis with:(NSString*) namedThat;
+-(void) saveMaterial:(NSString*) theMaterial inNode:(CC3Node*) node;
+-(CC3Material*) getMaterial:(NSString*) materialName;
+-(void) addMaterial:(CC3Material*) theMaterial withKey:(NSString*) theKey;
+-(void) storeMeshNodeByMaterialName:(NSString*) materialName inNode:(CC3Node*) node;
 
 -(void) resetColorIterator;
 -(int) getCurrentColorPosition;
 
 @property (strong, nonatomic) NSMutableArray* colors;
 @property (assign, nonatomic) int currentColor;
-@end
+@property (strong, nonatomic) NSMutableDictionary* materials;
+@property (strong, nonatomic) NSMutableDictionary* meshByMaterialName;
 
+@end
 
 #endif

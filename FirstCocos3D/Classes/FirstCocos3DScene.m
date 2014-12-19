@@ -212,6 +212,12 @@ bool gRotateGroundPlane = false;
     self.nodeRRWheel = [self wheelFromNode:@"RRWheel"];
     self.nodeRLWheel = [self wheelFromNode:@"RLWheel"];
     
+    //NSLog(@"Wheel info: %@", self.nodeRLWheel.fullDescription);
+    //[self.colorBooth saveMaterial:@"BR_White_Wall" inNode:self.nodeRLWheel];
+    [self.colorBooth saveMaterial:@"BR_Black Rubber" inNode:self.nodeRLWheel];
+    [self.colorBooth storeMeshNodeByMaterialName:@"BR_White_Wall" inNode:self.nodeRLWheel];
+    
+    
     gStraight = self.nodeFLWheel.rotation;
     gFrontAxle = self.frontAxle.location;
     
@@ -673,6 +679,8 @@ bool gRotateGroundPlane = false;
             [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.36290, 0, 0)]];
             [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.36290, 0, 0)]];
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
+            //[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black Rubber" with:@"BR_White_Wall"];
+            [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
             break;
             
         case LowDrag:
@@ -687,6 +695,8 @@ bool gRotateGroundPlane = false;
             [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.66, 0, 0)]];
             [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.66, 0, 0)]];
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
+            //[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black Rubber" with:@"BR_White_Wall"];
+            [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
             break;
             
         case Gasser:
@@ -701,6 +711,8 @@ bool gRotateGroundPlane = false;
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
             [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(0, 0, -03.2)]];
+            ///[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_White_Wall" with:@"BR_Black Rubber"];
+            [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FBlack];
             break;
             
         default:
