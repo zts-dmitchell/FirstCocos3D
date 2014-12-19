@@ -163,29 +163,9 @@ bool gRotateGroundPlane = false;
 
     //////////////////////////////////////////////////////////////////////////////////
     // Add Camera Locations
-    self.cameras = [[Camera alloc] init];
+    [self addCameras];
     
-    // Attach the frontFenderCamera
-    [self.cameras add:cc3v(5, -0.55 + gGroundPlaneY, 15.0) withRotation:cc3v(0, 15, 0)];
-
-    // Pointing at front wheel
-    [self.cameras add:cc3v(10, -0.55 + gGroundPlaneY, -2.0) withRotation:cc3v(0, 45+90, 0)];
     
-    // Attach the rearFenderCamera
-    [self.cameras add:cc3v(6, -2.0 + gGroundPlaneY, -15.0) withRotation:cc3v(5, 170, 0)];
-    
-    // Create the rearFarCamera
-    [self.cameras add:cc3v(14, -2.0 + gGroundPlaneY, -20.0) withRotation:cc3v(4, 143, -12)];
-
-    // Above from rear
-    [self.cameras add:cc3v(0.0, 35.0 + gGroundPlaneY, 35.0) withRotation:cc3v(-45, 0, 0)];
-
-    // Add driver position camera
-    [self.cameras add:cc3v(14.34841, -1.5 + gGroundPlaneY, 10.64886) withRotation:cc3v(4, 57.693, 0) andFieldOfView:60];
-
-    // Default camera.
-    [self.cameras add:cc3v(0.0, 0.55 + gGroundPlaneY, 25.0)];
-
     //////////////////////////////////////////////////////////////////////////////////
     // The Coloring Object
     self.colorBooth = [[ColorBooth alloc] init];
@@ -327,6 +307,34 @@ bool gRotateGroundPlane = false;
     [self adjustPitch:false];
 }
 
+-(void) addCameras {
+
+    self.cameras = [[Camera alloc] init];
+    
+    [self.cameras add:cc3v(8.62, 2.033, 15.64) withRotation:cc3v(0, 34, 0.000000) andFieldOfView:60.000000];
+    
+    // Attach the frontFenderCamera
+    [self.cameras add:cc3v(5, -0.55 + gGroundPlaneY, 15.0) withRotation:cc3v(0, 15, 0)];
+    
+    // Pointing at front wheel
+    [self.cameras add:cc3v(10, -0.55 + gGroundPlaneY, -2.0) withRotation:cc3v(0, 45+90, 0)];
+    
+    // Attach the rearFenderCamera
+    [self.cameras add:cc3v(6, -2.0 + gGroundPlaneY, -15.0) withRotation:cc3v(5, 170, 0)];
+    
+    // Create the rearFarCamera
+    [self.cameras add:cc3v(14, -2.0 + gGroundPlaneY, -20.0) withRotation:cc3v(4, 143, -12)];
+    
+    // Above from rear
+    [self.cameras add:cc3v(0.0, 35.0 + gGroundPlaneY, 35.0) withRotation:cc3v(-45, 0, 0)];
+    
+    // Add driver position camera
+    [self.cameras add:cc3v(14.34841, -1.5 + gGroundPlaneY, 10.64886) withRotation:cc3v(4, 57.693, 0) andFieldOfView:60];
+    
+    // Default camera.
+    [self.cameras add:cc3v(0.0, 0.55 + gGroundPlaneY, 25.0)];
+}
+
 -(void) addChildToGroundPlane:(CC3Node*) node {
 
     CC3Vector location = node.location;
@@ -342,26 +350,6 @@ bool gRotateGroundPlane = false;
     [node setLocation:location];
     
     [self.groundPlaneNode addChild:node];
-}
-
--(CC3Node*) wheelFromNode:(NSString*) nodeName {
-    
-    CC3Node* node = [self.wheelEmpty getNodeNamed:nodeName];
-    //[node addAxesDirectionMarkers];
-
-    //node.shouldDrawDescriptor = YES;
-    [self printLocation:node.location withName: node.name];
-    return node;
-}
-
--(void) printLocation:(CC3Vector) position withName:(NSString*) info {
-    
-    NSLog(@"%@: x: %f, y: %f, z: %f", info, position.x, position.y, position.z);
-}
-
--(void) printLocation:(CC3Node*) node {
-    
-    [self printLocation:node.location withName:node.name];
 }
 
 /**
@@ -644,20 +632,6 @@ bool gRotateGroundPlane = false;
     }
 }
 
-// [self move:self.cam1 from:self.par1 to:self.par2];
-// Move thisCamera from thisParent toThat parent
--(void) move:(CC3Node*) thisNode from:(CC3Node*)oldParent to:(CC3Node*) newParent {
-    
-    NSLog(@"Moving child, %@, from parent, %@, to parent, %@", thisNode.name, oldParent.name, newParent.name);
-    
-    if( [oldParent getNodeNamed:thisNode.name] != nil) {
-        [oldParent removeChild:thisNode];
-        [newParent addChild:thisNode];
-    } else {
-        NSLog(@"Child, %@, is not parented to %@!!", thisNode.name, oldParent);
-    }
-}
-
 /**
  * Sets the car type to one of the cool pre-sets.
  **/
@@ -718,29 +692,6 @@ bool gRotateGroundPlane = false;
         default:
             NSLog(@"Unknown type: %d", type);
     }
-}
-
--(void) adjustPitch:(BOOL) reset {
-    
-    if(reset) {
-        
-        gPitchOffset = 0.0;
-        gGroundPitchOffset = 0.0;
-        
-        NSLog(@"Resetting gPitchOffset ad gGroundPitchOffset to 0");
-    } else {
-        
-        const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
-        
-        gPitchOffset = CLAMP(acceleration.z * 10, gMaxPitchDegreesForward, gMaxPitchDegreesBackward);
-        
-        CMDeviceMotion *deviceMotion = self.manager.deviceMotion;
-        CMAttitude *attitude = deviceMotion.attitude;
-        
-        gGroundPitchOffset = CLAMP(CC_RADIANS_TO_DEGREES(attitude.roll) - 90.0, -gMaxGroundPitch, gMaxGroundPitch);
-    }
-    
-    [self printLocation:[self.activeCamera location] withName:@"Cam Loc"];
 }
 
 /**
@@ -877,6 +828,21 @@ bool gRotateGroundPlane = false;
     gCurrentWheelPos = MAX(MIN([self.wheelTurningFilter get:acceleration.y] * scaledWheelPosCosFactor, gMaxWheelTurn), -gMaxWheelTurn);
 }
 
+/**
+ * This callback template method is invoked automatically when a node has been picked
+ * by the invocation of the pickNodeFromTapAt: or pickNodeFromTouchEvent:at: methods,
+ * as a result of a touch event or tap gesture.
+ *
+ * Override this method to perform activities on 3D nodes that have been picked by the user.
+ *
+ * For more info, read the notes of this method on CC3Scene.
+ */
+-(void) nodeSelected: (CC3Node*) aNode byTouchEvent: (uint) touchType at: (CGPoint) touchPoint {
+
+}
+
+#pragma mark Utilities
+
 double getFactorFromSpeed() {
     
     //return cos(CC_DEGREES_TO_RADIANS(gCurrentSpeed)); // Cos percentage
@@ -913,17 +879,65 @@ double getFactorFromSpeed() {
     return course;
 }
 
-/**
- * This callback template method is invoked automatically when a node has been picked
- * by the invocation of the pickNodeFromTapAt: or pickNodeFromTouchEvent:at: methods,
- * as a result of a touch event or tap gesture.
- *
- * Override this method to perform activities on 3D nodes that have been picked by the user.
- *
- * For more info, read the notes of this method on CC3Scene.
- */
--(void) nodeSelected: (CC3Node*) aNode byTouchEvent: (uint) touchType at: (CGPoint) touchPoint {
+-(void) adjustPitch:(BOOL) reset {
+    
+    if(reset) {
+        
+        gPitchOffset = 0.0;
+        gGroundPitchOffset = 0.0;
+        
+        NSLog(@"Resetting gPitchOffset ad gGroundPitchOffset to 0");
+    } else {
+        
+        const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
+        
+        gPitchOffset = CLAMP(acceleration.z * 10, gMaxPitchDegreesForward, gMaxPitchDegreesBackward);
+        
+        CMDeviceMotion *deviceMotion = self.manager.deviceMotion;
+        CMAttitude *attitude = deviceMotion.attitude;
+        
+        gGroundPitchOffset = CLAMP(CC_RADIANS_TO_DEGREES(attitude.roll) - 90.0, -gMaxGroundPitch, gMaxGroundPitch);
+    }
+    
+    [self printLocation:[self.activeCamera location] withName:@"Cam Loc"];
+}
 
+#pragma mark Mesh Utilities
+
+// [self move:self.cam1 from:self.par1 to:self.par2];
+// Move thisCamera from thisParent toThat parent
+-(void) move:(CC3Node*) thisNode from:(CC3Node*)oldParent to:(CC3Node*) newParent {
+    
+    NSLog(@"Moving child, %@, from parent, %@, to parent, %@", thisNode.name, oldParent.name, newParent.name);
+    
+    if( [oldParent getNodeNamed:thisNode.name] != nil) {
+        [oldParent removeChild:thisNode];
+        [newParent addChild:thisNode];
+    } else {
+        NSLog(@"Child, %@, is not parented to %@!!", thisNode.name, oldParent);
+    }
+}
+
+-(CC3Node*) wheelFromNode:(NSString*) nodeName {
+    
+    CC3Node* node = [self.wheelEmpty getNodeNamed:nodeName];
+    //[node addAxesDirectionMarkers];
+    
+    //node.shouldDrawDescriptor = YES;
+    [self printLocation:node.location withName: node.name];
+    return node;
+}
+
+#pragma mark Print Utilities
+
+-(void) printLocation:(CC3Vector) position withName:(NSString*) info {
+    
+    NSLog(@"%@: x: %f, y: %f, z: %f", info, position.x, position.y, position.z);
+}
+
+-(void) printLocation:(CC3Node*) node {
+    
+    [self printLocation:node.location withName:node.name];
 }
 
 @end
