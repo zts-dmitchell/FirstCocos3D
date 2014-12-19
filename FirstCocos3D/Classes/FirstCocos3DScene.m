@@ -57,6 +57,7 @@ CC3Vector gFrontAxle;
 bool gDoWheelies = true;
 bool gUseGyroScope = true;
 bool gRotateGroundPlane = false;
+bool gSelfHasActiveCamera = true;
 
 #pragma mark End Global Variables
 
@@ -613,9 +614,9 @@ bool gRotateGroundPlane = false;
                 
                 [self move:self.activeCamera from:self to:self.groundPlaneNode];
 
-                float loc = self.groundPlaneNode.location.y + self.activeCamera.location.y;
-                NSLog(@"Camera height: %f", loc);
-
+                // When true, will rotate the 'Background' node.
+                gSelfHasActiveCamera = false;
+                
                 // Other stuff
                 [self adjustPitch:true]; // Resets w/o Accelerometer
             }
@@ -623,10 +624,7 @@ bool gRotateGroundPlane = false;
                 
                 [self move:self.activeCamera from:self.groundPlaneNode to:self];
                 
-                float loc = self.wheelEmpty.location.y + self.activeCamera.location.y;
-                NSLog(@"Camera height: %f", loc);
-                [self printLocation:self.activeCamera.location withName:@"Camera location"];
-
+                gSelfHasActiveCamera = true;
                 // Other stuff
                 [self adjustPitch:false];  // Sets w/Accelerometer
             }
@@ -729,11 +727,15 @@ bool gRotateGroundPlane = false;
     
     CC3Vector rotation = self.groundPlaneNode.rotation;
     
-    CC3Vector gr = self.background.rotation;
-    gr.y = rotation.y;
+    // Rotate the ground when self has active camera.
+    if(gSelfHasActiveCamera) {
 
-    [self.background setRotation:gr];
-
+        CC3Vector gr = self.background.rotation;
+        gr.y = rotation.y;
+        
+        [self.background setRotation:gr];
+    }
+    
     // TODO: Decide whether to keep " ... + gPitchWheelie" here.
     [self.bodyNode setRotation:cc3v(rotation.x + gPitchWheelie + gCurrentGroundPitch, 0, gCurrentRoll)];
     
