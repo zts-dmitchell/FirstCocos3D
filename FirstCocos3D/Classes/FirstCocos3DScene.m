@@ -311,8 +311,10 @@ bool gRotateGroundPlane = false;
 
     self.cameras = [[Camera alloc] init];
     
-    [self.cameras add:cc3v(8.62, 2.033, 15.64) withRotation:cc3v(0, 34, 0.000000) andFieldOfView:60.000000];
-    
+    [self.cameras add:cc3v(8.62, 2.033, 15.64) withRotation:cc3v(0, 34, 0.0) andFieldOfView:60.0];
+
+    [self.cameras add:cc3v(-10.0, -0.55 + gGroundPlaneY, -12.0) withRotation:cc3v(0, 224, 0) andFieldOfView:60.0];
+
     // Attach the frontFenderCamera
     [self.cameras add:cc3v(5, -0.55 + gGroundPlaneY, 15.0) withRotation:cc3v(0, 15, 0)];
     
