@@ -136,8 +136,14 @@ bool gSelfHasActiveCamera = true;
     [self addChildToGroundPlane:self.rootCarNode];
     
     self.bodyNode = [self.rootCarNode getNodeNamed:@"Main Body"];
+    
+    // Get accessories
     self.hoodScoopNode = [self.rootCarNode getNodeNamed:@"Hood Scoop"];
     self.hoodScoopNode.visible = NO;
+    
+    self.fuelCellNode = [self.rootCarNode getNodeNamed:@"Fuel Cell"];
+    self.fuelCellNode.visible = NO;
+    
     
     // Get the pitch empty for pitch rotations
     self.pitchEmpty = [self.rootCarNode getNodeNamed:@"PitchEmpty"];
@@ -661,6 +667,7 @@ bool gSelfHasActiveCamera = true;
             //[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
             [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
             self.hoodScoopNode.visible = NO;
+            self.fuelCellNode.visible = NO;
             break;
             
         case LowDrag:
@@ -677,7 +684,8 @@ bool gSelfHasActiveCamera = true;
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
             //[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
             [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
-            self.hoodScoopNode.visible = NO;
+            self.hoodScoopNode.visible = YES;
+            self.fuelCellNode.visible = YES;
             break;
             
         case Gasser:
@@ -694,9 +702,9 @@ bool gSelfHasActiveCamera = true;
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(0, 0, -03.2)]];
             ///[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_White_Wall" with:@"BR_Black_Rubber"];
             [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FBlack];
-            [self.colorBooth changeColor:@"BR_Hood" toColor:kCCC4FBlack];
+            //[self.colorBooth changeColor:@"BR_Hood" toColor:kCCC4FBlack];
             self.hoodScoopNode.visible = YES;
-            
+            self.fuelCellNode.visible = YES;            
             break;
             
         default:
