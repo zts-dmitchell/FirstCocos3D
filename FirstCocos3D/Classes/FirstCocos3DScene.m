@@ -130,21 +130,23 @@ bool gSelfHasActiveCamera = true;
 	// nodes in the resource, remove unwanted nodes from the resource (eg- extra cameras),
 	// or extract only specific nodes from the resource to add them directly to the scene,
 	// instead of adding the entire contents.
-    self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
-    //self.bodyNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
+    self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
+    //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
     
-    [self addChildToGroundPlane:self.bodyNode];
+    [self addChildToGroundPlane:self.rootCarNode];
+    
+    self.bodyNode = [self.rootCarNode getNodeNamed:@"Main Body"];
     
     // Get the pitch empty for pitch rotations
-    self.pitchEmpty = [self.bodyNode getNodeNamed:@"PitchEmpty"];
+    self.pitchEmpty = [self.rootCarNode getNodeNamed:@"PitchEmpty"];
     
-    CC3Node* node2 = [self.bodyNode getNodeNamed:@"Headlamps"];
+    CC3Node* node2 = [self.rootCarNode getNodeNamed:@"Headlamps"];
     CC3MeshNode* m1 = node2.children[1];
     m1.emissionColor = kCCC4FWhite;
     m1.shininess = 128;
     m1.reflectivity = 1;
 
-    node2 = [self.bodyNode getNodeNamed:@"Taillight"];
+    node2 = [self.rootCarNode getNodeNamed:@"Taillight"];
     m1 = node2.children[1];
     //NSLog(@"Info 1: %@", m1.material.fullDescription);
     m1.emissionColor = kCCC4FRed;
@@ -154,8 +156,8 @@ bool gSelfHasActiveCamera = true;
     
     
     // Bunch a
-    self.wheelEmpty = [self.bodyNode getNodeNamed:@"WheelEmpty"];
-    [self.bodyNode removeChild:self.wheelEmpty];
+    self.wheelEmpty = [self.rootCarNode getNodeNamed:@"WheelEmpty"];
+    [self.rootCarNode removeChild:self.wheelEmpty];
     [self addChildToGroundPlane:self.wheelEmpty];
     [self printLocation:self.wheelEmpty.location withName:self.wheelEmpty.name];
 
@@ -171,7 +173,7 @@ bool gSelfHasActiveCamera = true;
     // The Coloring Object
     self.colorBooth = [[ColorBooth alloc] init];
     
-    CC3MeshNode* node = [self.bodyNode getMeshNodeNamed:@"Trunk Lid"];
+    CC3MeshNode* node = [self.rootCarNode getMeshNodeNamed:@"Trunk Lid"];
     
     [self.colorBooth addColor:node.diffuseColor];
     
@@ -184,9 +186,9 @@ bool gSelfHasActiveCamera = true;
     
     
     // Debugging: Remove Plane in
-    CC3Node* plane = [self.bodyNode getNodeNamed:@"Plane"];
+    CC3Node* plane = [self.rootCarNode getNodeNamed:@"Plane"];
     if(plane != nil)
-        [self.bodyNode removeChild:plane];
+        [self.rootCarNode removeChild:plane];
 
     self.nodeFRWheel = [self wheelFromNode:@"FRWheel"];
     self.nodeFLWheel = [self wheelFromNode:@"FLWheel"];
@@ -195,7 +197,7 @@ bool gSelfHasActiveCamera = true;
     
     //NSLog(@"Wheel info: %@", self.nodeRLWheel.fullDescription);
     //[self.colorBooth saveMaterial:@"BR_White_Wall" inNode:self.nodeRLWheel];
-    [self.colorBooth saveMaterial:@"BR_Black Rubber" inNode:self.nodeRLWheel];
+    [self.colorBooth saveMaterial:@"BR_Black_Rubber" inNode:self.nodeRLWheel];
     [self.colorBooth storeMeshNodeByMaterialName:@"BR_White_Wall" inNode:self.nodeRLWheel];
     
     
@@ -203,7 +205,7 @@ bool gSelfHasActiveCamera = true;
     gFrontAxle = self.frontAxle.location;
     
     // Display the back sides because it looks strange, otherwise.
-    self.bodyNode.shouldCullBackFaces = NO;
+    self.rootCarNode.shouldCullBackFaces = NO;
     
     //////////////////////////////////////////////////////////////////////////////////
     // F I L T E R S
@@ -220,7 +222,7 @@ bool gSelfHasActiveCamera = true;
     
     
     
-    //self.bodyNode.visible = NO;
+    //self.rootCarNode.visible = NO;
     //self.groundPlaneNode.visible = NO;
     
  	// In some cases, PODs are created with opacity turned off by mistake. To avoid the possible
@@ -457,8 +459,8 @@ bool gSelfHasActiveCamera = true;
 
 	// Move the camera to frame the scene. The resulting configuration of the camera is output as
 	// an [info] log message, so you know where the camera needs to be in order to view your scene.
-    //[self.activeCamera moveWithDuration: 1.0 toShowAllOf: self.bodyNode withPadding: 0.1f];
-    //[self.activeCamera moveWithDuration:0.5 toShowAllOf:self.bodyNode withPadding:0.1f];
+    //[self.activeCamera moveWithDuration: 1.0 toShowAllOf: self.rootCarNode withPadding: 0.1f];
+    //[self.activeCamera moveWithDuration:0.5 toShowAllOf:self.rootCarNode withPadding:0.1f];
     
 	// Uncomment this line to draw the bounding box of the scene.
 //	self.shouldDrawWireframeBox = YES;
@@ -581,9 +583,9 @@ bool gSelfHasActiveCamera = true;
             
             if(widthSection == -1) { // Roll Left
 
-                NSArray *parts = @[ @"Main Body-submesh1", @"Trunk Lid"];
+                NSArray *parts = @[ @"Main Body-submesh0", @"Main Body-submesh2", @"Trunk Lid"];
                 
-                [self.colorBooth nextColor:parts inNode:self.bodyNode];
+                [self.colorBooth nextColor:parts inNode:self.rootCarNode];
                 
                 //self.layer->bIsHeading = !self.layer->bIsHeading;
                 //[self.layer headingState:self.layer->bIsHeading];
@@ -653,7 +655,7 @@ bool gSelfHasActiveCamera = true;
             [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.36290, 0, 0)]];
             [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.36290, 0, 0)]];
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
-            //[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black Rubber" with:@"BR_White_Wall"];
+            //[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
             [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
             break;
             
@@ -669,7 +671,7 @@ bool gSelfHasActiveCamera = true;
             [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.66, 0, 0)]];
             [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.66, 0, 0)]];
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
-            //[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black Rubber" with:@"BR_White_Wall"];
+            //[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
             [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
             break;
             
@@ -685,7 +687,7 @@ bool gSelfHasActiveCamera = true;
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
             [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(0, 0, -03.2)]];
-            ///[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_White_Wall" with:@"BR_Black Rubber"];
+            ///[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_White_Wall" with:@"BR_Black_Rubber"];
             [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FBlack];
             break;
             
@@ -737,7 +739,7 @@ bool gSelfHasActiveCamera = true;
     }
     
     // TODO: Decide whether to keep " ... + gPitchWheelie" here.
-    [self.bodyNode setRotation:cc3v(rotation.x + gPitchWheelie + gCurrentGroundPitch, 0, gCurrentRoll)];
+    [self.rootCarNode setRotation:cc3v(rotation.x + gPitchWheelie + gCurrentGroundPitch, 0, gCurrentRoll)];
     
     if(!gDoWheelies)
         return;
@@ -778,7 +780,7 @@ bool gSelfHasActiveCamera = true;
     // Up/down the body
     CCActionInterval* actionUp = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:action];
     CCActionInterval* actionDown = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:-action];
-    [self.bodyNode runAction:[CCActionSequence actionOne:actionUp two:actionDown]];
+    [self.rootCarNode runAction:[CCActionSequence actionOne:actionUp two:actionDown]];
     
     // Up/down the wheels
     //actionUp = [CC3ActionMoveUpBy actionWithDuration:01.05 moveBy:wheelBounce];
