@@ -1,5 +1,5 @@
 //
-//  ColorBooth.m
+//  PaintBooth.m
 //  FirstCocos3D
 //
 //  Created by David Mitchell on 12/10/14.
@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "CC3Actions.h"
-#import "ColorBooth.h"
+#import "PaintBooth.h"
 
-@implementation ColorBooth
+@implementation PaintBooth
 
 #pragma mark Initializing Code
 /*
@@ -115,7 +115,7 @@
     
     NSArray *parts = @[ n.name ];
 
-    [ColorBooth changeColor:parts inNode:n asColor:color];
+    [PaintBooth changeColor:parts inNode:n asColor:color];
     //CC3MeshNode* bodyPart = [n getMeshNodeNamed: n.name];
     
     //bodyPart.material.color = [self getMaterial:materialName].color;
@@ -133,7 +133,7 @@
     ccColor4F nextColor;
     [pCi getValue:&nextColor];
     NSLog(@"New color: %@", NSStringFromCCC4F(nextColor));
-    [ColorBooth changeColor:parts inNode:node asColor:nextColor];
+    [PaintBooth changeColor:parts inNode:node asColor:nextColor];
 }
 
 /*

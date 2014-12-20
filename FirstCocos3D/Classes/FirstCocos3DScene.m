@@ -19,7 +19,7 @@
 #import "KalmanFilter.h"
 #import "ExponentialMovingAverage.h"
 #import "SimpleMovingAverage.h"
-#import "ColorBooth.h"
+#import "PaintBooth.h"
 
 @implementation FirstCocos3DScene
 
@@ -179,13 +179,13 @@ bool gSelfHasActiveCamera = true;
     
     //////////////////////////////////////////////////////////////////////////////////
     // The Coloring Object
-    self.colorBooth = [[ColorBooth alloc] init];
+    self.paintBooth = [[PaintBooth alloc] init];
     
     CC3MeshNode* node = [self.rootCarNode getMeshNodeNamed:@"Trunk Lid"];
     
-    [self.colorBooth addColor:node.diffuseColor];
+    [self.paintBooth addColor:node.diffuseColor];
     
-    [self.colorBooth addColor:102 :0 :102];
+    [self.paintBooth addColor:102 :0 :102];
     
     //////////////////////////////////////////////////////////////////////////////////
     // Already in low-body position.
@@ -204,10 +204,10 @@ bool gSelfHasActiveCamera = true;
     self.nodeRLWheel = [self wheelFromNode:@"RLWheel"];
     
     //NSLog(@"Wheel info: %@", self.nodeRLWheel.fullDescription);
-    //[self.colorBooth saveMaterial:@"BR_White_Wall" inNode:self.nodeRLWheel];
-    [self.colorBooth saveMaterial:@"BR_Black_Rubber" inNode:self.nodeRLWheel];
-    [self.colorBooth storeMeshNodeByMaterialName:@"BR_White_Wall" inNode:self.nodeRLWheel];
-    [self.colorBooth storeMeshNodeByMaterialName:@"BR_Hood" inNode:self.bodyNode];
+    //[self.paintBooth saveMaterial:@"BR_White_Wall" inNode:self.nodeRLWheel];
+    [self.paintBooth saveMaterial:@"BR_Black_Rubber" inNode:self.nodeRLWheel];
+    [self.paintBooth storeMeshNodeByMaterialName:@"BR_White_Wall" inNode:self.nodeRLWheel];
+    [self.paintBooth storeMeshNodeByMaterialName:@"BR_Hood" inNode:self.bodyNode];
     
     
     gStraight = self.nodeFLWheel.rotation;
@@ -594,7 +594,7 @@ bool gSelfHasActiveCamera = true;
 
                 NSArray *parts = @[ @"Main Body-submesh0", @"Main Body-submesh2", @"Trunk Lid"];
                 
-                [self.colorBooth nextColor:parts inNode:self.rootCarNode];
+                [self.paintBooth nextColor:parts inNode:self.rootCarNode];
                 
                 //self.layer->bIsHeading = !self.layer->bIsHeading;
                 //[self.layer headingState:self.layer->bIsHeading];
@@ -664,8 +664,8 @@ bool gSelfHasActiveCamera = true;
             [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.36290, 0, 0)]];
             [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.36290, 0, 0)]];
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
-            //[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
-            [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
+            //[self.paintBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
+            [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
             self.hoodScoopNode.visible = NO;
             self.fuelCellNode.visible = NO;
             break;
@@ -682,8 +682,8 @@ bool gSelfHasActiveCamera = true;
             [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.66, 0, 0)]];
             [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.66, 0, 0)]];
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
-            //[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
-            [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
+            //[self.paintBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
+            [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
             self.hoodScoopNode.visible = YES;
             self.fuelCellNode.visible = YES;
             break;
@@ -700,9 +700,9 @@ bool gSelfHasActiveCamera = true;
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
             [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(0, 0, -03.2)]];
-            ///[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_White_Wall" with:@"BR_Black_Rubber"];
-            [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FBlack];
-            //[self.colorBooth changeColor:@"BR_Hood" toColor:kCCC4FBlack];
+            ///[self.paintBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_White_Wall" with:@"BR_Black_Rubber"];
+            [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FBlack];
+            //[self.paintBooth changeColor:@"BR_Hood" toColor:kCCC4FBlack];
             self.hoodScoopNode.visible = YES;
             self.fuelCellNode.visible = YES;            
             break;

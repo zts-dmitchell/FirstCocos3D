@@ -386,7 +386,7 @@
 		57CAEA0619BC18D800665B4C /* CC3VertexArrayMeshModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEA0519BC18D800665B4C /* CC3VertexArrayMeshModel.m */; };
 		57CAEA0919BC18D800665B4C /* CC3World.m in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEA0819BC18D800665B4C /* CC3World.m */; };
 		57CAEA0D19BC18D800665B4C /* LICENSE_cocos3d.txt in Resources */ = {isa = PBXBuildFile; fileRef = 57CAEA0C19BC18D800665B4C /* LICENSE_cocos3d.txt */; };
-		57F8C5B11A39043D002FE0AB /* ColorBooth.m in Sources */ = {isa = PBXBuildFile; fileRef = 57F8C5B01A39043D002FE0AB /* ColorBooth.m */; };
+		57F8C5B11A39043D002FE0AB /* PaintBooth.m in Sources */ = {isa = PBXBuildFile; fileRef = 57F8C5B01A39043D002FE0AB /* PaintBooth.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1153,8 +1153,8 @@
 		57CAEA0A19BC18D800665B4C /* CCNodeController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CCNodeController.h; path = cocos3d/deprecated/CCNodeController.h; sourceTree = "<group>"; };
 		57CAEA0B19BC18D800665B4C /* ControllableCCLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ControllableCCLayer.h; path = cocos3d/deprecated/ControllableCCLayer.h; sourceTree = "<group>"; };
 		57CAEA0C19BC18D800665B4C /* LICENSE_cocos3d.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE_cocos3d.txt; sourceTree = "<group>"; };
-		57F8C5AF1A3903EA002FE0AB /* ColorBooth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColorBooth.h; path = Utils/ColorBooth.h; sourceTree = "<group>"; };
-		57F8C5B01A39043D002FE0AB /* ColorBooth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ColorBooth.m; path = Utils/ColorBooth.m; sourceTree = "<group>"; };
+		57F8C5AF1A3903EA002FE0AB /* PaintBooth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PaintBooth.h; path = Utils/PaintBooth.h; sourceTree = "<group>"; };
+		57F8C5B01A39043D002FE0AB /* PaintBooth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PaintBooth.m; path = Utils/PaintBooth.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1220,8 +1220,8 @@
 				574C49721A3E86BC009255B2 /* Filters */,
 				57177BBE1A37842E00477239 /* Camera.h */,
 				57177BBF1A37870600477239 /* Camera.m */,
-				57F8C5AF1A3903EA002FE0AB /* ColorBooth.h */,
-				57F8C5B01A39043D002FE0AB /* ColorBooth.m */,
+				57F8C5AF1A3903EA002FE0AB /* PaintBooth.h */,
+				57F8C5B01A39043D002FE0AB /* PaintBooth.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -2853,7 +2853,7 @@
 			files = (
 				57CAE59219BC18D400665B4C /* FirstCocos3DScene.m in Sources */,
 				57CAE58F19BC18D400665B4C /* FirstCocos3DLayer.m in Sources */,
-				57F8C5B11A39043D002FE0AB /* ColorBooth.m in Sources */,
+				57F8C5B11A39043D002FE0AB /* PaintBooth.m in Sources */,
 				574C49851A3F85AC009255B2 /* SlopeCalculator.m in Sources */,
 				574C497C1A3E86BC009255B2 /* EmptyFilter.m in Sources */,
 				574C497E1A3E86BC009255B2 /* KalmanFilter.m in Sources */,

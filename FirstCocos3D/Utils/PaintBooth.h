@@ -1,18 +1,18 @@
 //
-//  ColorBooth.h
+//  PaintBooth.h
 //  FirstCocos3D
 //
 //  Created by David Mitchell on 12/10/14.
 //  Copyright (c) 2014 David Mitchell. All rights reserved.
 //
 
-#ifndef FirstCocos3D_ColorBooth_h
-#define FirstCocos3D_ColorBooth_h
+#ifndef FirstCocos3D_PaintBooth_h
+#define FirstCocos3D_PaintBooth_h
 
 #import "CC3Foundation.h"
 #import "CC3MeshNode.h"
 
-@interface ColorBooth : NSObject
+@interface PaintBooth : NSObject
 
 -(id) init;
 -(void) nextColor:(NSArray*) parts inNode:(CC3Node*) node;
