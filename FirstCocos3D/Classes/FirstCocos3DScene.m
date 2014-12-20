@@ -136,6 +136,8 @@ bool gSelfHasActiveCamera = true;
     [self addChildToGroundPlane:self.rootCarNode];
     
     self.bodyNode = [self.rootCarNode getNodeNamed:@"Main Body"];
+    self.hoodScoopNode = [self.rootCarNode getNodeNamed:@"Hood Scoop"];
+    self.hoodScoopNode.visible = NO;
     
     // Get the pitch empty for pitch rotations
     self.pitchEmpty = [self.rootCarNode getNodeNamed:@"PitchEmpty"];
@@ -199,6 +201,7 @@ bool gSelfHasActiveCamera = true;
     //[self.colorBooth saveMaterial:@"BR_White_Wall" inNode:self.nodeRLWheel];
     [self.colorBooth saveMaterial:@"BR_Black_Rubber" inNode:self.nodeRLWheel];
     [self.colorBooth storeMeshNodeByMaterialName:@"BR_White_Wall" inNode:self.nodeRLWheel];
+    [self.colorBooth storeMeshNodeByMaterialName:@"BR_Hood" inNode:self.bodyNode];
     
     
     gStraight = self.nodeFLWheel.rotation;
@@ -657,6 +660,7 @@ bool gSelfHasActiveCamera = true;
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
             //[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
             [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
+            self.hoodScoopNode.visible = NO;
             break;
             
         case LowDrag:
@@ -673,6 +677,7 @@ bool gSelfHasActiveCamera = true;
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
             //[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
             [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
+            self.hoodScoopNode.visible = NO;
             break;
             
         case Gasser:
@@ -689,6 +694,9 @@ bool gSelfHasActiveCamera = true;
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(0, 0, -03.2)]];
             ///[self.colorBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_White_Wall" with:@"BR_Black_Rubber"];
             [self.colorBooth changeColor:@"BR_White_Wall" toColor:kCCC4FBlack];
+            [self.colorBooth changeColor:@"BR_Hood" toColor:kCCC4FBlack];
+            self.hoodScoopNode.visible = YES;
+            
             break;
             
         default:
