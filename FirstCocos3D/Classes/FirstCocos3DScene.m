@@ -406,7 +406,6 @@ bool gSelfHasActiveCamera = true;
 -(void) updateBeforeTransform: (CC3NodeUpdatingVisitor*) visitor {
 }
 
-
 /**
  * This template method is invoked periodically whenever the 3D nodes are to be updated.
  *
@@ -417,12 +416,8 @@ bool gSelfHasActiveCamera = true;
  */
 -(void) updateAfterTransform: (CC3NodeUpdatingVisitor*) visitor {
 
-    //if(!gUseGyroScope && gCurrentSpeed <= 0.0)
-    //    return;
-    
     [self storeRotationsAndAnimateBody];
-
-    [self rotateNodesToCourse:0.5];
+    [self rotateNodesToCourse];
     
     // TODO: There's got to be a better way.
     // Front Wheel stuff
@@ -446,6 +441,92 @@ bool gSelfHasActiveCamera = true;
     
     [self.nodeRLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeRRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
+}
+
+-(void) storeRotationsAndAnimateBody {
+    
+    const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
+    const double action = [self.upDownBodyMotionFilter get:CLAMP((1.0-acceleration.x) * 0.55, 0.0, 0.125)];
+    
+    // Up/down the body
+    CCActionInterval* actionUp = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:action];
+    CCActionInterval* actionDown = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:-action];
+    [self.rootCarNode runAction:[CCActionSequence actionOne:actionUp two:actionDown]];
+    
+    // gPitchOffset adjusts the pitch, which kind of corrects the original model.
+    gCurrentPitchEmpty = MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward);
+    
+    if(gDoWheelies) {
+        if(gCurrentPitchEmpty < (gMaxPitchDegreesBackward) ) {
+            gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitchEmpty - (gMaxPitchDegreesBackward))];
+        }
+    } else {
+        gCurrentPitchEmpty = MAX(gCurrentPitchEmpty, gMaxPitchDegreesBackward);
+    }
+    
+    gCurrentRoll  = MAX(MIN([self.rollFilter get:acceleration.y] * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
+    
+    // Speed and turn factoring
+    const double speedFactor = getFactorFromSpeed();
+    const double scaledWheelPosCosFactor = speedFactor * gMaxWheelTurn * 2;
+    
+    if(! self.layer->bIsHeading) {
+        
+        if(gUseGyroScope) {
+            
+            CMDeviceMotion *deviceMotion = self.manager.deviceMotion;
+            CMAttitude *attitude = deviceMotion.attitude;
+            gCurrentCourse = CC_RADIANS_TO_DEGREES(attitude.yaw);
+            
+        } else {
+            
+            gCurrentCourse += [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
+        }
+    }
+    
+    gCurrentWheelPos = MAX(MIN([self.wheelTurningFilter get:acceleration.y] * scaledWheelPosCosFactor, gMaxWheelTurn), -gMaxWheelTurn);
+}
+
+-(void) rotateNodesToCourse {
+    
+    [self.frontAxle setLocation:gFrontAxle];
+    
+    // Rotate the ground by the current course.
+    [self.groundPlaneNode setRotation:cc3v(0, gCurrentCourse, 0)];
+    
+    CC3Vector vector = self.groundPlaneNode.rotation;
+    
+    // Rotate the ground when self has active camera.
+    if(gSelfHasActiveCamera) {
+        
+        CC3Vector gr = self.background.rotation;
+        gr.y = vector.y;
+        
+        [self.background setRotation:gr];
+    }
+    
+    // TODO: Decide whether to keep " ... + gPitchWheelie" here.
+    [self.rootCarNode setRotation:cc3v(vector.x + gPitchWheelie, 0, gCurrentRoll)];
+    
+    if(!gDoWheelies)
+        return;
+    
+    const double sin_theta = sin(CC_DEGREES_TO_RADIANS(gPitchWheelie));
+    const double cos_theta = cos(CC_DEGREES_TO_RADIANS(gPitchWheelie));
+    
+    CC3Vector pxpy = self.frontAxle.location;
+    CC3Vector oxoy = self.rearAxle.location;
+    
+    const double pz = cos_theta * (pxpy.z-oxoy.z) - sin_theta * (pxpy.y-oxoy.y) + oxoy.z;
+    const double py = sin_theta * (pxpy.z-oxoy.z) + cos_theta * (pxpy.y-oxoy.y) + oxoy.y;
+    
+    /////////////////////////////////////////////
+    // Set the left wheel
+    vector = self.frontAxle.location;
+    vector.y = py;
+    vector.z = pz;
+    
+    self.frontAxle.location = vector;
 }
 
 #pragma mark Scene opening and closing
@@ -738,111 +819,6 @@ bool gSelfHasActiveCamera = true;
 }
 
 #pragma mark Draw the Scene
-
--(void) rotateNodesToCourse:(double) duration {
-    
-    [self.frontAxle setLocation:gFrontAxle];
-    
-    // Rotate the ground by the current course.
-    [self.groundPlaneNode setRotation:cc3v(0, gCurrentCourse, 0)];
-    
-    CC3Vector rotation = self.groundPlaneNode.rotation;
-    
-    // Rotate the ground when self has active camera.
-    if(gSelfHasActiveCamera) {
-
-        CC3Vector gr = self.background.rotation;
-        gr.y = rotation.y;
-        
-        [self.background setRotation:gr];
-    }
-    
-    // TODO: Decide whether to keep " ... + gPitchWheelie" here.
-    [self.rootCarNode setRotation:cc3v(rotation.x + gPitchWheelie, 0, gCurrentRoll)];
-    
-    if(!gDoWheelies)
-        return;
-    
-    const double sin_theta = sin(CC_DEGREES_TO_RADIANS(gPitchWheelie));
-    const double cos_theta = cos(CC_DEGREES_TO_RADIANS(gPitchWheelie));
-    
-    CC3Vector pxpy = self.frontAxle.location;
-    CC3Vector oxoy = self.rearAxle.location;
-    
-    const double pz = cos_theta * (pxpy.z-oxoy.z) - sin_theta * (pxpy.y-oxoy.y) + oxoy.z;
-    const double py = sin_theta * (pxpy.z-oxoy.z) + cos_theta * (pxpy.y-oxoy.y) + oxoy.y;
-
-    /////////////////////////////////////////////
-    // Set the left wheel
-    rotation = self.frontAxle.location;
-    rotation.y = py;
-    rotation.z = pz;
-    
-    self.frontAxle.location = rotation;
-}
-
--(void) storeRotationsAndAnimateBody {
-    
-    if(self.manager == nil) {
-        NSLog(@"CMMotionManager not available");
-        return;
-    }
-    
-    const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
-    const double action = [self.upDownBodyMotionFilter get:CLAMP((1.0-acceleration.x) * 0.55, 0.0, 0.125)];
-    
-    //const double wheelBounce =  acceleration.x *01.75;
-    //action *= 0.25;
-    
-    //NSLog(@"raw: %f, action: %f, wheelBounce: %f, y: %f", acceleration.x, action , wheelBounce, 1.0-acceleration.x);
-    
-    // Up/down the body
-    CCActionInterval* actionUp = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:action];
-    CCActionInterval* actionDown = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:-action];
-    [self.rootCarNode runAction:[CCActionSequence actionOne:actionUp two:actionDown]];
-    
-    // Up/down the wheels
-    //actionUp = [CC3ActionMoveUpBy actionWithDuration:01.05 moveBy:wheelBounce];
-    //actionDown = [CC3ActionMoveUpBy actionWithDuration:01.05 moveBy:-wheelBounce];
-    //[self.nodeFLWheel runAction:[CCActionSequence actionOne:actionUp two:actionDown]];
-    //[self.nodeFLWheel runAction:[CCActionSequence actionOne:actionUp two:actionDown]];
-
-    
-    // TODO: Switch these MAX/MIN to CLAMP.
-    // gPitchOffset adjusts the pitch, which kind of corrects the original model.
-    gCurrentPitchEmpty = MIN(([self.pitchFilter get:acceleration.z] * -10.0) + gPitchOffset, gMaxPitchDegreesForward);
-    
-    if(gDoWheelies) {
-        if(gCurrentPitchEmpty < (gMaxPitchDegreesBackward) ) {
-            gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitchEmpty - (gMaxPitchDegreesBackward))];
-        }
-    } else {
-        gCurrentPitchEmpty = MAX(gCurrentPitchEmpty, gMaxPitchDegreesBackward);
-    }
-    
-    gCurrentRoll  = MAX(MIN([self.rollFilter get:acceleration.y] * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
-    
-    // Speed and turn factoring
-    const double speedFactor = getFactorFromSpeed();
-    const double scaledWheelPosCosFactor = speedFactor * gMaxWheelTurn * 2;
-
-    if(! self.layer->bIsHeading) {
-        
-        if(gUseGyroScope) {
-
-            CMDeviceMotion *deviceMotion = self.manager.deviceMotion;
-            CMAttitude *attitude = deviceMotion.attitude;
-            gCurrentCourse = CC_RADIANS_TO_DEGREES(attitude.yaw);
-            
-        } else {
-            
-            gCurrentCourse += [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
-            
-        }
-    }
-    
-    gCurrentWheelPos = MAX(MIN([self.wheelTurningFilter get:acceleration.y] * scaledWheelPosCosFactor, gMaxWheelTurn), -gMaxWheelTurn);
-}
 
 /**
  * This callback template method is invoked automatically when a node has been picked
