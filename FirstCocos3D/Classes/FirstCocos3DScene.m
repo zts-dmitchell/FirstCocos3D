@@ -32,11 +32,9 @@ const CGFloat gMaxPitchWheelie = 30.0; // Max 30 degrees of wheelie
 //const CGFloat gMaxRollDegrees = 20.0; // Chevy HHR
 const CGFloat gMaxRollDegrees = -2.8;   // Holden
 const CGFloat gMaxWheelTurn = 40.0;
+
 const CGFloat gGroundPlaneY = 2.14515;
 
-
-const CGFloat gPitchIncrentBy = 1.0;
-const CGFloat gRollIncrementBy = 1.0;
 
 CGFloat gCurrentPitchEmpty = 0.0;
 CGFloat gPitchOffset = 0.0;
@@ -47,16 +45,16 @@ CGFloat gCurrentCourse = 0.0;
 CGFloat gCurrentSpeedPos = 0.0;
 CGFloat gCurrentSpeed = 0.0;
 
-CGFloat gCurrentGroundPitch = 0.0;
-CGFloat gGroundPitchOffset = 0.0;
 CGFloat gMaxGroundPitch = 25.0; // degrees;
 
 CC3Vector gStraight;
 CC3Vector gFrontAxle;
 
-bool gDoWheelies = true;
-bool gUseGyroScope = true;
 bool gRotateGroundPlane = false;
+
+// Real Globals
+bool gUseGyroScope = true;
+bool gDoWheelies = true;
 bool gSelfHasActiveCamera = true;
 
 #pragma mark End Global Variables
@@ -157,7 +155,6 @@ bool gSelfHasActiveCamera = true;
     //////////////////////////////////////////////////////////////////////////////////
     // Add Camera Locations
     [self addCameras];
-    
     
     //////////////////////////////////////////////////////////////////////////////////
     // The Coloring Object
@@ -726,7 +723,7 @@ bool gSelfHasActiveCamera = true;
  * A method for setting the course heading. Includes speed, so that one can
  * take actions based on velocity.
  */
--(void) setCourseHeading:(double)course withSpeed:(double)speed andAltitudePitchSlope:(double) slope {
+-(void) setCourseHeading:(double)course withSpeed:(double)speed {
 
     // Store the course/heading ...
     if(self.layer->bIsHeading) {
@@ -738,10 +735,6 @@ bool gSelfHasActiveCamera = true;
     
     // ... and speed
     gCurrentSpeed = speed;
-    
-    if(gUseGyroScope)
-        gCurrentGroundPitch = slope;
-    
 }
 
 #pragma mark Draw the Scene
@@ -750,8 +743,8 @@ bool gSelfHasActiveCamera = true;
     
     [self.frontAxle setLocation:gFrontAxle];
     
-    // Rotate the ground by gCurrentGroundPitch.
-    [self.groundPlaneNode setRotation:cc3v(-gCurrentGroundPitch, gCurrentCourse, 0)];
+    // Rotate the ground by the current course.
+    [self.groundPlaneNode setRotation:cc3v(0, gCurrentCourse, 0)];
     
     CC3Vector rotation = self.groundPlaneNode.rotation;
     
@@ -765,19 +758,19 @@ bool gSelfHasActiveCamera = true;
     }
     
     // TODO: Decide whether to keep " ... + gPitchWheelie" here.
-    [self.rootCarNode setRotation:cc3v(rotation.x + gPitchWheelie + gCurrentGroundPitch, 0, gCurrentRoll)];
+    [self.rootCarNode setRotation:cc3v(rotation.x + gPitchWheelie, 0, gCurrentRoll)];
     
     if(!gDoWheelies)
         return;
     
-    const double theta_sin = sin(CC_DEGREES_TO_RADIANS(gPitchWheelie));
-    const double theta_cos = cos(CC_DEGREES_TO_RADIANS(gPitchWheelie));
+    const double sin_theta = sin(CC_DEGREES_TO_RADIANS(gPitchWheelie));
+    const double cos_theta = cos(CC_DEGREES_TO_RADIANS(gPitchWheelie));
     
     CC3Vector pxpy = self.frontAxle.location;
     CC3Vector oxoy = self.rearAxle.location;
     
-    const double pz = theta_cos * (pxpy.z-oxoy.z) - theta_sin * (pxpy.y-oxoy.y) + oxoy.z;
-    const double py = theta_sin * (pxpy.z-oxoy.z) + theta_cos * (pxpy.y-oxoy.y) + oxoy.y;
+    const double pz = cos_theta * (pxpy.z-oxoy.z) - sin_theta * (pxpy.y-oxoy.y) + oxoy.z;
+    const double py = sin_theta * (pxpy.z-oxoy.z) + cos_theta * (pxpy.y-oxoy.y) + oxoy.y;
 
     /////////////////////////////////////////////
     // Set the left wheel
@@ -841,15 +834,6 @@ bool gSelfHasActiveCamera = true;
             CMAttitude *attitude = deviceMotion.attitude;
             gCurrentCourse = CC_RADIANS_TO_DEGREES(attitude.yaw);
             
-//            if(gRotateGroundPlane) {
-//                // Set elsewhere
-//                //gCurrentGroundPitch = [self.groundPlaneGyroFilter get:attitude.roll];
-//                //gCurrentGroundPitch = CLAMP(CC_RADIANS_TO_DEGREES(gCurrentGroundPitch) - 90.0 - gGroundPitchOffset, -gMaxGroundPitch, gMaxGroundPitch);
-//                //NSLog(@"gCurrentGroundPitch: %f", gCurrentGroundPitch);
-//            } else {
-//                gCurrentGroundPitch = 0.0;
-//            }
-
         } else {
             
             gCurrentCourse += [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
@@ -916,19 +900,11 @@ double getFactorFromSpeed() {
     if(reset) {
         
         gPitchOffset = 0.0;
-        gGroundPitchOffset = 0.0;
-        
-        NSLog(@"Resetting gPitchOffset ad gGroundPitchOffset to 0");
     } else {
         
         const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
         
         gPitchOffset = CLAMP(acceleration.z * 10, gMaxPitchDegreesForward, gMaxPitchDegreesBackward);
-        
-        CMDeviceMotion *deviceMotion = self.manager.deviceMotion;
-        CMAttitude *attitude = deviceMotion.attitude;
-        
-        gGroundPitchOffset = CLAMP(CC_RADIANS_TO_DEGREES(attitude.roll) - 90.0, -gMaxGroundPitch, gMaxGroundPitch);
     }
     
     [self printLocation:[self.activeCamera location] withName:@"Cam Loc"];

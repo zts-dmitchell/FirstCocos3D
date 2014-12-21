@@ -11,7 +11,6 @@
 #import "SimpleMovingAverage.h"
 #import "KalmanFilter.h"
 #import "EmptyFilter.h"
-#import "SlopeCalculator.h"
 #import "ExponentialMovingAverage.h"
 
 @import CoreLocation;
@@ -28,8 +27,6 @@
 @property (strong, nonatomic) SimpleMovingAverage *runningAvg;
 @property (strong, nonatomic) SimpleMovingAverage *headingRunningAvg;
 @property(strong, nonatomic) id<Filters> altitudeFilter;
-
-@property(strong, nonatomic) SlopeCalculator* slopeCalculator;
 
 @end
 
@@ -143,9 +140,6 @@
 //    [self.altitudeLabel setString:[NSString stringWithFormat: @"Alt: %3.0f'", altitude]];
     
     //altitude = [self.altitudeFilter get:altitude];
-
-    // Calculate time since previous
-    //const double angle = [self.slopeCalculator getAngle:newLocation fromAltitude:altitude andSpeed:self.speed];
     
     [self.mphLabel setString:[NSString stringWithFormat:@"Speed:%3.0f MPH, Alt: %3.0f\"", self.speed, altitude]];
     
@@ -153,7 +147,7 @@
         FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
     
         if( course >= 0.0 )
-            [scene setCourseHeading:course withSpeed:self.speed andAltitudePitchSlope:0.0];
+            [scene setCourseHeading:course withSpeed:self.speed];
     
         //[self.headingTypeLabel setString:[NSString stringWithFormat:@"Course: %.f°", course]];
     }
@@ -202,7 +196,7 @@
         FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
     
         if( theHeading >= 0.0 ) {
-            [scene setCourseHeading:theHeading withSpeed:self.speed andAltitudePitchSlope:-10.0];
+            [scene setCourseHeading:theHeading withSpeed:self.speed];
             
             //[self.headingTypeLabel setString:[NSString stringWithFormat:@"Heading: %.f°", theHeading]];
         }

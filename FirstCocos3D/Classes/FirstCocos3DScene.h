@@ -47,7 +47,7 @@ typedef enum coolCarTypes { Low, LowDrag, Gasser } CoolCarTypes;
 
 @property (strong, nonatomic) CC3ResourceNode* groundPlaneNode;
 @property (strong, nonatomic) FirstCocos3DLayer* layer;
--(void) setCourseHeading:(double)course withSpeed:(double)speed andAltitudePitchSlope:(double) slope;
+-(void) setCourseHeading:(double)course withSpeed:(double)speed;
 
 @property (strong, nonatomic) CMMotionManager* manager;
 @property (strong, nonatomic) id<Filters> wheelTurningFilter;
