@@ -132,7 +132,7 @@
     
     ccColor4F nextColor;
     [pCi getValue:&nextColor];
-    NSLog(@"New color: %@", NSStringFromCCC4F(nextColor));
+    NSLog(@"Next color: %@", NSStringFromCCC4F(nextColor));
     [PaintBooth changeColor:parts inNode:node asColor:nextColor];
 }
 
@@ -140,6 +140,8 @@
  Allows the user to add a custom color, separate from the built-in ones.
 */
 -(void) addColor:(ccColor4F) color {
+
+    NSLog(@"Adding color: %@", NSStringFromCCC4F(color));
 
     NSValue * pColor = [NSValue valueWithBytes:&color objCType:@encode(ccColor4F)];
     [self.colors addObject:pColor];

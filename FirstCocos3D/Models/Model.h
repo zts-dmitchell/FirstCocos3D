@@ -11,6 +11,8 @@
 
 @protocol Model <NSObject>
 
+-(id) init;
+-(void) hideParts;
 -(void) setCoolCarType:(int) carType;
 -(NSString*) filterName;
 

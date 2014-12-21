@@ -109,21 +109,6 @@ bool gSelfHasActiveCamera = true;
     //self.backdrop = [CC3Backdrop nodeWithColor: ccc4f(0.52, 0.8, 0.92, 1.0)];
 	//self.backdrop = [CC3Backdrop nodeWithTexture: [CC3Texture textureFromFile: @"Buildings_750x500.png"]];
 
-    
-    //////////////////////////////////////////////////////////////////////////////////
-	// Create the camera, place it back a bit, and add it to the scene
-    CC3Camera* mainCamera = [CC3Camera nodeWithName: @"mainCamera"];
-    mainCamera.location = cc3v(0.0, 0.55 + gGroundPlaneY, 25.0);
-    self.activeCamera = mainCamera;
-    [self addChild:mainCamera];
-
-	// Create a light, place it back and to the left at a specific
-	// position (not just directional lighting), and add it to the scene
-	CC3Light* lamp = [CC3Light nodeWithName: @"Lamp"];
-	lamp.location = cc3v( -2.0, 0.0, 0.0 );
-	lamp.isDirectionalOnly = NO;
-	[mainCamera addChild: lamp];
-    
     //////////////////////////////////////////////////////////////////////////////////
 	// Create and load a POD resource file and add its entire contents to the scene.
 	// If needed, prior to adding the loaded content to the scene, you can customize the
@@ -136,14 +121,11 @@ bool gSelfHasActiveCamera = true;
     [self addChildToGroundPlane:self.rootCarNode];
     
     self.bodyNode = [self.rootCarNode getNodeNamed:@"Main Body"];
+    //self.hoodNode = [self.bodyNode getNodeNamed:@"Main Body-submesh0-Mesh"];
     
-    // Get accessories
-    self.hoodScoopNode = [self.rootCarNode getNodeNamed:@"Hood Scoop"];
-    self.hoodScoopNode.visible = NO;
+    NSLog(@"Body node details: %@", self.bodyNode.fullDescription);
     
-    self.fuelCellNode = [self.rootCarNode getNodeNamed:@"Fuel Cell"];
-    self.fuelCellNode.visible = NO;
-    
+    [self setInitialPartState];
     
     // Get the pitch empty for pitch rotations
     self.pitchEmpty = [self.rootCarNode getNodeNamed:@"PitchEmpty"];
@@ -181,10 +163,8 @@ bool gSelfHasActiveCamera = true;
     // The Coloring Object
     self.paintBooth = [[PaintBooth alloc] init];
     
-    CC3MeshNode* node = [self.rootCarNode getMeshNodeNamed:@"Trunk Lid"];
-    
-    [self.paintBooth addColor:node.diffuseColor];
-    
+    [self.paintBooth addColor:self.bodyNode.diffuseColor];
+    //self.hoodN
     [self.paintBooth addColor:102 :0 :102];
     
     //////////////////////////////////////////////////////////////////////////////////
@@ -203,12 +183,13 @@ bool gSelfHasActiveCamera = true;
     self.nodeRRWheel = [self wheelFromNode:@"RRWheel"];
     self.nodeRLWheel = [self wheelFromNode:@"RLWheel"];
     
-    //NSLog(@"Wheel info: %@", self.nodeRLWheel.fullDescription);
     //[self.paintBooth saveMaterial:@"BR_White_Wall" inNode:self.nodeRLWheel];
     [self.paintBooth saveMaterial:@"BR_Black_Rubber" inNode:self.nodeRLWheel];
     [self.paintBooth storeMeshNodeByMaterialName:@"BR_White_Wall" inNode:self.nodeRLWheel];
     [self.paintBooth storeMeshNodeByMaterialName:@"BR_Hood" inNode:self.bodyNode];
+    [self.paintBooth saveMaterial:@"BR_Tan_Body" inNode:self.bodyNode];
     
+    [self.paintBooth swapMaterialsInNode:self.bodyNode withMaterial:@"BR_Hood" with:@"BR_Tan_Body"];
     
     gStraight = self.nodeFLWheel.rotation;
     gFrontAxle = self.frontAxle.location;
@@ -319,8 +300,36 @@ bool gSelfHasActiveCamera = true;
     [self adjustPitch:false];
 }
 
+// This method will eventually go in a protocol for cars.
+-(void) setInitialPartState {
+    
+    // Get accessories
+    self.hoodScoopNode = [self.rootCarNode getNodeNamed:@"Hood Scoop"];
+    self.fuelCellNode = [self.rootCarNode getNodeNamed:@"Fuel Cell"];
+
+    // Hide these, initially.
+    [self.hoodScoopNode setUniformScale:0.0];
+    [self.fuelCellNode setUniformScale:0.0];
+}
+
+// Add some cameras.
 -(void) addCameras {
 
+    // Set up main camera
+    //////////////////////////////////////////////////////////////////////////////////
+    // Create the camera, place it back a bit, and add it to the scene
+    CC3Camera* mainCamera = [CC3Camera nodeWithName: @"mainCamera"];
+    mainCamera.location = cc3v(0.0, 0.55 + gGroundPlaneY, 25.0);
+    self.activeCamera = mainCamera;
+    [self addChild:mainCamera];
+    
+    // Create a light, place it back and to the left at a specific
+    // position (not just directional lighting), and add it to the scene
+    CC3Light* lamp = [CC3Light nodeWithName: @"Lamp"];
+    lamp.location = cc3v( -2.0, 0.0, 0.0 );
+    lamp.isDirectionalOnly = NO;
+    [mainCamera addChild: lamp];
+    
     self.cameras = [[Camera alloc] init];
     
     [self.cameras add:cc3v(8.62, 2.033, 15.64) withRotation:cc3v(0, 34, 0.0) andFieldOfView:60.0];
@@ -410,7 +419,6 @@ bool gSelfHasActiveCamera = true;
  *
  * For more info, read the notes of this method on CC3Node.
  */
-
 -(void) updateAfterTransform: (CC3NodeUpdatingVisitor*) visitor {
 
     //if(!gUseGyroScope && gCurrentSpeed <= 0.0)
@@ -486,7 +494,6 @@ bool gSelfHasActiveCamera = true;
     //[self.locationManager stopUpdatingLocation];
     [self.manager stopAccelerometerUpdates];
 }
-
 
 #pragma mark Drawing
 
@@ -666,8 +673,9 @@ bool gSelfHasActiveCamera = true;
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
             //[self.paintBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
             [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
-            self.hoodScoopNode.visible = NO;
-            self.fuelCellNode.visible = NO;
+            [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+            [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+
             break;
             
         case LowDrag:
@@ -684,8 +692,10 @@ bool gSelfHasActiveCamera = true;
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
             //[self.paintBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
             [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
-            self.hoodScoopNode.visible = YES;
-            self.fuelCellNode.visible = YES;
+            
+            [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+
             break;
             
         case Gasser:
@@ -703,8 +713,9 @@ bool gSelfHasActiveCamera = true;
             ///[self.paintBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_White_Wall" with:@"BR_Black_Rubber"];
             [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FBlack];
             //[self.paintBooth changeColor:@"BR_Hood" toColor:kCCC4FBlack];
-            self.hoodScoopNode.visible = YES;
-            self.fuelCellNode.visible = YES;            
+            [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            
             break;
             
         default:
