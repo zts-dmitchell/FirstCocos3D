@@ -211,7 +211,6 @@ bool gSelfHasActiveCamera = true;
     //self.groundPlaneGyroFilter = [[EmptyFilter alloc] init];
     
     
-    
     //self.rootCarNode.visible = NO;
     //self.groundPlaneNode.visible = NO;
     
