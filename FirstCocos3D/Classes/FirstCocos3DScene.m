@@ -464,7 +464,7 @@ bool gSelfHasActiveCamera = true;
         gCurrentPitchEmpty = MAX(gCurrentPitchEmpty, gMaxPitchDegreesBackward);
     }
     
-    gCurrentRoll  = MAX(MIN([self.rollFilter get:acceleration.y] * 10.0, -gMaxRollDegrees), gMaxRollDegrees);
+    gCurrentRoll  = CLAMP([self.rollFilter get:acceleration.y] * 10.0, gMaxRollDegrees, -gMaxRollDegrees);
     
     // Speed and turn factoring
     const double speedFactor = getFactorFromSpeed();
@@ -484,7 +484,7 @@ bool gSelfHasActiveCamera = true;
         }
     }
     
-    gCurrentWheelPos = MAX(MIN([self.wheelTurningFilter get:acceleration.y] * scaledWheelPosCosFactor, gMaxWheelTurn), -gMaxWheelTurn);
+    gCurrentWheelPos = CLAMP([self.wheelTurningFilter get:acceleration.y] * scaledWheelPosCosFactor, -gMaxWheelTurn, gMaxWheelTurn);
 }
 
 -(void) rotateNodesToCourse {
