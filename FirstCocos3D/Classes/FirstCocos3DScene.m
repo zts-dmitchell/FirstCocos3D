@@ -33,6 +33,8 @@ const CGFloat gMaxPitchWheelie = 30.0; // Max 30 degrees of wheelie
 const CGFloat gMaxRollDegrees = -2.8;   // Holden
 const CGFloat gMaxWheelTurn = 40.0;
 
+CGFloat gGasserPitch = 0.0;
+
 const CGFloat gGroundPlaneY = 2.14515;
 
 
@@ -166,9 +168,9 @@ bool gSelfHasActiveCamera = true;
     
     //////////////////////////////////////////////////////////////////////////////////
     // Already in low-body position.
-    self.vLowBody = self.pitchEmpty.location;
-    self.vGasserBody = cc3v(0, -0.01257, 4.07566); // Y and Z are swapped
-    
+    self.lowBodyLocation = self.pitchEmpty.location;
+    //self.gasserBodyLocation = cc3v(0, -0.01257, 4.07566); // Y and Z are swapped
+    self.gasserBodyLocation = cc3v(0, -0.3, 4.07566); // Y and Z are swapped
     
     // Debugging: Remove Plane in
     CC3Node* plane = [self.rootCarNode getNodeNamed:@"Plane"];
@@ -464,6 +466,8 @@ bool gSelfHasActiveCamera = true;
         gCurrentPitchEmpty = MAX(gCurrentPitchEmpty, gMaxPitchDegreesBackward);
     }
     
+    gCurrentPitchEmpty += gGasserPitch;
+
     gCurrentRoll  = CLAMP([self.rollFilter get:acceleration.y] * 10.0, gMaxRollDegrees, -gMaxRollDegrees);
     
     // Speed and turn factoring
@@ -750,7 +754,8 @@ bool gSelfHasActiveCamera = true;
         case Low:
             NSLog(@"Setting Low Body");
             
-            location.y = self.vLowBody.y;
+            gGasserPitch = 0.0;
+            location.y = self.lowBodyLocation.y;
             [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
 
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
@@ -769,7 +774,8 @@ bool gSelfHasActiveCamera = true;
         case LowDrag:
             NSLog(@"Setting Low Drag Body");
             
-            location.y = self.vLowBody.y;
+            gGasserPitch = 0.0;
+            location.y = self.lowBodyLocation.y;
             [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
 
             [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 1.0, 1.0)]];
@@ -789,7 +795,8 @@ bool gSelfHasActiveCamera = true;
         case Gasser:
             NSLog(@"Setting Gasser Body");
             
-            location.y = self.vGasserBody.y;
+            gGasserPitch = -2.25;
+            location.y = self.gasserBodyLocation.y;
             [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
      
             [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.94, 0, -0.2)]];
