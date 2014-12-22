@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5700692B1A21B03100269F00 /* Chevrolet HHR - Linked.pod in Resources */ = {isa = PBXBuildFile; fileRef = 5700692A1A21B03100269F00 /* Chevrolet HHR - Linked.pod */; };
 		57177BC01A37870600477239 /* Camera.m in Sources */ = {isa = PBXBuildFile; fileRef = 57177BBF1A37870600477239 /* Camera.m */; };
+		5727600E1A4799B00063AECB /* LinearLRIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 5727600D1A4799B00063AECB /* LinearLRIterator.m */; };
 		574C49681A3A9774009255B2 /* Atacama-Desert-Panorama.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 574C49671A3A9774009255B2 /* Atacama-Desert-Panorama.jpg */; };
 		574C496A1A3AA430009255B2 /* SevierDesert_2kpx.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 574C49691A3AA430009255B2 /* SevierDesert_2kpx.jpg */; };
 		574C497C1A3E86BC009255B2 /* EmptyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 574C49741A3E86BC009255B2 /* EmptyFilter.m */; };
@@ -417,6 +418,9 @@
 		5700692A1A21B03100269F00 /* Chevrolet HHR - Linked.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Chevrolet HHR - Linked.pod"; path = "Resources/Chevrolet HHR - Linked.pod"; sourceTree = "<group>"; };
 		57177BBE1A37842E00477239 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Camera.h; path = Utils/Camera.h; sourceTree = "<group>"; };
 		57177BBF1A37870600477239 /* Camera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Camera.m; path = Utils/Camera.m; sourceTree = "<group>"; };
+		5727600C1A47999C0063AECB /* LinearLRIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LinearLRIterator.h; path = Utils/LinearLRIterator.h; sourceTree = "<group>"; };
+		5727600D1A4799B00063AECB /* LinearLRIterator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinearLRIterator.m; path = Utils/LinearLRIterator.m; sourceTree = "<group>"; };
+		5727600F1A479B7F0063AECB /* LocationRotationIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationRotationIterator.h; path = Utils/LocationRotationIterator.h; sourceTree = "<group>"; };
 		574C49671A3A9774009255B2 /* Atacama-Desert-Panorama.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "Atacama-Desert-Panorama.jpg"; path = "Resources/Atacama-Desert-Panorama.jpg"; sourceTree = "<group>"; };
 		574C49691A3AA430009255B2 /* SevierDesert_2kpx.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SevierDesert_2kpx.jpg; path = Resources/SevierDesert_2kpx.jpg; sourceTree = "<group>"; };
 		574C49731A3E86BC009255B2 /* EmptyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmptyFilter.h; sourceTree = "<group>"; };
@@ -1222,6 +1226,9 @@
 				57177BBF1A37870600477239 /* Camera.m */,
 				57F8C5AF1A3903EA002FE0AB /* PaintBooth.h */,
 				57F8C5B01A39043D002FE0AB /* PaintBooth.m */,
+				5727600C1A47999C0063AECB /* LinearLRIterator.h */,
+				5727600D1A4799B00063AECB /* LinearLRIterator.m */,
+				5727600F1A479B7F0063AECB /* LocationRotationIterator.h */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -2855,6 +2862,7 @@
 				57CAE58F19BC18D400665B4C /* FirstCocos3DLayer.m in Sources */,
 				57F8C5B11A39043D002FE0AB /* PaintBooth.m in Sources */,
 				574C49851A3F85AC009255B2 /* SlopeCalculator.m in Sources */,
+				5727600E1A4799B00063AECB /* LinearLRIterator.m in Sources */,
 				574C497C1A3E86BC009255B2 /* EmptyFilter.m in Sources */,
 				574C497E1A3E86BC009255B2 /* KalmanFilter.m in Sources */,
 				57177BC01A37870600477239 /* Camera.m in Sources */,

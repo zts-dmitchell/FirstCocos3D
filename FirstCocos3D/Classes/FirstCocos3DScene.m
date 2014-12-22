@@ -621,14 +621,13 @@ bool gSelfHasActiveCamera = true;
 	[super drawSceneContentWithVisitor: visitor];
 }
 
-
 #pragma mark Handling touch events 
 
 -(void) touchEvent: (uint) touchType at: (CGPoint) touchPoint {
 
     if( touchType == 0 ) {
         
-        [self printLocation:self.groundPlaneNode];
+        //[self printLocation:self.groundPlaneNode];
         
         const CGSize s = [CCDirector sharedDirector].viewSize;
         const CGFloat widthDivisionSize = s.width/3.0;
@@ -686,12 +685,24 @@ bool gSelfHasActiveCamera = true;
 
             } else if(widthSection == 0) { // Reset Roll
 
-                gDoWheelies = !gDoWheelies;
+                /*
+                NSLog(@"Moving camera");
+                CC3Vector initialPos = cc3v(8, 2, 150);
+                CC3Vector endPos     = cc3v(1, 2, 20);
                 
+                self.activeCamera.location = initialPos;
+                
+                CCActionInterval* actOne = [CC3ActionMoveTo actionWithDuration:2.0 endVector:endPos];
+                CCActionInterval* actTwo = [CC3ActionRotateToLookAt actionWithDuration:0.25 targetLocation:cc3v(0,0,0)];
+                
+                CCActionFiniteTime *time = [[CCActionFiniteTime alloc] init];
+                time.duration = 0.0;
+                [self.activeCamera runAction:[CCActionSequence actions:time, actOne, actTwo, nil]];
+                 */
+                
+                gDoWheelies = !gDoWheelies;
                 // Reset the wheelie to zero, so wheels don't remain in the air.
                 gPitchWheelie = 0.0;
-                
-                //self.pitchEmpty.visible = !self.pitchEmpty.visible;
                 
             } else { // Roll Right
 
@@ -801,11 +812,26 @@ bool gSelfHasActiveCamera = true;
 }
 
 /**
+ * This callback template method is invoked automatically when a node has been picked
+ * by the invocation of the pickNodeFromTapAt: or pickNodeFromTouchEvent:at: methods,
+ * as a result of a touch event or tap gesture.
+ *
+ * Override this method to perform activities on 3D nodes that have been picked by the user.
+ *
+ * For more info, read the notes of this method on CC3Scene.
+ */
+-(void) nodeSelected: (CC3Node*) aNode byTouchEvent: (uint) touchType at: (CGPoint) touchPoint {
+
+}
+
+#pragma mark Course Reciever
+
+/**
  * A method for setting the course heading. Includes speed, so that one can
  * take actions based on velocity.
  */
 -(void) setCourseHeading:(double)course withSpeed:(double)speed {
-
+    
     // Store the course/heading ...
     if(self.layer->bIsHeading) {
         
@@ -818,20 +844,6 @@ bool gSelfHasActiveCamera = true;
     gCurrentSpeed = speed;
 }
 
-#pragma mark Draw the Scene
-
-/**
- * This callback template method is invoked automatically when a node has been picked
- * by the invocation of the pickNodeFromTapAt: or pickNodeFromTouchEvent:at: methods,
- * as a result of a touch event or tap gesture.
- *
- * Override this method to perform activities on 3D nodes that have been picked by the user.
- *
- * For more info, read the notes of this method on CC3Scene.
- */
--(void) nodeSelected: (CC3Node*) aNode byTouchEvent: (uint) touchType at: (CGPoint) touchPoint {
-
-}
 
 #pragma mark Utilities
 
@@ -882,8 +894,6 @@ double getFactorFromSpeed() {
         
         gPitchOffset = CLAMP(acceleration.z * 10, gMaxPitchDegreesForward, gMaxPitchDegreesBackward);
     }
-    
-    [self printLocation:[self.activeCamera location] withName:@"Cam Loc"];
 }
 
 #pragma mark Mesh Utilities
@@ -912,7 +922,7 @@ double getFactorFromSpeed() {
     return node;
 }
 
-#pragma mark Print Utilities
+#pragma mark Printing Utilities
 
 -(void) printLocation:(CC3Vector) position withName:(NSString*) info {
     
