@@ -303,10 +303,12 @@ bool gSelfHasActiveCamera = true;
     
     // Get accessories
     self.hoodScoopNode = [self.rootCarNode getNodeNamed:@"Hood Scoop"];
+    self.carbVelocityStacksNode = [self.rootCarNode getNodeNamed:@"Carb Velocity Stacks"];
     self.fuelCellNode = [self.rootCarNode getNodeNamed:@"Fuel Cell"];
 
     // Hide these, initially.
     [self.hoodScoopNode setUniformScale:0.0];
+    [self.carbVelocityStacksNode setUniformScale:0.0];
     [self.fuelCellNode setUniformScale:0.0];
 }
 
@@ -679,7 +681,7 @@ bool gSelfHasActiveCamera = true;
             
             if(widthSection == -1) { // Roll Left
 
-                NSArray *parts = @[ @"Main Body-submesh0", @"Main Body-submesh2", @"Trunk Lid"];
+                NSArray *parts = @[ @"Main Body-submesh1", @"Main Body-submesh2", @"Trunk Lid"];
                 
                 [self.paintBooth nextColor:parts inNode:self.rootCarNode];
                 
@@ -766,8 +768,10 @@ bool gSelfHasActiveCamera = true;
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
             //[self.paintBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
             [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
+            
             [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
-            [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+            [self.carbVelocityStacksNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+            [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
 
             break;
             
@@ -788,6 +792,7 @@ bool gSelfHasActiveCamera = true;
             [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
             
             [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            [self.carbVelocityStacksNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
             [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
 
             break;
@@ -808,7 +813,9 @@ bool gSelfHasActiveCamera = true;
             ///[self.paintBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_White_Wall" with:@"BR_Black_Rubber"];
             [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FBlack];
             //[self.paintBooth changeColor:@"BR_Hood" toColor:kCCC4FBlack];
-            [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            
+            [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+            [self.carbVelocityStacksNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.2]];
             [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
             
             break;
