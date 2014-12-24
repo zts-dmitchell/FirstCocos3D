@@ -145,9 +145,7 @@
     
     ccColor4F emitColor = ccc4FInterpolated(baseColor, maxColor, percentage);
     
-    node.emissionColor = emitColor;
-    
-    NSLog(@"Percentage: %f", percentage);
+    node.emissionColor = emitColor;    
 }
 
 /*

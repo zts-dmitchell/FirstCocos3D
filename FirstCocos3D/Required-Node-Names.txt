@@ -1,0 +1,30 @@
+Main Body
+PitchEmpty
+Headlamps
+Taillight
+WheelEmpty
+Front Axle
+Rear Axle
+FRWheel
+FLWheel
+RRWheel
+RLWheel
+Hood Scoop
+Fuel Cell
+Carb Velocity Stacks
+Main Body-submesh0
+Main Body-submesh2
+Trunk Lid
+
+
+
+
+##################
+Required Materials
+BR_Black_Rubber
+BR_White_Wall
+BR_Hood
+BR_Tan_Body
+BR_Header_Color
+
+
