@@ -32,7 +32,7 @@ const CGFloat gMaxPitchWheelie = 30.0; // Max 30 degrees of wheelie
 //const CGFloat gMaxRollDegrees = 20.0; // Chevy HHR
 const CGFloat gMaxRollDegrees = -2.8;   // Holden
 const CGFloat gMaxWheelTurn = 40.0;
-
+const CGFloat gHeaderEmissionMinSpeed = 30.0;
 CGFloat gGasserPitch = 0.0;
 
 const CGFloat gGroundPlaneY = 2.14515;
@@ -165,6 +165,8 @@ bool gSelfHasActiveCamera = true;
     [self.paintBooth addColor:self.bodyNode.diffuseColor];
     //self.hoodN
     [self.paintBooth addColor:102 :0 :102];
+    
+    self.headersNode = [self.rootCarNode getNodeNamed:@"Headers"];
     
     //////////////////////////////////////////////////////////////////////////////////
     // Already in low-body position.
@@ -445,6 +447,8 @@ bool gSelfHasActiveCamera = true;
     
     [self.nodeRLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeRRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
+    
+    
 }
 
 -(void) storeRotationsAndAnimateBody {
@@ -771,7 +775,7 @@ bool gSelfHasActiveCamera = true;
             
             [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
             [self.carbVelocityStacksNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
-            [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
 
             break;
             
@@ -838,7 +842,7 @@ bool gSelfHasActiveCamera = true;
 
 }
 
-#pragma mark Course Reciever
+#pragma mark Course and Speed Reciever
 
 /**
  * A method for setting the course heading. Includes speed, so that one can
@@ -856,6 +860,17 @@ bool gSelfHasActiveCamera = true;
     
     // ... and speed
     gCurrentSpeed = speed;
+
+    if(speed < gHeaderEmissionMinSpeed) {
+        // No emision under gHeaderEmissionMinSpeed MPH
+        speed = 0.0;
+    } else {
+        // Reduce by gHeaderEmissionMinSpeed, so that headers won't glow at, say, 10 MPH.
+        speed = (speed-gHeaderEmissionMinSpeed)/40.0;
+    }
+    
+    // Convert speed to some percentage of desired color.
+    [self.paintBooth emit:kCCC4FBlack to:kCCC4FRed with:(speed) on:self.headersNode];
 }
 
 

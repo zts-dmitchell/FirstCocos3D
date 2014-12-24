@@ -136,6 +136,20 @@
     [PaintBooth changeColor:parts inNode:node asColor:nextColor];
 }
 
+/**
+ Product a blended node emission color based on the average of two colors
+*/
+-(void) emit:(ccColor4F) baseColor to:(ccColor4F) maxColor with:(double) percentage on:(CC3Node*) node {
+    // Find the average of the two colors based on the percentage
+    // Also use percentage to determine the amount to do emission.
+    
+    ccColor4F emitColor = ccc4FInterpolated(baseColor, maxColor, percentage);
+    
+    node.emissionColor = emitColor;
+    
+    NSLog(@"Percentage: %f", percentage);
+}
+
 /*
  Allows the user to add a custom color, separate from the built-in ones.
 */
