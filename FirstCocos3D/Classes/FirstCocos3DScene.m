@@ -117,6 +117,7 @@ bool gSelfHasActiveCamera = true;
 	// instead of adding the entire contents.
     self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
     //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
+    //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"GoogleDriverLessCar.pod"];
     
     [self addChildToGroundPlane:self.rootCarNode];
     
@@ -302,6 +303,10 @@ bool gSelfHasActiveCamera = true;
 
 // This method will eventually go in a protocol for cars.
 -(void) setInitialPartState {
+    
+    if(self.hoodScoopNode == nil) {
+        return;
+    }
     
     // Get accessories
     self.hoodScoopNode = [self.rootCarNode getNodeNamed:@"Hood Scoop"];
@@ -753,6 +758,10 @@ bool gSelfHasActiveCamera = true;
  **/
 -(void) setCoolCarType:(CoolCarTypes) type {
 
+    if(self.hoodScoopNode == nil) {
+        return;
+    }
+    
     CC3Vector location = self.pitchEmpty.location;
 
     switch(type) {
@@ -773,10 +782,11 @@ bool gSelfHasActiveCamera = true;
             //[self.paintBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
             [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
             
-            [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
-            [self.carbVelocityStacksNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
-            [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
-
+            if(self.hoodScoopNode != nil) {
+                [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+                [self.carbVelocityStacksNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+                [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+            }
             break;
             
         case LowDrag:
@@ -795,10 +805,12 @@ bool gSelfHasActiveCamera = true;
             //[self.paintBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
             [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
             
-            [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
-            [self.carbVelocityStacksNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
-            [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            if(self.hoodScoopNode != nil) {
 
+                [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+                [self.carbVelocityStacksNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+                [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            }
             break;
             
         case Gasser:
@@ -818,10 +830,12 @@ bool gSelfHasActiveCamera = true;
             [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FBlack];
             //[self.paintBooth changeColor:@"BR_Hood" toColor:kCCC4FBlack];
             
-            [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
-            [self.carbVelocityStacksNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.2]];
-            [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
-            
+            if(self.hoodScoopNode != nil) {
+
+                [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+                [self.carbVelocityStacksNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.2]];
+                [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            }
             break;
             
         default:
@@ -861,6 +875,9 @@ bool gSelfHasActiveCamera = true;
     // ... and speed
     gCurrentSpeed = speed;
 
+    if(self.headersNode == nil)
+        return;
+    
     if(speed < gHeaderEmissionMinSpeed) {
         // No emision under gHeaderEmissionMinSpeed MPH
         speed = 0.0;

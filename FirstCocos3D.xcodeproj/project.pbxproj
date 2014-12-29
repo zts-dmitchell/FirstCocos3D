@@ -11,6 +11,7 @@
 		57177BC01A37870600477239 /* Camera.m in Sources */ = {isa = PBXBuildFile; fileRef = 57177BBF1A37870600477239 /* Camera.m */; };
 		5727600E1A4799B00063AECB /* LinearLRIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 5727600D1A4799B00063AECB /* LinearLRIterator.m */; };
 		572760111A4A3D920063AECB /* Required-Node-Names.txt in Resources */ = {isa = PBXBuildFile; fileRef = 572760101A4A3D920063AECB /* Required-Node-Names.txt */; };
+		572760131A513A920063AECB /* GoogleDriverLessCar.pod in Resources */ = {isa = PBXBuildFile; fileRef = 572760121A513A920063AECB /* GoogleDriverLessCar.pod */; };
 		574C49681A3A9774009255B2 /* Atacama-Desert-Panorama.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 574C49671A3A9774009255B2 /* Atacama-Desert-Panorama.jpg */; };
 		574C496A1A3AA430009255B2 /* SevierDesert_2kpx.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 574C49691A3AA430009255B2 /* SevierDesert_2kpx.jpg */; };
 		574C497C1A3E86BC009255B2 /* EmptyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 574C49741A3E86BC009255B2 /* EmptyFilter.m */; };
@@ -423,6 +424,7 @@
 		5727600D1A4799B00063AECB /* LinearLRIterator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinearLRIterator.m; path = Utils/LinearLRIterator.m; sourceTree = "<group>"; };
 		5727600F1A479B7F0063AECB /* LocationRotationIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationRotationIterator.h; path = Utils/LocationRotationIterator.h; sourceTree = "<group>"; };
 		572760101A4A3D920063AECB /* Required-Node-Names.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Required-Node-Names.txt"; sourceTree = "<group>"; };
+		572760121A513A920063AECB /* GoogleDriverLessCar.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = GoogleDriverLessCar.pod; path = Resources/GoogleDriverLessCar.pod; sourceTree = "<group>"; };
 		574C49671A3A9774009255B2 /* Atacama-Desert-Panorama.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "Atacama-Desert-Panorama.jpg"; path = "Resources/Atacama-Desert-Panorama.jpg"; sourceTree = "<group>"; };
 		574C49691A3AA430009255B2 /* SevierDesert_2kpx.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SevierDesert_2kpx.jpg; path = Resources/SevierDesert_2kpx.jpg; sourceTree = "<group>"; };
 		574C49731A3E86BC009255B2 /* EmptyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmptyFilter.h; sourceTree = "<group>"; };
@@ -1305,6 +1307,7 @@
 		57CAE59319BC18D400665B4C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				572760121A513A920063AECB /* GoogleDriverLessCar.pod */,
 				574C49691A3AA430009255B2 /* SevierDesert_2kpx.jpg */,
 				574C49671A3A9774009255B2 /* Atacama-Desert-Panorama.jpg */,
 				5700692A1A21B03100269F00 /* Chevrolet HHR - Linked.pod */,
@@ -2787,6 +2790,7 @@
 				57CAE5D919BC18D400665B4C /* CC3LibSetGLFragColorAlphaTest.fsh in Resources */,
 				57CAE60819BC18D400665B4C /* CC3SingleTextureReflectAlphaTest.fsh in Resources */,
 				57CAE5B219BC18D400665B4C /* Icon-60@2x.png in Resources */,
+				572760131A513A920063AECB /* GoogleDriverLessCar.pod in Resources */,
 				57CAE5B419BC18D400665B4C /* Icon-72.png in Resources */,
 				57CAE5C919BC18D400665B4C /* fps_images-ipadhd.png in Resources */,
 				57CAE5C319BC18D400665B4C /* Default-Landscape~ipad.png in Resources */,
