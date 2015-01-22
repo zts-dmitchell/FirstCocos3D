@@ -534,7 +534,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     [self.frontAxle setLocation:gFrontAxle];
     
     // Rotate the ground by the current course.
-    [self.groundPlaneNode setRotation:cc3v(0, gCurrentCourse, 0)];
+    [self.groundPlaneNode setRotation:cc3v(0, gRideAlongOrientation * gCurrentCourse, 0)];
     
     CC3Vector vector = self.groundPlaneNode.rotation;
     
