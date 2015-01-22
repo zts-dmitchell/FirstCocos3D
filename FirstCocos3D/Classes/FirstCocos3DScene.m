@@ -59,6 +59,10 @@ bool gUseGyroScope = true;
 bool gDoWheelies = true;
 bool gSelfHasActiveCamera = true;
 
+const CGFloat cRightSideDown = 1;
+const CGFloat cLeftSideDown = -1;
+const CGFloat gRideAlongOrientation = cLeftSideDown;
+
 #pragma mark End Global Variables
 
 /**
@@ -122,7 +126,7 @@ bool gSelfHasActiveCamera = true;
     [self addChildToGroundPlane:self.rootCarNode];
     
     self.bodyNode = [self.rootCarNode getNodeNamed:@"Main Body"];
-    //self.hoodNode = [self.bodyNode getNodeNamed:@"Main Body-submesh0-Mesh"];
+    self.hoodNode = [self.bodyNode getNodeNamed:@"Main Body-submesh0-Mesh"];
     
     NSLog(@"Body node details: %@", self.bodyNode.fullDescription);
     
@@ -166,6 +170,32 @@ bool gSelfHasActiveCamera = true;
     [self.paintBooth addColor:self.bodyNode.diffuseColor];
     //self.hoodN
     [self.paintBooth addColor:102 :0 :102];
+    
+    CC3MeshNode *mn = [self.rootCarNode getMeshNodeNamed:@"Front Window"];
+    CC3Material *mat = mn.material;
+    ccColor4F c = mat.ambientColor;
+    c.a = 0.0;
+    mat.ambientColor = kCCC4FBlack;
+    
+    c = mat.diffuseColor;
+    c.a = 0.0;
+    mat.diffuseColor = kCCC4FBlack;
+
+    c = mat.specularColor;
+    c.a = 0.0;
+    mat.specularColor = kCCC4FWhite;
+    
+    c = mat.emissionColor;
+    c.a = 0.0;
+    mat.emissionColor = c;
+    
+    NSLog(@"Opacity of %@: %f. Is opaque? %d", mat.name, mat.opacity, mat.isOpaque);
+    mat.opacity = 0.0;
+    mat.isOpaque = YES;
+    //mat.destinationBlendAlpha = GL_ONE_MINUS_SRC_ALPHA;
+    
+    mn = [self.rootCarNode getMeshNodeNamed:@"Front Window"];
+    NSLog(@"Opacity of %@: %f. Is opaque? %d. Alpha: %f", mn.name, mn.opacity, mn.isOpaque, mn.diffuseColor.a);
     
     self.headersNode = [self.rootCarNode getNodeNamed:@"Headers"];
     
@@ -304,10 +334,6 @@ bool gSelfHasActiveCamera = true;
 // This method will eventually go in a protocol for cars.
 -(void) setInitialPartState {
     
-    if(self.hoodScoopNode == nil) {
-        return;
-    }
-    
     // Get accessories
     self.hoodScoopNode = [self.rootCarNode getNodeNamed:@"Hood Scoop"];
     self.carbVelocityStacksNode = [self.rootCarNode getNodeNamed:@"Carb Velocity Stacks"];
@@ -441,19 +467,20 @@ bool gSelfHasActiveCamera = true;
     
     gCurrentSpeedPos += gCurrentSpeed;
     
+    //////////////////////////////////////////////////////////////////////////
+    // Spin the Wheels
     // Set rotation about x *before* rotation about z!!!
     [self.nodeFLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeFRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     
-    [self.nodeFLWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
-    [self.nodeFRWheel rotateByAngle:gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
+    // Turn wheels between left and right positions.
+    [self.nodeFLWheel rotateByAngle: gRideAlongOrientation * gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
+    [self.nodeFRWheel rotateByAngle: gRideAlongOrientation * gCurrentWheelPos aroundAxis:cc3v(0,0,1)];
  
     [self.pitchEmpty setRotation:cc3v(gCurrentPitchEmpty - gPitchWheelie, 0, 0)];
     
     [self.nodeRLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeRRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
-    
-    
 }
 
 -(void) storeRotationsAndAnimateBody {
@@ -479,7 +506,7 @@ bool gSelfHasActiveCamera = true;
     
     gCurrentPitchEmpty += gGasserPitch;
 
-    gCurrentRoll  = CLAMP([self.rollFilter get:acceleration.y] * 10.0, gMaxRollDegrees, -gMaxRollDegrees);
+    gCurrentRoll = gRideAlongOrientation * CLAMP([self.rollFilter get:acceleration.y] * 10.0, gMaxRollDegrees, -gMaxRollDegrees);
     
     // Speed and turn factoring
     const double speedFactor = getFactorFromSpeed();
@@ -507,7 +534,7 @@ bool gSelfHasActiveCamera = true;
     [self.frontAxle setLocation:gFrontAxle];
     
     // Rotate the ground by the current course.
-    [self.groundPlaneNode setRotation:cc3v(0, gCurrentCourse, 0)];
+    [self.groundPlaneNode setRotation:cc3v(0, gRideAlongOrientation * gCurrentCourse, 0)];
     
     CC3Vector vector = self.groundPlaneNode.rotation;
     

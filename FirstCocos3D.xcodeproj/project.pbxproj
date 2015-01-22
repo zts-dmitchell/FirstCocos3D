@@ -1223,9 +1223,9 @@
 		57B2347219D92E5700B492AC /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				574C49721A3E86BC009255B2 /* Filters */,
 				574C49831A3F85AC009255B2 /* SlopeCalculator.m */,
 				574C49841A3F85AC009255B2 /* SlopeCalculator.h */,
-				574C49721A3E86BC009255B2 /* Filters */,
 				57177BBE1A37842E00477239 /* Camera.h */,
 				57177BBF1A37870600477239 /* Camera.m */,
 				57F8C5AF1A3903EA002FE0AB /* PaintBooth.h */,
