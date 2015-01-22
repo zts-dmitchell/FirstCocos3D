@@ -836,7 +836,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
 
                 [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
                 [self.carbVelocityStacksNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
-                [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+                [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
             }
             break;
             
