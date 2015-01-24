@@ -352,7 +352,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     //////////////////////////////////////////////////////////////////////////////////
     // Create the camera, place it back a bit, and add it to the scene
     CC3Camera* mainCamera = [CC3Camera nodeWithName: @"mainCamera"];
-    mainCamera.location = cc3v(0.0, 0.55 + gGroundPlaneY, 25.0);
+    //mainCamera.location = cc3v(0.0, 0.55 + gGroundPlaneY, 25.0);
+    mainCamera.location = cc3v(14, -2.0 + gGroundPlaneY, -20.0);
+    mainCamera.rotation = cc3v(4, 143, -12);
     self.activeCamera = mainCamera;
     [self addChild:mainCamera];
     
@@ -365,6 +367,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     
     self.cameras = [[Camera alloc] init];
     
+    // Default camera.
+    [self.cameras add:cc3v(0.0, 0.55 + gGroundPlaneY, 25.0)];
+
     [self.cameras add:cc3v(8.62, 2.033, 15.64) withRotation:cc3v(0, 34, 0.0) andFieldOfView:60.0];
 
     [self.cameras add:cc3v(-10.0, -0.55 + gGroundPlaneY, -12.0) withRotation:cc3v(0, 224, 0) andFieldOfView:60.0];
@@ -378,17 +383,15 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     // Attach the rearFenderCamera
     [self.cameras add:cc3v(6, -2.0 + gGroundPlaneY, -15.0) withRotation:cc3v(5, 170, 0)];
     
-    // Create the rearFarCamera
-    [self.cameras add:cc3v(14, -2.0 + gGroundPlaneY, -20.0) withRotation:cc3v(4, 143, -12)];
-    
     // Above from rear
     [self.cameras add:cc3v(0.0, 35.0 + gGroundPlaneY, 35.0) withRotation:cc3v(-45, 0, 0)];
     
     // Add driver position camera
     [self.cameras add:cc3v(14.34841, -1.5 + gGroundPlaneY, 10.64886) withRotation:cc3v(4, 57.693, 0) andFieldOfView:60];
     
-    // Default camera.
-    [self.cameras add:cc3v(0.0, 0.55 + gGroundPlaneY, 25.0)];
+    // Create the rearFarCamera
+    [self.cameras add:cc3v(14, -2.0 + gGroundPlaneY, -20.0) withRotation:cc3v(4, 143, -12)];
+
 }
 
 -(void) addChildToGroundPlane:(CC3Node*) node {
@@ -534,7 +537,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     [self.frontAxle setLocation:gFrontAxle];
     
     // Rotate the ground by the current course.
-    [self.groundPlaneNode setRotation:cc3v(0, gRideAlongOrientation * gCurrentCourse, 0)];
+    [self.groundPlaneNode setRotation:cc3v(0, /*gRideAlongOrientation */ gCurrentCourse, 0)];
     
     CC3Vector vector = self.groundPlaneNode.rotation;
     
@@ -542,7 +545,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     if(gSelfHasActiveCamera) {
         
         CC3Vector gr = self.background.rotation;
-        gr.y = vector.y;
+        gr.y = gRideAlongOrientation * vector.y;
         
         [self.background setRotation:gr];
     }
