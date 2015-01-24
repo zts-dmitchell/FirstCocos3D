@@ -525,7 +525,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             
         } else {
             
-            gCurrentCourse += [self.courseFilter get:acceleration.y] * speedFactor * 3.5;
+            gCurrentCourse += [self.courseFilter get:acceleration.y] * speedFactor * 3.5 * gRideAlongOrientation;
         }
     }
     
