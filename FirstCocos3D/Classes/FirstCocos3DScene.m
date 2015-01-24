@@ -489,7 +489,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
 -(void) storeRotationsAndAnimateBody {
     
     const CMAcceleration acceleration = self.manager.accelerometerData.acceleration;
-    const double action = [self.upDownBodyMotionFilter get:CLAMP((1.0-acceleration.x) * 0.55, 0.0, 0.125)];
+    const double action = [self.upDownBodyMotionFilter get:CLAMP((1.0+acceleration.x) * 0.55, 0.0, 0.125)];
     
     // Up/down the body
     CCActionInterval* actionUp = [CC3ActionMoveUpBy actionWithDuration:0.05 moveBy:action];
