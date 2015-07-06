@@ -141,7 +141,7 @@
     
     //altitude = [self.altitudeFilter get:altitude];
     
-    [self.mphLabel setString:[NSString stringWithFormat:@"Speed:%3.0f MPH, Alt: %3.0f\"", self.speed, altitude]];
+    [self.mphLabel setString:[NSString stringWithFormat:@"Speed:%3.0f MPH, Alt: %3.0f'", self.speed, altitude]];
     
     if( ! bIsHeading ) {
         FirstCocos3DScene* scene = (FirstCocos3DScene*)self.cc3Scene;
