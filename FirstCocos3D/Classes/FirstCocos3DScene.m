@@ -58,6 +58,7 @@ bool gRotateGroundPlane = false;
 bool gUseGyroScope = true;
 bool gDoWheelies = true;
 bool gSelfHasActiveCamera = true;
+bool gLockRotation = false;
 
 const CGFloat cRightSideDown = 1;
 const CGFloat cLeftSideDown = -1;
@@ -471,7 +472,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     gCurrentSpeedPos += gCurrentSpeed;
     
     //////////////////////////////////////////////////////////////////////////
-    // Spin the Wheels
+    // Spin the Wheels Forwards (doesn't do backwards)
     // Set rotation about x *before* rotation about z!!!
     [self.nodeFLWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
     [self.nodeFRWheel rotateByAngle:gCurrentSpeedPos aroundAxis:cc3v(1,0,0)];
@@ -501,7 +502,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     
     if(gDoWheelies) {
         if(gCurrentPitchEmpty < (gMaxPitchDegreesBackward) ) {
-            gPitchWheelie = [self.wheelieFilter get:abs(gCurrentPitchEmpty - (gMaxPitchDegreesBackward))];
+            gPitchWheelie = [self.wheelieFilter get:fabs(gCurrentPitchEmpty - (gMaxPitchDegreesBackward))];
         }
     } else {
         gCurrentPitchEmpty = MAX(gCurrentPitchEmpty, gMaxPitchDegreesBackward);
@@ -515,7 +516,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     const double speedFactor = getFactorFromSpeed();
     const double scaledWheelPosCosFactor = speedFactor * gMaxWheelTurn * 2;
     
-    if(! self.layer->bIsHeading) {
+    if(gLockRotation) {
+        
+    } else if(! self.layer->bIsHeading) {
         
         if(gUseGyroScope) {
             
@@ -530,6 +533,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     }
     
     gCurrentWheelPos = CLAMP([self.wheelTurningFilter get:acceleration.y] * scaledWheelPosCosFactor, -gMaxWheelTurn, gMaxWheelTurn);
+    //NSLog(@"acceleration.y: %f, CurrentWheelPos: %f", acceleration.y, gCurrentWheelPos);
+    //NSLog(@"acceleration.y: %f, speedFactor: %f, scaledWheelPosCosFactor: %f", acceleration.y, speedFactor, scaledWheelPosCosFactor);
+    //NSLog(@"gCurrentCourse: %3.f, gLockRotation: %d", gCurrentCourse, gLockRotation);
 }
 
 -(void) rotateNodesToCourse {
@@ -706,6 +712,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
                 
                 [self setCoolCarType:Low];
                 
+                gLockRotation = !gLockRotation;
+                
             } else if(widthSection == 0) { // Reset Straight
 
                 [self setCoolCarType:LowDrag];
@@ -713,7 +721,6 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             } else { // Forward
 
                 [self setCoolCarType:Gasser];
-
             }
             
         } else if(heightSection == 0) {  // Middle 3rd
@@ -904,22 +911,26 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     
     // ... and speed
     gCurrentSpeed = speed;
+    
+    [self setHeadersGlowBasedOnVelocity];
+}
 
-    if(self.headersNode == nil)
+-(void) setHeadersGlowBasedOnVelocity {
+    
+    if(self.headersNode == nil) // Not all models have headers
         return;
     
-    if(speed < gHeaderEmissionMinSpeed) {
+    if(gCurrentSpeed < gHeaderEmissionMinSpeed) {
         // No emision under gHeaderEmissionMinSpeed MPH
-        speed = 0.0;
+        gCurrentSpeed = 0.0;
     } else {
         // Reduce by gHeaderEmissionMinSpeed, so that headers won't glow at, say, 10 MPH.
-        speed = (speed-gHeaderEmissionMinSpeed)/40.0;
+        gCurrentSpeed = (gCurrentSpeed-gHeaderEmissionMinSpeed)/40.0;
     }
     
     // Convert speed to some percentage of desired color.
-    [self.paintBooth emit:kCCC4FBlack to:kCCC4FRed with:(speed) on:self.headersNode];
+    [self.paintBooth emit:kCCC4FBlack to:kCCC4FRed with:(gCurrentSpeed) on:self.headersNode];
 }
-
 
 #pragma mark Utilities
 
@@ -932,7 +943,7 @@ double getFactorFromSpeed() {
 -(BOOL) shouldChangeCourse:(double) course {
 
     // Do calcs
-    const double distance = abs(course - self->prevCourse);
+    const double distance = fabs(course - self->prevCourse);
 
     //NSLog(@"Distance: %f", distance);
     return(distance > 15.0 && distance < 345.0);
