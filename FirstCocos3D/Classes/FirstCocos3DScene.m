@@ -900,7 +900,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
  * take actions based on velocity.
  */
 -(void) setCourseHeading:(double)course withSpeed:(double)speed {
-    
+        
     // Store the course/heading ...
     if(self.layer->bIsHeading) {
         
@@ -920,16 +920,18 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     if(self.headersNode == nil) // Not all models have headers
         return;
     
+    double speed = gCurrentSpeed;
+    
     if(gCurrentSpeed < gHeaderEmissionMinSpeed) {
         // No emision under gHeaderEmissionMinSpeed MPH
-        gCurrentSpeed = 0.0;
+        speed = 0.0;
     } else {
         // Reduce by gHeaderEmissionMinSpeed, so that headers won't glow at, say, 10 MPH.
-        gCurrentSpeed = (gCurrentSpeed-gHeaderEmissionMinSpeed)/40.0;
+        speed = (gCurrentSpeed-gHeaderEmissionMinSpeed)/40.0;
     }
     
     // Convert speed to some percentage of desired color.
-    [self.paintBooth emit:kCCC4FBlack to:kCCC4FRed with:(gCurrentSpeed) on:self.headersNode];
+    [self.paintBooth emit:kCCC4FBlack to:kCCC4FRed with:(speed) on:self.headersNode];
 }
 
 #pragma mark Utilities
