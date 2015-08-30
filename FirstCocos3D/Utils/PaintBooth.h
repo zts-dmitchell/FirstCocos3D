@@ -34,6 +34,7 @@
 
 -(void) resetColorIterator;
 -(int) getCurrentColorPosition;
+-(void) setColorPosition:(int) colorPosition;
 
 #pragma mark Properties
 @property (strong, nonatomic) NSMutableArray* colors;

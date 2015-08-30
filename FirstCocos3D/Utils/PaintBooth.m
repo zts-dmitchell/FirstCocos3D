@@ -180,6 +180,13 @@
     return (self.currentColor % self.colors.count);
 }
 
+/* 
+ Set current
+*/
+-(void) setColorPosition:(int) colorPosition {
+    self.currentColor = --colorPosition;
+}
+
 #pragma mark Materials Section
 
 -(void) swapMaterialsInNode:(CC3Node*) node withMaterial:(NSString*) namedThis with:(NSString*) namedThat {

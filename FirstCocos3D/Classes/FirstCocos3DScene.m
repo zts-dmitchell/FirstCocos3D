@@ -63,11 +63,58 @@ bool gDoWheelies = false;
 bool gSelfHasActiveCamera = true;
 bool gLockRotation = false;
 
+CoolCarTypes gCoolCarType = Low;
+
 const CGFloat cRightSideDown = 1;
 const CGFloat cLeftSideDown = -1;
 const CGFloat gRideAlongOrientation = cLeftSideDown;
 
 #pragma mark End Global Variables
+
+#pragma mark get/set default values
+-(void) loadDefaults {
+    NSLog(@"Loading Defaults");
+    
+    // Store the data
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    gLockRotation = [defaults boolForKey:@"gLockRotation"];
+}
+
+-(void) loadPostSetupDefaults {
+    // Store the data
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+    // Set these values *after* everything else has been setup.
+
+    gCoolCarType  = (CoolCarTypes)[defaults integerForKey:@"gCoolCarType"];
+    
+    [self setCoolCarType:gCoolCarType];
+
+    int colorPosition = (int)[defaults integerForKey:@"currentColorPosition"];
+    
+    [self.paintBooth setColorPosition:colorPosition];
+    NSArray *parts = @[ @"Main Body-submesh1", @"Main Body-submesh2", @"Trunk Lid"];
+    [self.paintBooth nextColor:parts inNode:self.rootCarNode];
+    
+    
+    gCurrentCourse   = [defaults floatForKey:@"gCurrentCourse"];
+    gCurrentWheelPos = [defaults floatForKey:@"gCurrentWheelPos"];
+}
+
+-(void) storeDefaults {
+    NSLog(@"Storing Defaults");
+    // Store the data
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+    [defaults setBool:gLockRotation forKey:@"gLockRotation"];
+    [defaults setDouble:gCurrentCourse forKey:@"gCurrentCourse"];
+    [defaults setDouble:gCurrentWheelPos forKey:@"gCurrentWheelPos"];
+    
+    [defaults setInteger:gCoolCarType forKey:@"gCoolCarType"];
+    [defaults setInteger:[self.paintBooth getCurrentColorPosition] forKey:@"currentColorPosition"];
+}
+
 
 /**
  * Constructs the 3D scene prior to the scene being displayed.
@@ -93,6 +140,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
  */
 -(void) initializeScene {
 
+    [self loadDefaults];
+    
     self.manager = [[CMMotionManager alloc] init];
     [self.manager startAccelerometerUpdates];
     [self.manager startDeviceMotionUpdates];
@@ -333,6 +382,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
 	// using a couple of actions...
     
     [self adjustPitch:false];
+ 
+    [self loadPostSetupDefaults];
+    
 }
 
 // This method will eventually go in a protocol for cars.
@@ -791,6 +843,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             }
         }
     }
+    
+    [self storeDefaults];
 }
 
 /**
@@ -801,6 +855,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     if(self.hoodScoopNode == nil) {
         return;
     }
+    
+    gCoolCarType = type;
     
     CC3Vector location = self.pitchEmpty.location;
 
