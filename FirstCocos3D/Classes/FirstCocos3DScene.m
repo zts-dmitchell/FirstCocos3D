@@ -26,7 +26,10 @@
 #pragma mark Global Variables
 const CGFloat gMaxPitchDegreesForward = 0.5;
 //const CGFloat gMaxPitchDegreesBackward = -2.85; // HHR
-const CGFloat gMaxPitchDegreesBackward = -2.35; // Holden
+
+//const CGFloat gMaxPitchDegreesBackward = -2.35; // Holden
+const CGFloat gMaxPitchDegreesBackward = -0.35; // Holden
+
 const CGFloat gMaxPitchWheelie = 30.0; // Max 30 degrees of wheelie
 
 //const CGFloat gMaxRollDegrees = 20.0; // Chevy HHR
@@ -56,7 +59,7 @@ bool gRotateGroundPlane = false;
 
 // Real Globals
 bool gUseGyroScope = true;
-bool gDoWheelies = true;
+bool gDoWheelies = false;
 bool gSelfHasActiveCamera = true;
 bool gLockRotation = false;
 
@@ -752,7 +755,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
                 [self.activeCamera runAction:[CCActionSequence actions:time, actOne, actTwo, nil]];
                  */
                 
-                gDoWheelies = !gDoWheelies;
+                //gDoWheelies = !gDoWheelies;
                 // Reset the wheelie to zero, so wheels don't remain in the air.
                 gPitchWheelie = 0.0;
                 
