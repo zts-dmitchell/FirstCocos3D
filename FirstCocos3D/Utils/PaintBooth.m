@@ -113,6 +113,9 @@
     
     CC3MeshNode* n = [self.meshByMaterialName objectForKey:materialName];
     
+    if(n == nil)
+        return;
+    
     NSArray *parts = @[ n.name ];
 
     [PaintBooth changeColor:parts inNode:n asColor:color];

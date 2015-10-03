@@ -94,8 +94,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     int colorPosition = (int)[defaults integerForKey:@"currentColorPosition"];
     
     [self.paintBooth setColorPosition:colorPosition];
-    NSArray *parts = @[ @"Main Body-submesh1", @"Main Body-submesh2", @"Trunk Lid"];
-    [self.paintBooth nextColor:parts inNode:self.rootCarNode];
+    //NSArray *parts = @[ @"Main Body-submesh1", @"Main Body-submesh2", @"Trunk Lid"];
+    //[self.paintBooth nextColor:parts inNode:self.rootCarNode];
     
     
     gCurrentCourse   = [defaults floatForKey:@"gCurrentCourse"];
@@ -172,14 +172,15 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
 	// nodes in the resource, remove unwanted nodes from the resource (eg- extra cameras),
 	// or extract only specific nodes from the resource to add them directly to the scene,
 	// instead of adding the entire contents.
-    self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
+    //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
     //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
     //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"GoogleDriverLessCar.pod"];
+    self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevy - C10.pod"];
     
     [self addChildToGroundPlane:self.rootCarNode];
     
     self.bodyNode = [self.rootCarNode getNodeNamed:@"Main Body"];
-    self.hoodNode = [self.bodyNode getNodeNamed:@"Main Body-submesh0-Mesh"];
+    //self.hoodNode = [self.bodyNode getNodeNamed:@"Main Body-submesh0-Mesh"];
     
     NSLog(@"Body node details: %@", self.bodyNode.fullDescription);
     
@@ -224,6 +225,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     //self.hoodN
     [self.paintBooth addColor:102 :0 :102];
     
+    /*
     CC3MeshNode *mn = [self.rootCarNode getMeshNodeNamed:@"Front Window"];
     CC3Material *mat = mn.material;
     ccColor4F c = mat.ambientColor;
@@ -249,7 +251,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     
     mn = [self.rootCarNode getMeshNodeNamed:@"Front Window"];
     NSLog(@"Opacity of %@: %f. Is opaque? %d. Alpha: %f", mn.name, mn.opacity, mn.isOpaque, mn.diffuseColor.a);
-    
+    */
     self.headersNode = [self.rootCarNode getNodeNamed:@"Headers"];
     
     //////////////////////////////////////////////////////////////////////////////////
@@ -268,10 +270,10 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     self.nodeRRWheel = [self wheelFromNode:@"RRWheel"];
     self.nodeRLWheel = [self wheelFromNode:@"RLWheel"];
     
-    //[self.paintBooth saveMaterial:@"BR_White_Wall" inNode:self.nodeRLWheel];
+    [self.paintBooth saveMaterial:@"BR_White_Wall" inNode:self.nodeRLWheel];
     [self.paintBooth saveMaterial:@"BR_Black_Rubber" inNode:self.nodeRLWheel];
     [self.paintBooth storeMeshNodeByMaterialName:@"BR_White_Wall" inNode:self.nodeRLWheel];
-    [self.paintBooth storeMeshNodeByMaterialName:@"BR_Hood" inNode:self.bodyNode];
+    //[self.paintBooth storeMeshNodeByMaterialName:@"BR_Hood" inNode:self.bodyNode];
     [self.paintBooth saveMaterial:@"BR_Tan_Body" inNode:self.bodyNode];
     
     [self.paintBooth swapMaterialsInNode:self.bodyNode withMaterial:@"BR_Hood" with:@"BR_Tan_Body"];
@@ -782,8 +784,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             
             if(widthSection == -1) { // Roll Left
 
-                NSArray *parts = @[ @"Main Body-submesh1", @"Main Body-submesh2", @"Trunk Lid"];
-                
+                //NSArray *parts = @[ @"Main Body-submesh1", @"Main Body-submesh2", @"Trunk Lid"];
+                NSArray *parts = @[ @"Main Body", @"Hood"];
                 [self.paintBooth nextColor:parts inNode:self.rootCarNode];
                 
                 //self.layer->bIsHeading = !self.layer->bIsHeading;
