@@ -223,7 +223,7 @@
     if(mat != nil)
         [self addMaterial:mat withKey:materialName];
     else
-        NSLog(@"Couldn't find material: %@", materialName);
+        NSLog(@"Couldn't find material, %@, for name, %@", materialName, [node name]);
 
 }
 

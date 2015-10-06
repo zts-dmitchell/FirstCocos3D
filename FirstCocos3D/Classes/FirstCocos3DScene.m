@@ -40,7 +40,6 @@ CGFloat gGasserPitch = 0.0;
 
 const CGFloat gGroundPlaneY = 2.14515;
 
-
 CGFloat gCurrentPitchEmpty = 0.0;
 CGFloat gPitchOffset = 0.0;
 CGFloat gPitchWheelie = 0.0;
@@ -64,10 +63,14 @@ bool gSelfHasActiveCamera = true;
 bool gLockRotation = false;
 
 CoolCarTypes gCoolCarType = Low;
+bool gSkinnyTires = false;
+CGFloat gFLWheel_x = 0.0;
+
 
 const CGFloat cRightSideDown = 1;
 const CGFloat cLeftSideDown = -1;
 const CGFloat gRideAlongOrientation = cLeftSideDown;
+
 
 #pragma mark End Global Variables
 
@@ -95,11 +98,15 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     
     [self.paintBooth setColorPosition:colorPosition];
     //NSArray *parts = @[ @"Main Body-submesh1", @"Main Body-submesh2", @"Trunk Lid"];
-    //[self.paintBooth nextColor:parts inNode:self.rootCarNode];
-    
+    NSArray *parts = @[ @"Main Body", @"Hood"];
+    [self.paintBooth nextColor:parts inNode:self.rootCarNode];
     
     gCurrentCourse   = [defaults floatForKey:@"gCurrentCourse"];
     gCurrentWheelPos = [defaults floatForKey:@"gCurrentWheelPos"];
+    gUseGyroScope =  [defaults boolForKey:@"gUseGyroScope"];
+    gSkinnyTires = [defaults floatForKey:@"gSkinnyTires"];
+    
+    [self setWheelWidths];
 }
 
 -(void) storeDefaults {
@@ -110,9 +117,12 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     [defaults setBool:gLockRotation forKey:@"gLockRotation"];
     [defaults setDouble:gCurrentCourse forKey:@"gCurrentCourse"];
     [defaults setDouble:gCurrentWheelPos forKey:@"gCurrentWheelPos"];
+    [defaults setDouble:gUseGyroScope forKey:@"gUseGyroScope"];
     
     [defaults setInteger:gCoolCarType forKey:@"gCoolCarType"];
     [defaults setInteger:[self.paintBooth getCurrentColorPosition] forKey:@"currentColorPosition"];
+    
+    [defaults setDouble:gSkinnyTires forKey:@"gSkinnyTires"];
 }
 
 
@@ -258,7 +268,14 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     // Already in low-body position.
     self.lowBodyLocation = self.pitchEmpty.location;
     //self.gasserBodyLocation = cc3v(0, -0.01257, 4.07566); // Y and Z are swapped
-    self.gasserBodyLocation = cc3v(0, -0.3, 4.07566); // Y and Z are swapped
+
+    // For Elijy
+    //self.gasserBodyLocation = cc3v(0, -0.3, 4.07566); // Y and Z are swapped
+
+    // For C10
+    self.superLowBodyLocation = self.lowBodyLocation;
+    self.superLowBodyLocation = cc3v(self.lowBodyLocation.x, -0.07566, self.lowBodyLocation.z);
+    self.gasserBodyLocation = cc3v(0, 0.1, 4.07566); // Y and Z are swapped
     
     // Debugging: Remove Plane in
     CC3Node* plane = [self.rootCarNode getNodeNamed:@"Plane"];
@@ -273,13 +290,14 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     [self.paintBooth saveMaterial:@"BR_White_Wall" inNode:self.nodeRLWheel];
     [self.paintBooth saveMaterial:@"BR_Black_Rubber" inNode:self.nodeRLWheel];
     [self.paintBooth storeMeshNodeByMaterialName:@"BR_White_Wall" inNode:self.nodeRLWheel];
-    //[self.paintBooth storeMeshNodeByMaterialName:@"BR_Hood" inNode:self.bodyNode];
-    [self.paintBooth saveMaterial:@"BR_Tan_Body" inNode:self.bodyNode];
+    [self.paintBooth storeMeshNodeByMaterialName:@"BR_Tan_Body" inNode:self.bodyNode];
+    //[self.paintBooth saveMaterial:@"BR_Tan_Body" inNode:self.pitchEmpty];
     
     [self.paintBooth swapMaterialsInNode:self.bodyNode withMaterial:@"BR_Hood" with:@"BR_Tan_Body"];
     
     gStraight = self.nodeFLWheel.rotation;
     gFrontAxle = self.frontAxle.location;
+    gFLWheel_x = self.nodeFLWheel.location.x;
     
     // Display the back sides because it looks strange, otherwise.
     self.rootCarNode.shouldCullBackFaces = NO;
@@ -774,6 +792,10 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             } else if(widthSection == 0) { // Reset Straight
 
                 [self setCoolCarType:LowDrag];
+
+                gSkinnyTires = !gSkinnyTires;
+                
+                [self setWheelWidths];
                 
             } else { // Forward
 
@@ -855,7 +877,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
 -(void) setCoolCarType:(CoolCarTypes) type {
 
     if(self.hoodScoopNode == nil) {
-        return;
+       // return;
     }
     
     gCoolCarType = type;
@@ -868,17 +890,18 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             NSLog(@"Setting Low Body");
             
             gGasserPitch = 0.0;
-            location.y = self.lowBodyLocation.y;
+            //location.y = self.lowBodyLocation.y;
+            location = self.lowBodyLocation;
             [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
 
-            [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
-            [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
+            //[self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
+            //[self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
 
-            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.36290, 0, 0)]];
-            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.36290, 0, 0)]];
-            //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
-            //[self.paintBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
-            [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
+            // Used for Efijy
+            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(gFLWheel_x, 0, 0)]];
+            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-gFLWheel_x, 0, 0)]];
+            
+            //[self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
             
             if(self.hoodScoopNode != nil) {
                 [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
@@ -888,23 +911,21 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             break;
             
         case LowDrag:
-            NSLog(@"Setting Low Drag Body");
+            NSLog(@"Setting (super) Low Drag Body");
             
             gGasserPitch = 0.0;
-            location.y = self.lowBodyLocation.y;
+            //location.y = self.superLowBodyLocation.y;
+            location = self.superLowBodyLocation;
             [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
 
-            [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 1.0, 1.0)]];
-            [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 1.0, 1.0)]];
-
-            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.66, 0, 0)]];
-            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.66, 0, 0)]];
-            //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-0.94847, 0, 0)]];
-            //[self.paintBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_Black_Rubber" with:@"BR_White_Wall"];
-            [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
+            // Used for Efijy
+            //[self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 1.0, 1.0)]];
+            //[self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 1.0, 1.0)]];
+            //[self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.66, 0, 0)]];
+            //[self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.66, 0, 0)]];
+            //[self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FWhite];
             
             if(self.hoodScoopNode != nil) {
-
                 [self.hoodScoopNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
                 [self.carbVelocityStacksNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
                 [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
@@ -913,19 +934,25 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             
         case Gasser:
             NSLog(@"Setting Gasser Body");
+           
+            // For Efijy
+            //gGasserPitch = -2.25;
             
-            gGasserPitch = -2.25;
+            // For C10
+            gGasserPitch = -1.75;
+            
             location.y = self.gasserBodyLocation.y;
             [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
      
-            [self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.94, 0, -0.2)]];
-            [self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.94, 0, -0.2)]];
-
-            [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
-            [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
+            // Used for Efijy
+            //[self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.94, 0, -0.2)]];
+            //[self.nodeFRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.94, 0, -0.2)]];
+            //[self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
+            //[self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 0.8, 0.8)]];
+            
             //[self.frontAxle runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(0, 0, -03.2)]];
             ///[self.paintBooth swapMaterialsInNode:self.nodeRLWheel withMaterial:@"BR_White_Wall" with:@"BR_Black_Rubber"];
-            [self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FBlack];
+            //[self.paintBooth changeColor:@"BR_White_Wall" toColor:kCCC4FBlack];
             //[self.paintBooth changeColor:@"BR_Hood" toColor:kCCC4FBlack];
             
             if(self.hoodScoopNode != nil) {
@@ -939,6 +966,25 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
         default:
             NSLog(@"Unknown type: %d", type);
     }
+}
+
+-(void) setWheelWidths {
+    
+    GLfloat scale;
+    
+    if(gSkinnyTires) {
+        scale = 1.0;
+    } else {
+        scale = 1.75;
+    }
+    
+    // Use for the C10
+    [self.nodeRLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(scale, 1.0, 1.0)]];
+    [self.nodeRRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(scale, 1.0, 1.0)]];
+    [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(scale, 1.0, 1.0)]];
+    [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(scale, 1.0, 1.0)]];
+    //[self.nodeRLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.66, 0, 0)]];
+    //[self.nodeRRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.66, 0, 0)]];
 }
 
 /**
