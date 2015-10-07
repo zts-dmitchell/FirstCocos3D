@@ -785,13 +785,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             
             if(widthSection == -1) { // Backward
                 
-                [self setCoolCarType:Low];
-                
                 gLockRotation = !gLockRotation;
                 
             } else if(widthSection == 0) { // Reset Straight
-
-                [self setCoolCarType:LowDrag];
 
                 gSkinnyTires = !gSkinnyTires;
                 
@@ -799,7 +795,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
                 
             } else { // Forward
 
-                [self setCoolCarType:Gasser];
+                [self setNextCarType];
             }
             
         } else if(heightSection == 0) {  // Middle 3rd
@@ -869,6 +865,14 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     }
     
     [self storeDefaults];
+}
+
+-(void) setNextCarType {
+    
+    // Calculate the next cool car type
+    gCoolCarType = (gCoolCarType + 1) % 3;
+    
+    [self setCoolCarType:gCoolCarType];
 }
 
 /**
