@@ -273,9 +273,12 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     //self.gasserBodyLocation = cc3v(0, -0.3, 4.07566); // Y and Z are swapped
 
     // For C10
-    self.superLowBodyLocation = self.lowBodyLocation;
+    //self.superLowBodyLocation = self.lowBodyLocation;
     self.superLowBodyLocation = cc3v(self.lowBodyLocation.x, -0.07566, self.lowBodyLocation.z);
-    self.gasserBodyLocation = cc3v(0, 0.1, 4.07566); // Y and Z are swapped
+    self.gasserBodyLocation = cc3v(self.lowBodyLocation.x, 0.1, self.lowBodyLocation.z);
+    self.frontLowBackHighBodyLocation = cc3v(self.lowBodyLocation.x, 0.5, self.lowBodyLocation.z);
+    self.frontHighBackHighBodyLocation = cc3v(self.lowBodyLocation.x, 01.0, self.lowBodyLocation.z);
+    
     
     // Debugging: Remove Plane in
     CC3Node* plane = [self.rootCarNode getNodeNamed:@"Plane"];
@@ -869,8 +872,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
 
 -(void) setNextCarType {
     
+    const int numberOfCoolCarTypes = 5;
     // Calculate the next cool car type
-    gCoolCarType = (gCoolCarType + 1) % 3;
+    gCoolCarType = (gCoolCarType + 1) % numberOfCoolCarTypes;
     
     [self setCoolCarType:gCoolCarType];
 }
@@ -896,7 +900,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             gGasserPitch = 0.0;
             //location.y = self.lowBodyLocation.y;
             location = self.lowBodyLocation;
-            [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
+            [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:self.lowBodyLocation]];
 
             //[self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
             //[self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1,1,1)]];
@@ -919,8 +923,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             
             gGasserPitch = 0.0;
             //location.y = self.superLowBodyLocation.y;
-            location = self.superLowBodyLocation;
-            [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
+            //location = self.superLowBodyLocation;
+            [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:self.superLowBodyLocation]];
 
             // Used for Efijy
             //[self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(0.55, 1.0, 1.0)]];
@@ -945,8 +949,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             // For C10
             gGasserPitch = -1.75;
             
-            location.y = self.gasserBodyLocation.y;
-            [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:location]];
+            [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:self.gasserBodyLocation]];
      
             // Used for Efijy
             //[self.nodeFLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.94, 0, -0.2)]];
@@ -965,6 +968,24 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
                 [self.carbVelocityStacksNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.2]];
                 [self.fuelCellNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
             }
+            break;
+            
+        case FrontLowBackHigh:
+            NSLog(@"Setting FrontLowBackHigh Body");
+
+            [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:self.frontLowBackHighBodyLocation]];
+            
+            // For C10
+            gGasserPitch = 1.75;
+            break;
+            
+        case FrontHighBackHigh:
+            NSLog(@"Setting FrontHighBackHigh Body");
+
+            [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:self.frontHighBackHighBodyLocation]];
+
+            // For C10
+            gGasserPitch = 0.0;
             break;
             
         default:
