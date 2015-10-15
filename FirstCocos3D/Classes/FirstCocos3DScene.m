@@ -98,7 +98,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     
     [self.paintBooth setColorPosition:colorPosition];
     //NSArray *parts = @[ @"Main Body-submesh1", @"Main Body-submesh2", @"Trunk Lid"];
-    NSArray *parts = @[ @"Main Body", @"Hood"];
+    NSArray *parts = @[ @"Main Body-submesh1", @"Hood"];
     [self.paintBooth nextColor:parts inNode:self.rootCarNode];
     
     gCurrentCourse   = [defaults floatForKey:@"gCurrentCourse"];
@@ -448,7 +448,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     // Create a light, place it back and to the left at a specific
     // position (not just directional lighting), and add it to the scene
     CC3Light* lamp = [CC3Light nodeWithName: @"Lamp"];
-    lamp.location = cc3v( -2.0, 0.0, 0.0 );
+    lamp.location = cc3v( -10.0, 0.0, 0.0 );
     lamp.isDirectionalOnly = NO;
     [mainCamera addChild: lamp];
     
@@ -814,7 +814,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             if(widthSection == -1) { // Roll Left
 
                 //NSArray *parts = @[ @"Main Body-submesh1", @"Main Body-submesh2", @"Trunk Lid"];
-                NSArray *parts = @[ @"Main Body", @"Hood"];
+                NSArray *parts = @[ @"Main Body-submesh1", @"Hood"];
                 [self.paintBooth nextColor:parts inNode:self.rootCarNode];
                 
                 //self.layer->bIsHeading = !self.layer->bIsHeading;
