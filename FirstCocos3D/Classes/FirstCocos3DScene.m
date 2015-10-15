@@ -185,7 +185,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Exportable Body - Holden Efijy - 01.pod"];
     //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
     //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"GoogleDriverLessCar.pod"];
-    self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevy - C10.pod"];
+    //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevy - C10.pod"];
+    self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevy_-_C10_-_Stepside.pod"];
+    
     
     [self addChildToGroundPlane:self.rootCarNode];
     
@@ -223,6 +225,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     self.frontAxle = [self.wheelEmpty getNodeNamed:@"Front Axle"];
     self.rearAxle = [self.wheelEmpty getNodeNamed:@"Rear Axle"];
 
+    
     //////////////////////////////////////////////////////////////////////////////////
     // Add Camera Locations
     [self addCameras];
@@ -263,6 +266,11 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     NSLog(@"Opacity of %@: %f. Is opaque? %d. Alpha: %f", mn.name, mn.opacity, mn.isOpaque, mn.diffuseColor.a);
     */
     self.headersNode = [self.rootCarNode getNodeNamed:@"Headers"];
+    
+    CC3Node* bed = [self.rootCarNode getNodeNamed:@"Bed"];
+    
+    if(bed != nil)
+        bed.visible = false;
     
     //////////////////////////////////////////////////////////////////////////////////
     // Already in low-body position.
