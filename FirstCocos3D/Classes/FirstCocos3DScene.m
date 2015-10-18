@@ -62,6 +62,7 @@ bool gDoWheelies = false;
 bool gSelfHasActiveCamera = true;
 bool gLockRotation = false;
 bool gFleetsideBed = true;
+bool gHood1960 = true;
 
 CoolCarTypes gCoolCarType = Low;
 bool gSkinnyTires = false;
@@ -108,9 +109,11 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     gUseGyroScope =  [defaults boolForKey:@"gUseGyroScope"];
     gSkinnyTires = [defaults floatForKey:@"gSkinnyTires"];
     gFleetsideBed = [defaults boolForKey:@"gFleetsideBed"];
+    gHood1960 = [defaults boolForKey:@"gHood1960"];
     
     [self setWheelWidths];
     [self setBedType];
+    [self setHoodVersion];
 }
 
 -(void) storeDefaults {
@@ -118,6 +121,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     // Store the data
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
+    [defaults setBool:gHood1960 forKey:@"gHood1960"];
     [defaults setBool:gFleetsideBed forKey:@"gFleetsideBed"];
     [defaults setBool:gLockRotation forKey:@"gLockRotation"];
     [defaults setDouble:gCurrentCourse forKey:@"gCurrentCourse"];
@@ -842,9 +846,12 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
                 //gDoWheelies = !gDoWheelies;
                 // Reset the wheelie to zero, so wheels don't remain in the air.
                 gPitchWheelie = 0.0;
+                
                 gFleetsideBed = !gFleetsideBed;
-
                 [self setBedType];
+                
+                gHood1960 = !gHood1960;
+                [self setHoodVersion];
                 
             } else { // Roll Right
 
@@ -1027,7 +1034,55 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             fleetSide.visible = false;
             stepSide.visible = true;
         }
+        
+    } else {
+        NSLog(@"Failed to acquire one of the beds or fenders. Change won't occur.");
+    }
+}
 
+/**
+ * Set the type of bed the truck has.
+ */
+-(void) setHoodVersion {
+    
+    if(gHood1960)
+        [self swapObject:@"Hood_1966" withObject:@"Hood_1960"];
+    else
+        [self swapObject:@"Hood_1960" withObject:@"Hood_1966"];
+
+    /*
+    CC3Node* hood1960 = [self.pitchEmpty getNodeNamed:@"Hood_1960"];
+    CC3Node* hood1966  = [self.pitchEmpty getNodeNamed:@"Hood_1966"];
+    
+    if(hood1960 != nil && hood1966 != nil) {
+        
+        if(gHood1960) {
+            [hood1966 runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+            [hood1960 runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+        } else {
+            [hood1960 runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            [hood1966 runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+        }
+        
+    } else {
+        NSLog(@"Failed to acquire one of the beds or fenders. Change won't occur.");
+    }*/
+    
+}
+/**
+ * Set the type of bed the truck has.
+ */
+-(void) swapObject:(NSString*) oldNodeName withObject:(NSString*) newNodeName {
+    
+    CC3Node* oldNode = [self.pitchEmpty getNodeNamed:oldNodeName];
+    CC3Node* newNode  = [self.pitchEmpty getNodeNamed:newNodeName];
+    
+    if(oldNode != nil && newNode != nil) {
+        
+        oldNode.visible = false;
+        newNode.visible = true;
+        //[oldNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+        //[newNode runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
     } else {
         NSLog(@"Failed to acquire one of the beds or fenders. Change won't occur.");
     }
