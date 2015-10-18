@@ -850,9 +850,6 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
                 gFleetsideBed = !gFleetsideBed;
                 [self setBedType];
                 
-                gHood1960 = !gHood1960;
-                [self setHoodVersion];
-                
             } else { // Roll Right
 
                 gUseGyroScope = !gUseGyroScope;
@@ -867,19 +864,27 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             }
             else if(widthSection == 0) {
                 
-                [self move:self.activeCamera from:self to:self.groundPlaneNode];
-
+                gHood1960 = !gHood1960;
+                [self setHoodVersion];
+                
+                //[self move:self.activeCamera from:self to:self.groundPlaneNode];
                 // When true, will rotate the 'Background' node.
-                gSelfHasActiveCamera = false;
+                //gSelfHasActiveCamera = false;
                 
                 // Other stuff
                 [self adjustPitch:true]; // Resets w/o Accelerometer
             }
             else {
+                if(gSelfHasActiveCamera) {
+                    [self move:self.activeCamera from:self to:self.groundPlaneNode];
+                    
+                } else {
+                    [self move:self.activeCamera from:self.groundPlaneNode to:self];
+                }
+                gSelfHasActiveCamera = !gSelfHasActiveCamera;
                 
-                [self move:self.activeCamera from:self.groundPlaneNode to:self];
-                
-                gSelfHasActiveCamera = true;
+                //[self move:self.activeCamera from:self.groundPlaneNode to:self];
+                //gSelfHasActiveCamera = true;
                 // Other stuff
                 [self adjustPitch:false];  // Sets w/Accelerometer
             }
