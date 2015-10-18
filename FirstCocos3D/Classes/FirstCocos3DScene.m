@@ -61,6 +61,7 @@ bool gUseGyroScope = true;
 bool gDoWheelies = false;
 bool gSelfHasActiveCamera = true;
 bool gLockRotation = false;
+bool gFleetsideBed = true;
 
 CoolCarTypes gCoolCarType = Low;
 bool gSkinnyTires = false;
@@ -98,15 +99,18 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     
     [self.paintBooth setColorPosition:colorPosition];
     //NSArray *parts = @[ @"Main Body-submesh1", @"Main Body-submesh2", @"Trunk Lid"];
-    NSArray *parts = @[ @"Main Body-submesh1", @"Hood"];
-    [self.paintBooth nextColor:parts inNode:self.rootCarNode];
+    //NSArray *parts = @[ @"Main Body-submesh1", @"Hood"];
+    NSArray *parts = @[ @"Main Body-submesh0" ];
+    [self.paintBooth nextColor:parts inNode:self.pitchEmpty];
     
     gCurrentCourse   = [defaults floatForKey:@"gCurrentCourse"];
     gCurrentWheelPos = [defaults floatForKey:@"gCurrentWheelPos"];
     gUseGyroScope =  [defaults boolForKey:@"gUseGyroScope"];
     gSkinnyTires = [defaults floatForKey:@"gSkinnyTires"];
+    gFleetsideBed = [defaults boolForKey:@"gFleetsideBed"];
     
     [self setWheelWidths];
+    [self setBedType];
 }
 
 -(void) storeDefaults {
@@ -114,6 +118,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     // Store the data
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
+    [defaults setBool:gFleetsideBed forKey:@"gFleetsideBed"];
     [defaults setBool:gLockRotation forKey:@"gLockRotation"];
     [defaults setDouble:gCurrentCourse forKey:@"gCurrentCourse"];
     [defaults setDouble:gCurrentWheelPos forKey:@"gCurrentWheelPos"];
@@ -186,7 +191,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevrolet HHR - Linked.pod"];
     //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"GoogleDriverLessCar.pod"];
     //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevy - C10.pod"];
-    self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevy_-_C10_-_Stepside.pod"];
+    self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevy_-_Apache_C10-Stepside.pod"];
     
     
     [self addChildToGroundPlane:self.rootCarNode];
@@ -202,17 +207,17 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     self.pitchEmpty = [self.rootCarNode getNodeNamed:@"PitchEmpty"];
     
     CC3Node* node2 = [self.rootCarNode getNodeNamed:@"Headlamps"];
-    CC3MeshNode* m1 = node2.children[1];
-    m1.emissionColor = kCCC4FWhite;
-    m1.shininess = 128;
-    m1.reflectivity = 1;
+    //CC3MeshNode* m1 = node2.children[0];
+    //m1.emissionColor = kCCC4FWhite;
+    //m1.shininess = 128;
+    //m1.reflectivity = 1;
 
     node2 = [self.rootCarNode getNodeNamed:@"Taillight"];
-    m1 = node2.children[1];
+    //m1 = node2.children[1];
     //NSLog(@"Info 1: %@", m1.material.fullDescription);
-    m1.emissionColor = kCCC4FRed;
-    m1.shininess = 128.0;
-    m1.reflectivity = 1.0;
+    //m1.emissionColor = kCCC4FRed;
+    //m1.shininess = 128.0;
+    //m1.reflectivity = 1.0;
     //NSLog(@"Info 2: %@", m1.material.fullDescription);
     
     
@@ -267,11 +272,6 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     */
     self.headersNode = [self.rootCarNode getNodeNamed:@"Headers"];
     
-    CC3Node* bed = [self.rootCarNode getNodeNamed:@"Bed"];
-    
-    if(bed != nil)
-        bed.visible = false;
-    
     //////////////////////////////////////////////////////////////////////////////////
     // Already in low-body position.
     self.lowBodyLocation = self.pitchEmpty.location;
@@ -298,9 +298,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     self.nodeRRWheel = [self wheelFromNode:@"RRWheel"];
     self.nodeRLWheel = [self wheelFromNode:@"RLWheel"];
     
-    [self.paintBooth saveMaterial:@"BR_White_Wall" inNode:self.nodeRLWheel];
+    //[self.paintBooth saveMaterial:@"BR_White_Wall" inNode:self.nodeRLWheel];
     [self.paintBooth saveMaterial:@"BR_Black_Rubber" inNode:self.nodeRLWheel];
-    [self.paintBooth storeMeshNodeByMaterialName:@"BR_White_Wall" inNode:self.nodeRLWheel];
+    //[self.paintBooth storeMeshNodeByMaterialName:@"BR_White_Wall" inNode:self.nodeRLWheel];
     [self.paintBooth storeMeshNodeByMaterialName:@"BR_Tan_Body" inNode:self.bodyNode];
     //[self.paintBooth saveMaterial:@"BR_Tan_Body" inNode:self.pitchEmpty];
     
@@ -814,8 +814,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             if(widthSection == -1) { // Roll Left
 
                 //NSArray *parts = @[ @"Main Body-submesh1", @"Main Body-submesh2", @"Trunk Lid"];
-                NSArray *parts = @[ @"Main Body-submesh1", @"Hood"];
-                [self.paintBooth nextColor:parts inNode:self.rootCarNode];
+                //NSArray *parts = @[ @"Main Body-submesh1", @"Hood"];
+                NSArray *parts = @[ @"Main Body-submesh0"];
+                [self.paintBooth nextColor:parts inNode:self.pitchEmpty];
                 
                 //self.layer->bIsHeading = !self.layer->bIsHeading;
                 //[self.layer headingState:self.layer->bIsHeading];
@@ -841,6 +842,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
                 //gDoWheelies = !gDoWheelies;
                 // Reset the wheelie to zero, so wheels don't remain in the air.
                 gPitchWheelie = 0.0;
+                gFleetsideBed = !gFleetsideBed;
+
+                [self setBedType];
                 
             } else { // Roll Right
 
@@ -877,6 +881,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     
     [self storeDefaults];
 }
+
 
 -(void) setNextCarType {
     
@@ -998,6 +1003,33 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             
         default:
             NSLog(@"Unknown type: %d", type);
+    }
+}
+
+/**
+ * Set the type of bed the truck has.
+ */
+-(void) setBedType {
+    
+    CC3Node* fleetSide = [self.pitchEmpty getNodeNamed:@"Bed"];
+    CC3Node* stepSide  = [self.pitchEmpty getNodeNamed:@"Bed - Stepside"];
+    
+    if(fleetSide != nil && stepSide != nil) {
+        
+        if(gFleetsideBed) {
+            [fleetSide runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            //[stepSide runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+            stepSide.visible = false;
+            fleetSide.visible = true;
+        } else {
+            [fleetSide runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+            //[stepSide runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            fleetSide.visible = false;
+            stepSide.visible = true;
+        }
+
+    } else {
+        NSLog(@"Failed to acquire one of the beds or fenders. Change won't occur.");
     }
 }
 
