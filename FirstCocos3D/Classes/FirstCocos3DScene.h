@@ -23,7 +23,7 @@
     double prevCourse;
 };
 
-typedef enum coolCarTypes { LowDrag, Low, Gasser, FrontLowBackHigh, FrontHighBackHigh } CoolCarTypes;
+typedef enum coolCarTypes { LowDrag, Low, DroppedSpindles, FrontHighBackHigh, Gasser, FrontLowBackHigh } CoolCarTypes;
 
 @property(strong, nonatomic) Camera* cameras;
 @property(strong, nonatomic) PaintBooth* paintBooth;
@@ -31,11 +31,14 @@ typedef enum coolCarTypes { LowDrag, Low, Gasser, FrontLowBackHigh, FrontHighBac
 @property(strong, nonatomic) CC3Node* pitchEmpty;
 @property(strong, nonatomic) CC3Node* background;
 
-@property(assign, nonatomic) CC3Vector lowBodyLocation;
 @property(assign, nonatomic) CC3Vector superLowBodyLocation;
+@property(assign, nonatomic) CC3Vector lowBodyLocation;
+@property(assign, nonatomic) CC3Vector droppedSpindlesLocation;
 @property(assign, nonatomic) CC3Vector gasserBodyLocation;
 @property(assign, nonatomic) CC3Vector frontLowBackHighBodyLocation;
 @property(assign, nonatomic) CC3Vector frontHighBackHighBodyLocation;
+@property(assign, nonatomic) CC3Vector taillightsPos;
+
 
 @property(strong, nonatomic) CC3Node* wheelEmpty;
 @property(strong, nonatomic) CC3Node* bodyNode;

@@ -104,6 +104,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     NSArray *parts = @[ @"Main Body-submesh0" ];
     [self.paintBooth nextColor:parts inNode:self.pitchEmpty];
     
+    gSelfHasActiveCamera = [defaults boolForKey:@"gSelfHasActiveCamera"];
     gCurrentCourse   = [defaults floatForKey:@"gCurrentCourse"];
     gCurrentWheelPos = [defaults floatForKey:@"gCurrentWheelPos"];
     gUseGyroScope =  [defaults boolForKey:@"gUseGyroScope"];
@@ -114,6 +115,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     [self setWheelWidths];
     [self setBedType];
     [self setHoodVersion];
+    [self setHasActiveCamera];
 }
 
 -(void) storeDefaults {
@@ -132,6 +134,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     [defaults setInteger:[self.paintBooth getCurrentColorPosition] forKey:@"currentColorPosition"];
     
     [defaults setDouble:gSkinnyTires forKey:@"gSkinnyTires"];
+    
+    [defaults setBool:gSelfHasActiveCamera forKey:@"gSelfHasActiveCamera"];
 }
 
 
@@ -224,6 +228,15 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     //m1.reflectivity = 1.0;
     //NSLog(@"Info 2: %@", m1.material.fullDescription);
     
+    self.taillightsPos = [node2 location];
+    
+    // Hide items still in (blender) development.
+    node2 = [self.rootCarNode getNodeNamed:@"Grille_1960"];
+    if(node2 != nil) {
+        NSLog(@"Hiding a node: %@", [node2 name]);
+        node2.visible = false;
+    }
+        
     
     // Bunch a
     self.wheelEmpty = [self.rootCarNode getNodeNamed:@"WheelEmpty"];
@@ -287,9 +300,10 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     // For C10
     //self.superLowBodyLocation = self.lowBodyLocation;
     self.superLowBodyLocation = cc3v(self.lowBodyLocation.x, -0.07566, self.lowBodyLocation.z);
+    self.droppedSpindlesLocation = cc3v(self.lowBodyLocation.x, 0.5, self.lowBodyLocation.z);
     self.gasserBodyLocation = cc3v(self.lowBodyLocation.x, 0.1, self.lowBodyLocation.z);
     self.frontLowBackHighBodyLocation = cc3v(self.lowBodyLocation.x, 0.5, self.lowBodyLocation.z);
-    self.frontHighBackHighBodyLocation = cc3v(self.lowBodyLocation.x, 01.0, self.lowBodyLocation.z);
+    self.frontHighBackHighBodyLocation = cc3v(self.lowBodyLocation.x, 0.8, self.lowBodyLocation.z);
     
     
     // Debugging: Remove Plane in
@@ -303,12 +317,13 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     self.nodeRLWheel = [self wheelFromNode:@"RLWheel"];
     
     //[self.paintBooth saveMaterial:@"BR_White_Wall" inNode:self.nodeRLWheel];
-    [self.paintBooth saveMaterial:@"BR_Black_Rubber" inNode:self.nodeRLWheel];
+    //[self.paintBooth saveMaterial:@"BR_Black_Rubber" inNode:self.nodeRLWheel];
     //[self.paintBooth storeMeshNodeByMaterialName:@"BR_White_Wall" inNode:self.nodeRLWheel];
-    [self.paintBooth storeMeshNodeByMaterialName:@"BR_Tan_Body" inNode:self.bodyNode];
-    //[self.paintBooth saveMaterial:@"BR_Tan_Body" inNode:self.pitchEmpty];
+    //[self.paintBooth storeMeshNodeByMaterialName:@"BR_Orange" inNode:self.bodyNode];
+    //[self.paintBooth storeMeshNodeByMaterialName:@"BR_RED" inNode:self.bodyNode];
+    //[self.paintBooth saveMaterial:@"BR_Orange" inNode:self.pitchEmpty];
     
-    [self.paintBooth swapMaterialsInNode:self.bodyNode withMaterial:@"BR_Hood" with:@"BR_Tan_Body"];
+    //[self.paintBooth swapMaterialsInNode:self.bodyNode withMaterial:@"BR_Hood" with:@"BR_Tan_Body"];
     
     gStraight = self.nodeFLWheel.rotation;
     gFrontAxle = self.frontAxle.location;
@@ -875,13 +890,10 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
                 [self adjustPitch:true]; // Resets w/o Accelerometer
             }
             else {
-                if(gSelfHasActiveCamera) {
-                    [self move:self.activeCamera from:self to:self.groundPlaneNode];
-                    
-                } else {
-                    [self move:self.activeCamera from:self.groundPlaneNode to:self];
-                }
+                
                 gSelfHasActiveCamera = !gSelfHasActiveCamera;
+                
+                [self setHasActiveCamera];
                 
                 //[self move:self.activeCamera from:self.groundPlaneNode to:self];
                 //gSelfHasActiveCamera = true;
@@ -894,10 +906,18 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     [self storeDefaults];
 }
 
+-(void) setHasActiveCamera {
+    if(gSelfHasActiveCamera) {
+        [self move:self.activeCamera from:self to:self.groundPlaneNode];
+        
+    } else {
+        [self move:self.activeCamera from:self.groundPlaneNode to:self];
+    }
+}
 
 -(void) setNextCarType {
     
-    const int numberOfCoolCarTypes = 5;
+    const int numberOfCoolCarTypes = 6;
     // Calculate the next cool car type
     gCoolCarType = (gCoolCarType + 1) % numberOfCoolCarTypes;
     
@@ -1013,6 +1033,15 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
             gGasserPitch = 0.0;
             break;
             
+        case DroppedSpindles:
+            NSLog(@"Setting DroppedSpindles Body");
+            
+            [self.pitchEmpty runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:self.droppedSpindlesLocation]];
+            
+            // For C10
+            gGasserPitch = 0.0;
+            break;
+            
         default:
             NSLog(@"Unknown type: %d", type);
     }
@@ -1023,25 +1052,39 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
  */
 -(void) setBedType {
     
-    CC3Node* fleetSide = [self.pitchEmpty getNodeNamed:@"Bed"];
-    CC3Node* stepSide  = [self.pitchEmpty getNodeNamed:@"Bed - Stepside"];
+    CC3Node* fleetSide  = [self.pitchEmpty getNodeNamed:@"Bed"];
+    CC3Node* stepSide   = [self.pitchEmpty getNodeNamed:@"Bed - Stepside"];
+    CC3Node* taillights = [self.pitchEmpty getNodeNamed:@"Taillight"];
     
-    if(fleetSide != nil && stepSide != nil) {
+    const GLfloat moveBy = 1.12382;
+    CC3Vector taillightsPos = self.taillightsPos;
+    
+    if(fleetSide != nil && stepSide != nil && taillights != nil) {
         
         if(gFleetsideBed) {
-            [fleetSide runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            fleetSide.visible = true;
+            //[fleetSide runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
             //[stepSide runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+            [taillights runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1.0, 1.0, 1.0)]];
+            
+            [taillights runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:taillightsPos]];
+            
             stepSide.visible = false;
             fleetSide.visible = true;
         } else {
-            [fleetSide runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
+            //[fleetSide runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:0.0]];
             //[stepSide runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleUniformlyTo:1.0]];
+            [taillights runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(1.0, 1.0, 0.3)]];
+
+            taillightsPos.y -= moveBy;
+            [taillights runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:taillightsPos]];
+
             fleetSide.visible = false;
             stepSide.visible = true;
         }
         
     } else {
-        NSLog(@"Failed to acquire one of the beds or fenders. Change won't occur.");
+        NSLog(@"Failed to acquire one of the beds, fenders, or taillights. Change won't occur.");
     }
 }
 
@@ -1100,7 +1143,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     if(gSkinnyTires) {
         scale = 1.0;
     } else {
-        scale = 1.75;
+        scale = 1.35;
     }
     
     // Use for the C10
