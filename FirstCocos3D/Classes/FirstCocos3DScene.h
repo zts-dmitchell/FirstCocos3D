@@ -23,7 +23,8 @@
     double prevCourse;
 };
 
-typedef enum coolCarTypes { LowDrag, Low, DroppedSpindles, FrontHighBackHigh, Gasser, FrontLowBackHigh } CoolCarTypes;
+typedef enum coolCarTypes { LowDrag, Low, DroppedSpindles, FrontHighBackHigh, Gasser, FrontLowBackHigh, CountOfCoolCarTypes } CoolCarTypes;
+typedef enum wheelWidthTypes { NormalFrontNormalRear, WideFrontWideRear, NormalFrontWideRear, SkinnyFrontSuperWideRear,CountOfWheelWidthTypes } WheelWidthTypes;
 
 @property(strong, nonatomic) Camera* cameras;
 @property(strong, nonatomic) PaintBooth* paintBooth;

@@ -19,8 +19,8 @@
 		574C49851A3F85AC009255B2 /* SlopeCalculator.m in Sources */ = {isa = PBXBuildFile; fileRef = 574C49831A3F85AC009255B2 /* SlopeCalculator.m */; };
 		575707A919FB0AF60010C922 /* Ground Plane.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707A819FB0AF60010C922 /* Ground Plane.pod */; };
 		575707AB19FB4BDB0010C922 /* Curved Ground.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707AA19FB4BDB0010C922 /* Curved Ground.pod */; };
-		5784A41F1BD3FD8000B82C57 /* Chevy_-_Apache_C10-Stepside.pod in Resources */ = {isa = PBXBuildFile; fileRef = 5784A41E1BD3FD8000B82C57 /* Chevy_-_Apache_C10-Stepside.pod */; settings = {ASSET_TAGS = (); }; };
-		5784A4211BD4261600B82C57 /* asphalt-road-green-lawn-top-view-40938076.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5784A4201BD4261600B82C57 /* asphalt-road-green-lawn-top-view-40938076.jpg */; settings = {ASSET_TAGS = (); }; };
+		5784A41F1BD3FD8000B82C57 /* Chevy_-_Apache_C10-Stepside.pod in Resources */ = {isa = PBXBuildFile; fileRef = 5784A41E1BD3FD8000B82C57 /* Chevy_-_Apache_C10-Stepside.pod */; };
+		5784A4211BD4261600B82C57 /* asphalt-road-green-lawn-top-view-40938076.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5784A4201BD4261600B82C57 /* asphalt-road-green-lawn-top-view-40938076.jpg */; };
 		57B2346C19D92B9400B492AC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 57B2346719D92B9400B492AC /* AppDelegate.m */; };
 		57CAE57819BC18D400665B4C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57CAE57719BC18D400665B4C /* AudioToolbox.framework */; };
 		57CAE57A19BC18D400665B4C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57CAE57919BC18D400665B4C /* AVFoundation.framework */; };
@@ -442,7 +442,7 @@
 		5784A4201BD4261600B82C57 /* asphalt-road-green-lawn-top-view-40938076.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "asphalt-road-green-lawn-top-view-40938076.jpg"; path = "Resources/asphalt-road-green-lawn-top-view-40938076.jpg"; sourceTree = "<group>"; };
 		57B2346619D92B9400B492AC /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
 		57B2346719D92B9400B492AC /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; };
-		57CAE57419BC18D400665B4C /* FirstCocos3D.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirstCocos3D.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		57CAE57419BC18D400665B4C /* Bagged C10.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bagged C10.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		57CAE57719BC18D400665B4C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		57CAE57919BC18D400665B4C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		57CAE57B19BC18D400665B4C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -1247,7 +1247,7 @@
 		57CAE57519BC18D400665B4C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				57CAE57419BC18D400665B4C /* FirstCocos3D.app */,
+				57CAE57419BC18D400665B4C /* Bagged C10.app */,
 				57CAE63219BC18D400665B4C /* libcocos2d.a */,
 				57CAE63519BC18D400665B4C /* libcocos2d-chipmunk.a */,
 				57CAE86D19BC18D600665B4C /* libcocos3d.a */,
@@ -2665,7 +2665,7 @@
 			);
 			name = FirstCocos3D;
 			productName = FirstCocos3D;
-			productReference = 57CAE57419BC18D400665B4C /* FirstCocos3D.app */;
+			productReference = 57CAE57419BC18D400665B4C /* Bagged C10.app */;
 			productType = "com.apple.product-type.application";
 		};
 		57CAE63119BC18D400665B4C /* cocos2d */ = {
@@ -3267,7 +3267,7 @@
 					"-lcocos2d",
 					"-lcocos2d-chipmunk",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Bagged C10";
 			};
 			name = Debug;
 		};
@@ -3308,7 +3308,7 @@
 					"-lcocos2d",
 					"-lcocos2d-chipmunk",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Bagged C10";
 			};
 			name = Release;
 		};

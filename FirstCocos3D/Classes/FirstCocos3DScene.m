@@ -65,9 +65,9 @@ bool gFleetsideBed = true;
 bool gHood1960 = true;
 
 CoolCarTypes gCoolCarType = Low;
-bool gSkinnyTires = false;
-CGFloat gFLWheel_x = 0.0;
+WheelWidthTypes gWheelWidthTypes = NormalFrontNormalRear;
 
+CGFloat gFLWheel_x = 0.0;
 
 const CGFloat cRightSideDown = 1;
 const CGFloat cLeftSideDown = -1;
@@ -93,8 +93,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     // Set these values *after* everything else has been setup.
 
     gCoolCarType  = (CoolCarTypes)[defaults integerForKey:@"gCoolCarType"];
+    gWheelWidthTypes = (WheelWidthTypes)[defaults integerForKey:@"gWheelWidthTypes"];
     
-    [self setCoolCarType:gCoolCarType];
 
     int colorPosition = (int)[defaults integerForKey:@"currentColorPosition"];
     
@@ -108,7 +108,6 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     gCurrentCourse   = [defaults floatForKey:@"gCurrentCourse"];
     gCurrentWheelPos = [defaults floatForKey:@"gCurrentWheelPos"];
     gUseGyroScope =  [defaults boolForKey:@"gUseGyroScope"];
-    gSkinnyTires = [defaults floatForKey:@"gSkinnyTires"];
     gFleetsideBed = [defaults boolForKey:@"gFleetsideBed"];
     gHood1960 = [defaults boolForKey:@"gHood1960"];
     
@@ -116,6 +115,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     [self setBedType];
     [self setHoodVersion];
     [self setHasActiveCamera];
+    [self setCoolCarType:gCoolCarType];
+    [self setWheelWidths];
 }
 
 -(void) storeDefaults {
@@ -123,17 +124,16 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     // Store the data
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
+    [defaults setInteger:gCoolCarType forKey:@"gCoolCarType"];
+    [defaults setInteger:gWheelWidthTypes forKey:@"gWheelWidthTypes"];
+
     [defaults setBool:gHood1960 forKey:@"gHood1960"];
     [defaults setBool:gFleetsideBed forKey:@"gFleetsideBed"];
     [defaults setBool:gLockRotation forKey:@"gLockRotation"];
     [defaults setDouble:gCurrentCourse forKey:@"gCurrentCourse"];
     [defaults setDouble:gCurrentWheelPos forKey:@"gCurrentWheelPos"];
     [defaults setDouble:gUseGyroScope forKey:@"gUseGyroScope"];
-    
-    [defaults setInteger:gCoolCarType forKey:@"gCoolCarType"];
     [defaults setInteger:[self.paintBooth getCurrentColorPosition] forKey:@"currentColorPosition"];
-    
-    [defaults setDouble:gSkinnyTires forKey:@"gSkinnyTires"];
     
     [defaults setBool:gSelfHasActiveCamera forKey:@"gSelfHasActiveCamera"];
 }
@@ -236,6 +236,12 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
         NSLog(@"Hiding a node: %@", [node2 name]);
         node2.visible = false;
     }
+    
+    //node2 = [self.rootCarNode getNodeNamed:@"Rear Bumper"];
+    //if(node2 != nil) {
+    //    NSLog(@"Hiding a node: %@", [node2 name]);
+    //    node2.visible = false;
+    //}
         
     
     // Bunch a
@@ -783,8 +789,6 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
 
     if( touchType == 0 ) {
         
-        //[self printLocation:self.groundPlaneNode];
-        
         const CGSize s = [CCDirector sharedDirector].viewSize;
         const CGFloat widthDivisionSize = s.width/3.0;
         const CGFloat heightDivisionsize = s.height/3.0;
@@ -819,10 +823,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
                 
             } else if(widthSection == 0) { // Reset Straight
 
-                gSkinnyTires = !gSkinnyTires;
-                
-                [self setWheelWidths];
-                
+                [self setNextWheelWidthType];
             } else { // Forward
 
                 [self setNextCarType];
@@ -837,28 +838,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
                 NSArray *parts = @[ @"Main Body-submesh0"];
                 [self.paintBooth nextColor:parts inNode:self.pitchEmpty];
                 
-                //self.layer->bIsHeading = !self.layer->bIsHeading;
-                //[self.layer headingState:self.layer->bIsHeading];
-                //NSLog(@"bIsHeading: %d", self.layer->bIsHeading);
-
             } else if(widthSection == 0) { // Reset Roll
 
-                /*
-                NSLog(@"Moving camera");
-                CC3Vector initialPos = cc3v(8, 2, 150);
-                CC3Vector endPos     = cc3v(1, 2, 20);
-                
-                self.activeCamera.location = initialPos;
-                
-                CCActionInterval* actOne = [CC3ActionMoveTo actionWithDuration:2.0 endVector:endPos];
-                CCActionInterval* actTwo = [CC3ActionRotateToLookAt actionWithDuration:0.25 targetLocation:cc3v(0,0,0)];
-                
-                CCActionFiniteTime *time = [[CCActionFiniteTime alloc] init];
-                time.duration = 0.0;
-                [self.activeCamera runAction:[CCActionSequence actions:time, actOne, actTwo, nil]];
-                 */
-                
-                //gDoWheelies = !gDoWheelies;
                 // Reset the wheelie to zero, so wheels don't remain in the air.
                 gPitchWheelie = 0.0;
                 
@@ -881,10 +862,6 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
                 
                 gHood1960 = !gHood1960;
                 [self setHoodVersion];
-                
-                //[self move:self.activeCamera from:self to:self.groundPlaneNode];
-                // When true, will rotate the 'Background' node.
-                //gSelfHasActiveCamera = false;
                 
                 // Other stuff
                 [self adjustPitch:true]; // Resets w/o Accelerometer
@@ -917,9 +894,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
 
 -(void) setNextCarType {
     
-    const int numberOfCoolCarTypes = 6;
     // Calculate the next cool car type
-    gCoolCarType = (gCoolCarType + 1) % numberOfCoolCarTypes;
+    gCoolCarType = (gCoolCarType + 1) % CountOfCoolCarTypes;
     
     [self setCoolCarType:gCoolCarType];
 }
@@ -1136,21 +1112,53 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     }
 }
 
+-(void) setNextWheelWidthType {
+    
+    // Calculate the next wheel width type
+    gWheelWidthTypes = (gWheelWidthTypes + 1) % CountOfWheelWidthTypes;
+    
+    [self setWheelWidths];
+}
+
+
 -(void) setWheelWidths {
     
-    GLfloat scale;
+    GLfloat scaleFront;
+    GLfloat scaleRear;
+    const GLfloat widthWide = 1.35;
+    const GLfloat widthNormal = 1.0;
+    const GLfloat widthSkinny = 0.75;
+    const GLfloat widthSuperWide = 1.75;
     
-    if(gSkinnyTires) {
-        scale = 1.0;
-    } else {
-        scale = 1.35;
+    
+    switch(gWheelWidthTypes) {
+        case NormalFrontWideRear:
+            scaleFront = widthNormal;
+            scaleRear  = widthWide;
+            break;
+            
+        case WideFrontWideRear:
+            scaleFront = scaleRear = widthWide;
+            break;
+            
+        case SkinnyFrontSuperWideRear:
+            scaleFront = widthSkinny;
+            scaleRear  = widthSuperWide;
+            break;
+            
+        default:
+            NSLog(@"Uknown WheelWidthType: %d", gWheelWidthTypes);
+            
+        case NormalFrontNormalRear:
+            scaleFront = scaleRear = widthNormal;
+            break;
     }
     
     // Use for the C10
-    [self.nodeRLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(scale, 1.0, 1.0)]];
-    [self.nodeRRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(scale, 1.0, 1.0)]];
-    [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(scale, 1.0, 1.0)]];
-    [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(scale, 1.0, 1.0)]];
+    [self.nodeRLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(scaleRear, 1.0, 1.0)]];
+    [self.nodeRRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(scaleRear, 1.0, 1.0)]];
+    [self.nodeFLWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(scaleFront, 1.0, 1.0)]];
+    [self.nodeFRWheel runAction:[CC3ActionScaleTo actionWithDuration:0.5 scaleTo:cc3v(scaleFront, 1.0, 1.0)]];
     //[self.nodeRLWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(2.66, 0, 0)]];
     //[self.nodeRRWheel runAction:[CC3ActionMoveTo actionWithDuration:0.5 moveTo:cc3v(-2.66, 0, 0)]];
 }
