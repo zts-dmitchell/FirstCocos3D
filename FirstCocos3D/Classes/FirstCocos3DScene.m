@@ -230,6 +230,13 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     
     self.taillightsPos = [node2 location];
     
+    node2 = [self.rootCarNode getNodeNamed:@"Front Window"];
+    NSLog(@"shouldDisableDepthMask: %d", node2.shouldDisableDepthMask);
+    node2.shouldDisableDepthMask = !node2.shouldDisableDepthMask;
+
+    NSLog(@"shouldCullBackFaces: %d", node2.shouldCullBackFaces);
+    node2.shouldCullBackFaces = !node2.shouldCullBackFaces;
+
     // Hide items still in (blender) development.
     node2 = [self.rootCarNode getNodeNamed:@"Grille_1960"];
     if(node2 != nil) {
