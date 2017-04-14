@@ -19,6 +19,13 @@
 		574C49851A3F85AC009255B2 /* SlopeCalculator.m in Sources */ = {isa = PBXBuildFile; fileRef = 574C49831A3F85AC009255B2 /* SlopeCalculator.m */; };
 		575707A919FB0AF60010C922 /* Ground Plane.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707A819FB0AF60010C922 /* Ground Plane.pod */; };
 		575707AB19FB4BDB0010C922 /* Curved Ground.pod in Resources */ = {isa = PBXBuildFile; fileRef = 575707AA19FB4BDB0010C922 /* Curved Ground.pod */; };
+		577C9C851D8E2F4A0060DF76 /* Bumper.png in Resources */ = {isa = PBXBuildFile; fileRef = 577C9C811D8E2F4A0060DF76 /* Bumper.png */; };
+		577C9C861D8E2F4A0060DF76 /* Surboard - Left.png in Resources */ = {isa = PBXBuildFile; fileRef = 577C9C821D8E2F4A0060DF76 /* Surboard - Left.png */; };
+		577C9C871D8E2F4A0060DF76 /* Surfboard - Right.png in Resources */ = {isa = PBXBuildFile; fileRef = 577C9C831D8E2F4A0060DF76 /* Surfboard - Right.png */; };
+		577C9C881D8E2F4A0060DF76 /* Wheel.png in Resources */ = {isa = PBXBuildFile; fileRef = 577C9C841D8E2F4A0060DF76 /* Wheel.png */; };
+		577C9C8A1D8E33A00060DF76 /* Wheel - Left Front.png in Resources */ = {isa = PBXBuildFile; fileRef = 577C9C891D8E33A00060DF76 /* Wheel - Left Front.png */; };
+		577C9C8D1D8E35CE0060DF76 /* Fleetside Bed.png in Resources */ = {isa = PBXBuildFile; fileRef = 577C9C8B1D8E35CE0060DF76 /* Fleetside Bed.png */; };
+		577C9C8E1D8E35CE0060DF76 /* Wheel - Left Front.png in Resources */ = {isa = PBXBuildFile; fileRef = 577C9C8C1D8E35CE0060DF76 /* Wheel - Left Front.png */; };
 		5784A41F1BD3FD8000B82C57 /* Chevy_-_Apache_C10-Stepside.pod in Resources */ = {isa = PBXBuildFile; fileRef = 5784A41E1BD3FD8000B82C57 /* Chevy_-_Apache_C10-Stepside.pod */; };
 		5784A4211BD4261600B82C57 /* asphalt-road-green-lawn-top-view-40938076.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5784A4201BD4261600B82C57 /* asphalt-road-green-lawn-top-view-40938076.jpg */; };
 		57B2346C19D92B9400B492AC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 57B2346719D92B9400B492AC /* AppDelegate.m */; };
@@ -387,6 +394,7 @@
 		57CAEA0619BC18D800665B4C /* CC3VertexArrayMeshModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEA0519BC18D800665B4C /* CC3VertexArrayMeshModel.m */; };
 		57CAEA0919BC18D800665B4C /* CC3World.m in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEA0819BC18D800665B4C /* CC3World.m */; };
 		57CAEA0D19BC18D800665B4C /* LICENSE_cocos3d.txt in Resources */ = {isa = PBXBuildFile; fileRef = 57CAEA0C19BC18D800665B4C /* LICENSE_cocos3d.txt */; };
+		57F197AC1E9E9279005B1684 /* Chevy_-_Apache_C10-Stepside-Mixed-Colors.pod in Resources */ = {isa = PBXBuildFile; fileRef = 57F197AB1E9E9279005B1684 /* Chevy_-_Apache_C10-Stepside-Mixed-Colors.pod */; };
 		57F8C5B11A39043D002FE0AB /* PaintBooth.m in Sources */ = {isa = PBXBuildFile; fileRef = 57F8C5B01A39043D002FE0AB /* PaintBooth.m */; };
 /* End PBXBuildFile section */
 
@@ -438,6 +446,13 @@
 		574C49841A3F85AC009255B2 /* SlopeCalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SlopeCalculator.h; path = Utils/SlopeCalculator.h; sourceTree = "<group>"; };
 		575707A819FB0AF60010C922 /* Ground Plane.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Ground Plane.pod"; path = "Resources/Ground Plane.pod"; sourceTree = "<group>"; };
 		575707AA19FB4BDB0010C922 /* Curved Ground.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Curved Ground.pod"; path = "Resources/Curved Ground.pod"; sourceTree = "<group>"; };
+		577C9C811D8E2F4A0060DF76 /* Bumper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Bumper.png; sourceTree = "<group>"; };
+		577C9C821D8E2F4A0060DF76 /* Surboard - Left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Surboard - Left.png"; sourceTree = "<group>"; };
+		577C9C831D8E2F4A0060DF76 /* Surfboard - Right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Surfboard - Right.png"; sourceTree = "<group>"; };
+		577C9C841D8E2F4A0060DF76 /* Wheel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Wheel.png; sourceTree = "<group>"; };
+		577C9C891D8E33A00060DF76 /* Wheel - Left Front.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Wheel - Left Front.png"; sourceTree = "<group>"; };
+		577C9C8B1D8E35CE0060DF76 /* Fleetside Bed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Fleetside Bed.png"; path = "Resources/Fleetside Bed.png"; sourceTree = "<group>"; };
+		577C9C8C1D8E35CE0060DF76 /* Wheel - Left Front.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Wheel - Left Front.png"; path = "Resources/Wheel - Left Front.png"; sourceTree = "<group>"; };
 		5784A41E1BD3FD8000B82C57 /* Chevy_-_Apache_C10-Stepside.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Chevy_-_Apache_C10-Stepside.pod"; path = "Resources/Chevy_-_Apache_C10-Stepside.pod"; sourceTree = "<group>"; };
 		5784A4201BD4261600B82C57 /* asphalt-road-green-lawn-top-view-40938076.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "asphalt-road-green-lawn-top-view-40938076.jpg"; path = "Resources/asphalt-road-green-lawn-top-view-40938076.jpg"; sourceTree = "<group>"; };
 		57B2346619D92B9400B492AC /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
@@ -1157,6 +1172,7 @@
 		57CAEA0A19BC18D800665B4C /* CCNodeController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CCNodeController.h; path = cocos3d/deprecated/CCNodeController.h; sourceTree = "<group>"; };
 		57CAEA0B19BC18D800665B4C /* ControllableCCLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ControllableCCLayer.h; path = cocos3d/deprecated/ControllableCCLayer.h; sourceTree = "<group>"; };
 		57CAEA0C19BC18D800665B4C /* LICENSE_cocos3d.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE_cocos3d.txt; sourceTree = "<group>"; };
+		57F197AB1E9E9279005B1684 /* Chevy_-_Apache_C10-Stepside-Mixed-Colors.pod */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Chevy_-_Apache_C10-Stepside-Mixed-Colors.pod"; path = "Resources/Chevy_-_Apache_C10-Stepside-Mixed-Colors.pod"; sourceTree = "<group>"; };
 		57F8C5AF1A3903EA002FE0AB /* PaintBooth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PaintBooth.h; path = Utils/PaintBooth.h; sourceTree = "<group>"; };
 		57F8C5B01A39043D002FE0AB /* PaintBooth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PaintBooth.m; path = Utils/PaintBooth.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1303,6 +1319,14 @@
 		57CAE59319BC18D400665B4C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				57F197AB1E9E9279005B1684 /* Chevy_-_Apache_C10-Stepside-Mixed-Colors.pod */,
+				577C9C8B1D8E35CE0060DF76 /* Fleetside Bed.png */,
+				577C9C8C1D8E35CE0060DF76 /* Wheel - Left Front.png */,
+				577C9C891D8E33A00060DF76 /* Wheel - Left Front.png */,
+				577C9C811D8E2F4A0060DF76 /* Bumper.png */,
+				577C9C821D8E2F4A0060DF76 /* Surboard - Left.png */,
+				577C9C831D8E2F4A0060DF76 /* Surfboard - Right.png */,
+				577C9C841D8E2F4A0060DF76 /* Wheel.png */,
 				5784A4201BD4261600B82C57 /* asphalt-road-green-lawn-top-view-40938076.jpg */,
 				5784A41E1BD3FD8000B82C57 /* Chevy_-_Apache_C10-Stepside.pod */,
 				574C49691A3AA430009255B2 /* SevierDesert_2kpx.jpg */,
@@ -2763,6 +2787,7 @@
 				57CAE5E119BC18D400665B4C /* CC3LibTexturableBumpMapTangentSpace.fsh in Resources */,
 				57CAE60019BC18D400665B4C /* CC3PureColor.fsh in Resources */,
 				57CAE5AC19BC18D400665B4C /* Icon-57.png in Resources */,
+				577C9C8A1D8E33A00060DF76 /* Wheel - Left Front.png in Resources */,
 				57CAE5CF19BC18D400665B4C /* CC3LibDefaultPrecision.fsh in Resources */,
 				57CAE5EE19BC18D400665B4C /* CC3ClipSpaceNoTexture.fsh in Resources */,
 				57CAE61319BC18D400665B4C /* CC3LibDoubleTexture.vsh in Resources */,
@@ -2770,6 +2795,7 @@
 				57CAE5F819BC18D400665B4C /* CC3NoTextureReflect.fsh in Resources */,
 				57CAE5AE19BC18D400665B4C /* Icon-57@2x.png in Resources */,
 				574C496A1A3AA430009255B2 /* SevierDesert_2kpx.jpg in Resources */,
+				57F197AC1E9E9279005B1684 /* Chevy_-_Apache_C10-Stepside-Mixed-Colors.pod in Resources */,
 				57CAE5D319BC18D400665B4C /* CC3LibEnvironmentReflection.fsh in Resources */,
 				57CAE5BD19BC18D400665B4C /* Default.png in Resources */,
 				57CAE5CB19BC18D400665B4C /* fps_images_1.png in Resources */,
@@ -2780,6 +2806,7 @@
 				57CAE62A19BC18D400665B4C /* CC3Texturable.vsh in Resources */,
 				57CAE5C119BC18D400665B4C /* Default-Portrait~ipad.png in Resources */,
 				57CAE5A419BC18D400665B4C /* Icon-40.png in Resources */,
+				577C9C8E1D8E35CE0060DF76 /* Wheel - Left Front.png in Resources */,
 				57CAE62619BC18D400665B4C /* CC3ClipSpaceTexturable.vsh in Resources */,
 				57CAE5D919BC18D400665B4C /* CC3LibSetGLFragColorAlphaTest.fsh in Resources */,
 				57CAE60819BC18D400665B4C /* CC3SingleTextureReflectAlphaTest.fsh in Resources */,
@@ -2787,11 +2814,14 @@
 				57CAE5B419BC18D400665B4C /* Icon-72.png in Resources */,
 				57CAE5C919BC18D400665B4C /* fps_images-ipadhd.png in Resources */,
 				57CAE5C319BC18D400665B4C /* Default-Landscape~ipad.png in Resources */,
+				577C9C881D8E2F4A0060DF76 /* Wheel.png in Resources */,
 				57CAE5BF19BC18D400665B4C /* Default-568h@2x.png in Resources */,
+				577C9C861D8E2F4A0060DF76 /* Surboard - Left.png in Resources */,
 				575707A919FB0AF60010C922 /* Ground Plane.pod in Resources */,
 				57CAE5E619BC18D400665B4C /* CC3BumpMapObjectSpace.fsh in Resources */,
 				57CAE5D119BC18D400665B4C /* CC3LibDualSidedFragmentColor.fsh in Resources */,
 				57CAE62319BC18D400665B4C /* CC3LibVertexPositionRigidBones.vsh in Resources */,
+				577C9C871D8E2F4A0060DF76 /* Surfboard - Right.png in Resources */,
 				57CAE60B19BC18D400665B4C /* CC3LibBumpMapTangentSpaceLighting.vsh in Resources */,
 				57CAE61D19BC18D400665B4C /* CC3LibVertexPositionBones.vsh in Resources */,
 				57CAE5A219BC18D400665B4C /* Icon-29@2x.png in Resources */,
@@ -2809,10 +2839,12 @@
 				57CAE5D519BC18D400665B4C /* CC3LibLightProbeIllumination.fsh in Resources */,
 				57CAE62E19BC18D400665B4C /* CC3TexturableRigidBones.vsh in Resources */,
 				57CAE60419BC18D400665B4C /* CC3SingleTextureAlphaTest.fsh in Resources */,
+				577C9C851D8E2F4A0060DF76 /* Bumper.png in Resources */,
 				57CAE5DF19BC18D400665B4C /* CC3LibTexturableBumpMapObjectSpace.fsh in Resources */,
 				57CAE61119BC18D400665B4C /* CC3LibDefaultPrecision.vsh in Resources */,
 				57CAE5AA19BC18D400665B4C /* Icon-50@2x.png in Resources */,
 				574C49681A3A9774009255B2 /* Atacama-Desert-Panorama.jpg in Resources */,
+				577C9C8D1D8E35CE0060DF76 /* Fleetside Bed.png in Resources */,
 				57CAE5F419BC18D400665B4C /* CC3NoTexture.fsh in Resources */,
 				57CAE61519BC18D400665B4C /* CC3LibEnvironmentReflection.vsh in Resources */,
 				57CAE60219BC18D400665B4C /* CC3SingleTexture.fsh in Resources */,

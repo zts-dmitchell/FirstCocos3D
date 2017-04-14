@@ -83,6 +83,23 @@
     
     pColor = [NSValue valueWithBytes:&kCCC4FBlack objCType:@encode(ccColor4F)];
     [self.colors addObject:pColor];
+
+    // 0x89ABC7
+    tan.r = 0.5373;
+    tan.g = 0.6706;
+    tan.b = 0.7804;
+
+    pColor = [NSValue valueWithBytes:&tan objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+
+    // 0xF1EDE2
+    tan.r = 0.9451; // 241
+    tan.g = 0.9294; // 237
+    tan.b = 0.8863; // 226
+        
+    pColor = [NSValue valueWithBytes:&tan objCType:@encode(ccColor4F)];
+    [self.colors addObject:pColor];
+
 }
 
 

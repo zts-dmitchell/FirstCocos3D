@@ -200,7 +200,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"GoogleDriverLessCar.pod"];
     //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevy - C10.pod"];
     self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevy_-_Apache_C10-Stepside.pod"];
-    
+    //self.rootCarNode = [CC3PODResourceNode nodeFromFile: @"Chevy_-_Apache_C10-Stepside-Mixed-Colors.pod"];
+ 
     
     [self addChildToGroundPlane:self.rootCarNode];
     
@@ -229,14 +230,25 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     //NSLog(@"Info 2: %@", m1.material.fullDescription);
     
     self.taillightsPos = [node2 location];
+    	    node2 = [self.rootCarNode getNodeNamed:@"Front Window"];
+    if(node2 != nil) {
+        NSLog(@"shouldDisableDepthMask: %d", node2.shouldDisableDepthMask);
+        node2.shouldDisableDepthMask = !node2.shouldDisableDepthMask;
     
-    node2 = [self.rootCarNode getNodeNamed:@"Front Window"];
-    NSLog(@"shouldDisableDepthMask: %d", node2.shouldDisableDepthMask);
-    node2.shouldDisableDepthMask = !node2.shouldDisableDepthMask;
-
-    NSLog(@"shouldCullBackFaces: %d", node2.shouldCullBackFaces);
-    node2.shouldCullBackFaces = !node2.shouldCullBackFaces;
-
+        NSLog(@"shouldCullBackFaces: %d", node2.shouldCullBackFaces);
+        node2.shouldCullBackFaces = !node2.shouldCullBackFaces;
+    }
+    
+    node2 = [self.rootCarNode getNodeNamed:@"Rear Window"];
+    if( node2 != nil) {
+        NSLog(@"shouldDisableDepthMask: %d", node2.shouldDisableDepthMask);
+        node2.shouldDisableDepthMask = !node2.shouldDisableDepthMask;
+        
+        NSLog(@"shouldCullBackFaces: %d", node2.shouldCullBackFaces);
+        node2.shouldCullBackFaces = !node2.shouldCullBackFaces;
+    }
+    
+    
     // Hide items still in (blender) development.
     node2 = [self.rootCarNode getNodeNamed:@"Grille_1960"];
     if(node2 != nil) {
@@ -270,7 +282,6 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     self.paintBooth = [[PaintBooth alloc] init];
     
     [self.paintBooth addColor:self.bodyNode.diffuseColor];
-    //self.hoodN
     [self.paintBooth addColor:102 :0 :102];
     
     /*
@@ -885,9 +896,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
                 [self adjustPitch:false];  // Sets w/Accelerometer
             }
         }
+
+        [self storeDefaults];
     }
-    
-    [self storeDefaults];
 }
 
 -(void) setHasActiveCamera {
