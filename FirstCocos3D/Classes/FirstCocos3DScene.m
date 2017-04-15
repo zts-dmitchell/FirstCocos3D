@@ -63,6 +63,7 @@ bool gSelfHasActiveCamera = true;
 bool gLockRotation = false;
 bool gFleetsideBed = true;
 bool gHood1960 = true;
+bool gShowSurfboards = true;
 
 CoolCarTypes gCoolCarType = Low;
 WheelWidthTypes gWheelWidthTypes = NormalFrontNormalRear;
@@ -108,8 +109,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     gCurrentCourse   = [defaults floatForKey:@"gCurrentCourse"];
     gCurrentWheelPos = [defaults floatForKey:@"gCurrentWheelPos"];
     gUseGyroScope =  [defaults boolForKey:@"gUseGyroScope"];
-    gFleetsideBed = [defaults boolForKey:@"gFleetsideBed"];
+    gFleetsideBed = true; //[defaults boolForKey:@"gFleetsideBed"];
     gHood1960 = [defaults boolForKey:@"gHood1960"];
+    gShowSurfboards = [defaults boolForKey:@"gShowSurfboards"];
     
     [self setWheelWidths];
     [self setBedType];
@@ -117,6 +119,7 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     [self setHasActiveCamera];
     [self setCoolCarType:gCoolCarType];
     [self setWheelWidths];
+    [self setSurfboardsDisplay];
 }
 
 -(void) storeDefaults {
@@ -130,6 +133,9 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     [defaults setBool:gHood1960 forKey:@"gHood1960"];
     [defaults setBool:gFleetsideBed forKey:@"gFleetsideBed"];
     [defaults setBool:gLockRotation forKey:@"gLockRotation"];
+    [defaults setBool:gShowSurfboards forKey:@"gShowSurfboards"];
+    
+    
     [defaults setDouble:gCurrentCourse forKey:@"gCurrentCourse"];
     [defaults setDouble:gCurrentWheelPos forKey:@"gCurrentWheelPos"];
     [defaults setDouble:gUseGyroScope forKey:@"gUseGyroScope"];
@@ -214,6 +220,13 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     
     // Get the pitch empty for pitch rotations
     self.pitchEmpty = [self.rootCarNode getNodeNamed:@"PitchEmpty"];
+    
+    // Get the surf boards
+    self.surfboardLeft = [self.rootCarNode getNodeNamed:@"Surfboard Left"];
+    self.surfboardRight = [self.rootCarNode getNodeNamed:@"Surfboard Right"];
+    
+    // Get the bed cover
+    self.fleetsideBedCover = [self.rootCarNode getNodeNamed:@"FleetsideBedCover"];
     
     CC3Node* node2 = [self.rootCarNode getNodeNamed:@"Headlamps"];
     //CC3MeshNode* m1 = node2.children[0];
@@ -861,8 +874,11 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
                 // Reset the wheelie to zero, so wheels don't remain in the air.
                 gPitchWheelie = 0.0;
                 
-                gFleetsideBed = !gFleetsideBed;
-                [self setBedType];
+                //gFleetsideBed = !gFleetsideBed;
+                //[self setBedType];
+                
+                gShowSurfboards = !gShowSurfboards;
+                [self setSurfboardsDisplay];
                 
             } else { // Roll Right
 
@@ -1111,6 +1127,28 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
     }*/
     
 }
+
+-(void) setSurfboardsDisplay {
+
+
+    NSLog(@"Surfboards status: %d", gShowSurfboards);
+
+    self.surfboardLeft.visible = self.surfboardRight.visible = gShowSurfboards;
+    self.fleetsideBedCover.visible = !gShowSurfboards;
+    
+    if(gShowSurfboards) {
+        if(self.surfboardLeft != nil) {
+            
+        }
+        
+        if(self.surfboardRight != nil) {
+            
+        }
+    } else {
+        
+    }
+}
+
 /**
  * Set the type of bed the truck has.
  */

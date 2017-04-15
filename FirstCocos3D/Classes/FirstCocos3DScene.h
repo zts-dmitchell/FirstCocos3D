@@ -54,6 +54,10 @@ typedef enum wheelWidthTypes { NormalFrontNormalRear, WideFrontWideRear, NormalF
 @property(strong, nonatomic) CC3Node* nodeFRWheel;
 @property(strong, nonatomic) CC3Node* nodeRLWheel;
 @property(strong, nonatomic) CC3Node* nodeRRWheel;
+@property(strong, nonatomic) CC3Node* surfboardLeft;
+@property(strong, nonatomic) CC3Node* surfboardRight;
+@property(strong, nonatomic) CC3Node* fleetsideBedCover;
+
 
 @property (strong, nonatomic) CC3ResourceNode* groundPlaneNode;
 @property (strong, nonatomic) FirstCocos3DLayer* layer;
