@@ -1130,23 +1130,8 @@ const CGFloat gRideAlongOrientation = cLeftSideDown;
 
 -(void) setSurfboardsDisplay {
 
-
-    NSLog(@"Surfboards status: %d", gShowSurfboards);
-
     self.surfboardLeft.visible = self.surfboardRight.visible = gShowSurfboards;
     self.fleetsideBedCover.visible = !gShowSurfboards;
-    
-    if(gShowSurfboards) {
-        if(self.surfboardLeft != nil) {
-            
-        }
-        
-        if(self.surfboardRight != nil) {
-            
-        }
-    } else {
-        
-    }
 }
 
 /**
