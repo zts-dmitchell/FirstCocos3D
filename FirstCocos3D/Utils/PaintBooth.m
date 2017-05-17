@@ -93,13 +93,28 @@
     [self.colors addObject:pColor];
 
     // 0xF1EDE2
-    tan.r = 0.9451; // 241
-    tan.g = 0.9294; // 237
-    tan.b = 0.8863; // 226
-        
-    pColor = [NSValue valueWithBytes:&tan objCType:@encode(ccColor4F)];
-    [self.colors addObject:pColor];
+    //tan.r = 0.9451; // 241
+    //tan.g = 0.9294; // 237
+    //tan.b = 0.8863; // 226
+    
+    //pColor = [NSValue valueWithBytes:&tan objCType:@encode(ccColor4F)];
+    //[self.colors addObject:pColor];
 
+    //F4E6C3 - Rustoleum Oyster White
+    [self addColor:0xf4 :0xe6 :0xc3];
+
+    // F0EBC7 - Valspar IH White
+    [self addColor:0xf0 :0xeb :0xc7];
+    
+    //[self addColor:(255 + 0xf4)/2 :(255 + 0xe6)/2 :(255 + 0xc3)/2];
+    
+    /*
+        50 100
+     
+        150/2=75
+     
+     */
+    
 }
 
 
