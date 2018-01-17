@@ -46,6 +46,8 @@
     
     // Prevent the screen from diming.
     [UIApplication sharedApplication].idleTimerDisabled = YES;
+    
+    // OpenAL is disabled in CCAppDelegate.m, line 252
     return YES;
 	
 }

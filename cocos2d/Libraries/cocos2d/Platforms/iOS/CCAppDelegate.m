@@ -249,7 +249,8 @@ FindPOTScale(CGFloat size, CGFloat fixedSize)
 	[CCTexture setDefaultAlphaPixelFormat:CCTexturePixelFormat_RGBA8888];
     
     // Initialise OpenAL
-    [OALSimpleAudio sharedInstance];
+    //[OALSimpleAudio sharedInstance];
+    NSLog(@"OpenAL is disabled here");
 	
 	// Create a Navigation Controller with the Director
 	navController_ = [[CCNavigationController alloc] initWithRootViewController:director];
