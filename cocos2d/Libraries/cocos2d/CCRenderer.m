@@ -25,10 +25,10 @@
 #import "objc/message.h"
 
 #import "cocos2d.h"
-#import "CCRenderer_private.h"
+#import "CCRenderer_Private.h"
 #import "CCCache.h"
 #import "CCTexture_Private.h"
-#import "CCShader_private.h"
+#import "CCShader_Private.h"
 #import "CCDirector_Private.h"
 #import "CCGL.h"
 
@@ -89,7 +89,8 @@ const NSString *CCBlendEquationAlpha = @"CCBlendEquationAlpha";
 
 @implementation CCBlendModeCache
 
--(id)objectForKey:(id<NSCopying>)options
+//-(id)objectForKey:(id<NSCopying>)options
+-(id)objectForKey:(id)options
 {
 	CCBlendMode *blendMode = [self rawObjectForKey:options];
 	if(blendMode) return blendMode;
