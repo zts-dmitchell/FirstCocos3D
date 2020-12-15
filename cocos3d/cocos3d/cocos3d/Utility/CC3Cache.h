@@ -132,7 +132,8 @@
  * The block takes as arguments an object from the cache, and a pointer to a boolean that
  * can be set to YES to stop enumeration.
  */
--(void) enumerateObjectsUsingBlock: (void (^) (id<CC3Cacheable> obj, BOOL* stop)) block;
+/* Added __kindof on 2020.12.15, to compile on v12.x */
+-(void) enumerateObjectsUsingBlock: (void (^) (__kindof id<CC3Cacheable> obj, BOOL* stop)) block;
 
 /** 
  * Returns an array of all objects in this cache, sorted by name.
