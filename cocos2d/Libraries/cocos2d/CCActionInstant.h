@@ -231,7 +231,7 @@
  *  This actions executes a code block.
  */
 @interface CCActionCallBlock : CCActionInstant<NSCopying> {
-	void (^_block)();
+	void (^_block)(void);
 }
 
 
@@ -247,7 +247,7 @@
  *
  *  @return The call block action object.
  */
-+ (id)actionWithBlock:(void(^)())block;
++ (id)actionWithBlock:(void(^)(void))block;
 
 
 /// -----------------------------------------------------------------------
@@ -262,7 +262,7 @@
  *
  *  @return An initialized call block action object.
  */
-- (id)initWithBlock:(void(^)())block;
+- (id)initWithBlock:(void(^)(void))block;
 
 // Executes the selector on the specific target.
 - (void)execute;

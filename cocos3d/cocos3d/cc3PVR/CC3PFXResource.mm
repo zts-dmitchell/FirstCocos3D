@@ -29,9 +29,9 @@
  * See header file CC3PFXResource.h for full API documentation.
  */
 
-extern "C" {
+//extern "C" {
 	#import "CC3Foundation.h"	// extern must be first, since foundation also imported via other imports
-}
+//}
 #import "CC3PFXResource.h"
 #import "CC3PVRTPFXParser.h"
 #import "CC3PVRShamanShaderSemantics.h"

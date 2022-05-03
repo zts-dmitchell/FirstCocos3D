@@ -29,9 +29,9 @@
  * See header file CC3PODLight.h for full API documentation.
  */
 
-extern "C" {
+//extern "C" {
 	#import "CC3Foundation.h"	// extern must be first, since foundation also imported via other imports
-}
+//}
 #import "CC3PODLight.h"
 #import "CC3PVRTModelPOD.h"
 #import "CC3Math.h"

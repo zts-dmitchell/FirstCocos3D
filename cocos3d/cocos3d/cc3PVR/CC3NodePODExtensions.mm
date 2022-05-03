@@ -29,9 +29,9 @@
  * See header file CC3NodePODExtensions.h for full API documentation.
  */
 
-extern "C" {
+//extern "C" {
 	#import "CC3Foundation.h"	// extern must be first, since foundation also imported via other imports
-}
+//}
 #import "CC3NodePODExtensions.h"
 #import "CC3IdentifiablePODExtensions.h"
 #import "CC3PVRTModelPOD.h"

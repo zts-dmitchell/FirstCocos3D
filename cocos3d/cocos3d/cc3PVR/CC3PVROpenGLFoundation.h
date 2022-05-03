@@ -49,7 +49,7 @@
 #	define APPORTABLE		0
 #endif
 
-#if CC3_IOS
+#if defined(CC3_IOS)
 #	define TARGET_OS_IPHONE		1
 #endif
 
